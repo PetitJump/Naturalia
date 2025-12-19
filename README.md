@@ -45,7 +45,7 @@ test: dico = {
                     "valeur": "pluie"
                 },
                 "droite": {
-                    "type": "state",
+                    "type": "?",
                     "valeur": "sol_sec"
                 }
             },
@@ -58,10 +58,11 @@ test: dico = {
         }
     ]
 }
-
 ```
+Problème : Comment arriver à avoir ce gros dico
 
 ### Données que les algos donnent
+Les données reçus servirtont a faire les actions necessaires en fonction de l'issus
 
 Exemple :
 ```python
@@ -71,3 +72,6 @@ Exemple :
     "message": "La plante meurt car elle n’est jamais arrosée"
 }
 ```
+
+## Bug actuels :
+A remplir avec les bugs que l'on rencontre
