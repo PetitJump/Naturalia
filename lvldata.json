@@ -1,8 +1,17 @@
-{
-  "level_id": 1,
-  "environment": {
-    "pluie": false,
-    "sol_sec": true
-  },
-  "but": "plante_en_vie"
-}
+[
+  {
+    "level_id": 1,
+    "environment": {
+      "pluie": false,
+      "sol_sec": true
+    },
+    "but": "plante_en_vie"
+ },
+ {
+    "level_id": 2,
+    "environment": {
+      
+    },
+    "but": ""
+ }
+]

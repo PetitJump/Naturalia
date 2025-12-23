@@ -45,7 +45,7 @@ test: dico = {
                     "valeur": "pluie"
                 },
                 "droite": {
-                    "type": "?",
+                    "type": "ok",
                     "valeur": "sol_sec"
                 }
             },
