@@ -1,17 +1,13 @@
-[
-  {
-    "level_id": 1,
+{
+  "1": {
+    "description": "La plante a besoin d'eau",
     "environment": {
-      "pluie": false,
-      "sol_sec": true
+      "pluie": false
     },
-    "but": "plante_en_vie"
- },
- {
-    "level_id": 2,
-    "environment": {
-      
-    },
-    "but": ""
- }
-]
+    "conditions_valides": ["pluie", "not_pluie"],
+    "actions_valides": ["arroser_plante", "rien_faire"],
+    "regles": {
+      "not_pluie": "arroser_plante"
+    }
+  }
+}
