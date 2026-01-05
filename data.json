@@ -1,0 +1,13 @@
+{
+    "loup" : {
+        "reproduction" : [10, 3]
+    },
+
+    "mouton" : {
+        "reproduction" : [2, 3]
+    },
+
+    "herbe" : {
+        "reproduction" : [1, 3]
+    }
+}

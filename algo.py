@@ -1,0 +1,64 @@
+import json
+
+def initialisation_variables():
+    """Initalise les variables d'environements"""
+    nb_de_jour = int(input("Combien de jour la simulation ? : "))
+    nb_loup = int(input("Combien de loup ? : "))
+    nb_mouton = int(input("Combien de mouton ? : "))
+    herbe = int(input("Combien d'herbe ? : "))
+    predateur = {"nom" : "loup", "nombres" : nb_loup}
+    proie = {"nom" : "mouton", "nombres" : nb_mouton}
+    vegetal = {"nom" : "herbe", "nombres" : herbe}
+    return nb_de_jour, predateur, proie, vegetal
+
+
+def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
+    """Regarde les règles et change les variables"""
+    nb_de_jour_predateur = data[predateur["nom"]]["reproduction"][0]
+    nb_de_jour_proie = data[proie["nom"]]["reproduction"][0]
+    nb_de_jour_vegetal = data[vegetal["nom"]]["reproduction"][0]
+
+
+    if jour % data[predateur["nom"]]["reproduction"][0] == 0: #Si il peut se reproduire en fonction des règles
+        nouveau_en_plus = data[predateur["nom"]]["reproduction"][1] * (predateur["nombres"] // 2)
+        nv_predateur = {"nom" : predateur["nom"], "nombres" : nouveau_en_plus}
+    else:
+        nv_predateur = predateur
+
+    if jour % data[proie["nom"]]["reproduction"][0] == 0: 
+        nouveau_en_plus = data[proie["nom"]]["reproduction"][1] * (proie["nombres"] // 2)
+        nv_proie = {"nom" : proie["nom"], "nombres" : nouveau_en_plus}
+    else:
+        nv_proie = proie
+
+    if jour % data[vegetal["nom"]]["reproduction"][0] == 0: 
+        nouveau_en_plus = data[vegetal["nom"]]["reproduction"][1] * (vegetal["nombres"] // 2)
+        nv_vegetal = {"nom" : vegetal["nom"], "nombres" : nouveau_en_plus}
+    else:
+        nv_vegetal = vegetal
+
+    return nv_predateur, nv_proie, nv_vegetal
+
+def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
+    """Gère le système de mort"""
+    ...
+    return predateur, proie, vegetal
+
+
+
+def main():
+    print("Bienvenue sur ce jeu")
+    nb_de_jour, predateur, proie, vegetal = initialisation_variables()
+
+    with open('data.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    for i in range(nb_de_jour):
+        predateur, proie, vegetal = naissance(data, i+1, predateur, proie, vegetal)
+        #predateur, proie, vegetal = mort(data, i+1, predateur, proie, vegetal)
+        print("") #Saute une ligne
+        print("Jour :", i + 1)
+        print(f"{predateur["nom"]} : {predateur["nombres"]}")
+        print(f"{proie["nom"]} : {proie["nombres"]}")
+        print(f"{vegetal["nom"]}, {vegetal["nombres"]}")
+        input("Appuyer pour continuer")
+main()
