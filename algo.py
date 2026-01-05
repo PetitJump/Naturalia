@@ -6,6 +6,7 @@ def initialisation_variables():
     nb_loup = int(input("Combien de loup ? : "))
     nb_mouton = int(input("Combien de mouton ? : "))
     herbe = int(input("Combien d'herbe ? : "))
+
     predateur = {"nom" : "loup", "nombres" : nb_loup}
     proie = {"nom" : "mouton", "nombres" : nb_mouton}
     vegetal = {"nom" : "herbe", "nombres" : herbe}
@@ -13,14 +14,9 @@ def initialisation_variables():
 
 
 def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
-    """Regarde les règles et change les variables"""
-    nb_de_jour_predateur = data[predateur["nom"]]["reproduction"][0]
-    nb_de_jour_proie = data[proie["nom"]]["reproduction"][0]
-    nb_de_jour_vegetal = data[vegetal["nom"]]["reproduction"][0]
-
-
+    """Regarde les règles et change les variables en fonction des naissance"""
     if jour % data[predateur["nom"]]["reproduction"][0] == 0: #Si il peut se reproduire en fonction des règles
-        nouveau_en_plus = data[predateur["nom"]]["reproduction"][1] * (predateur["nombres"] // 2)
+        nouveau_en_plus = data[predateur["nom"]]["reproduction"][1] * (predateur["nombres"] // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
         nv_predateur = {"nom" : predateur["nom"], "nombres" : nouveau_en_plus}
     else:
         nv_predateur = predateur
@@ -40,7 +36,8 @@ def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict
     return nv_predateur, nv_proie, nv_vegetal
 
 def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
-    """Gère le système de mort"""
+    """Regarde les règles et change les variables en fonction des morts. Mort possibles : C fait manger / Meurt car trop vieux / meurt car pas assez de nourriture
+    """
     ...
     return predateur, proie, vegetal
 
