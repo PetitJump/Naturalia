@@ -1,10 +1,12 @@
 {
     "loup" : {
-        "reproduction" : [10, 3]
+        "reproduction" : [10, 3],
+        "mange" : ["mouton", 2, 1]
     },
 
     "mouton" : {
-        "reproduction" : [2, 3]
+        "reproduction" : [2, 3],
+        "mange" : ["herbe", 1, 10]
     },
 
     "herbe" : {
