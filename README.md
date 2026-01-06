@@ -15,13 +15,13 @@ Notre projet est une plateforme ludique qui consiste à rééquilibrer l'écosys
 ### 2 - Organisation du travail : 
 - Présentation de l’équipe : Margaux, Hugo, Carl, Killian
 - Rôle de chacun et chacune : 
-Margaux :  
+Margot :  
 Hugo :
 Carl :
 Killian : Algos principales
 
 - répartition des tâches :
-Margaux : Flask / Algo
+Margot : Flask / Algo
 Hugo : CSS / Algo / HTML
 Carl : Flask / Algo / SQL
 Killian : Algos principales / JSON
