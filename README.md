@@ -25,13 +25,13 @@ Hugo : CSS / Algo / HTML
 Carl : Flask / Algo / SQL
 Killian : Algos principales / JSON
 
-- temps passé sur le projet. 
+- Temps passé sur le projet :
 
  
-3 - Présentation des étapes du projet : 
-● de l’idée jusqu’à la réalisation du projet. 
+### 3 - Présentation des étapes du projet : 
+- De l’idée jusqu’à la réalisation du projet : 
 
- 
+
 
 4 - Validation de l’opérationnalité du projet/de son fonctionnement : 
 ● état d’avancement du projet au moment du dépôt, 
