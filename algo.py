@@ -38,7 +38,13 @@ def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict
 def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
     """Regarde les règles et change les variables en fonction des morts. Mort possibles : C fait manger / Meurt car trop vieux / meurt car pas assez de nourriture
     """
-    ...
+    def c_fait_manger():
+        ... #Par Carl
+    
+    def pas_assez_de_bouffe():
+        ... #A faire par Hugo
+    
+    ... #A completer par Margaux
     return predateur, proie, vegetal
 
 
