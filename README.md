@@ -18,12 +18,6 @@
 ● temps passé sur le projet. 
 
  
-
- 
-
-Les Trophées NSI 2026 - Règlement - Version 2025.11.03 Page 9 
-
-
 3 - Présentation des étapes du projet : 
 ● de l’idée jusqu’à la réalisation du projet. 
 
