@@ -4,18 +4,28 @@
 
 # Présentation :
 
-1 - Présentation globale du projet :  
-● naissance de l’idée, 
-● problématique initiale, 
-● objectifs. 
+### 1 - Présentation globale du projet :  
+- Naissance de l'idée :  
+- Problématique initiale : 
+- Objectifs : Crée une simulation capable de modifier l'equilibre entre les être vivants 
 
  
 
-2 - Organisation du travail : 
-● présentation de l’équipe, 
-● rôle de chacun et chacune, 
-● répartition des tâches, 
-● temps passé sur le projet. 
+### 2 - Organisation du travail : 
+- Présentation de l’équipe : Margaux, Hugo, Carl, Killian
+- Rôle de chacun et chacune : 
+Margaux :  
+Hugo :
+Carl :
+Killian : Algos principales
+
+- répartition des tâches :
+Margaux : Flask / Algo
+Hugo : CSS / Algo / HTML
+Carl : Flask / Algo / SQL
+Killian : Algos principales / JSON
+
+- temps passé sur le projet. 
 
  
 3 - Présentation des étapes du projet : 
