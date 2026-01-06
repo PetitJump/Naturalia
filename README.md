@@ -13,7 +13,7 @@ Notre projet est une plateforme ludique qui consiste à rééquilibrer l'écosys
  
 
 ### 2 - Organisation du travail : 
-- Présentation de l’équipe : Margaux, Hugo, Carl, Killian
+- Présentation de l’équipe : Margot, Hugo, Carl, Killian
 - Rôle de chacun et chacune : 
 Margot :  
 Hugo :
