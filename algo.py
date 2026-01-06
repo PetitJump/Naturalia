@@ -38,19 +38,21 @@ def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict
 def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
     """Regarde les règles et change les variables en fonction des morts. Mort possibles : C fait manger / Meurt car trop vieux / meurt car pas assez de nourriture
     """
-    proie_necessaires = predateur["nombres"] // predateur["mange"][2]
-    vegetal_necessaires = vegetal["nombres"] * proie["mange"][2]
+    proie_necessaires = predateur["nombres"] // data[predateur["nom"]]["mange"][2]
+    vegetal_necessaires = vegetal["nombres"] * data[proie["nom"]]["mange"][2]
 
+    #Ajouter un système qui implemente les jours.
     if vegetal["nombres"] >= vegetal_necessaires:
         vegetal["nombres"] -= vegetal_necessaires
         vegetal = vegetal["nombres"]
 
     if proie["nombres"] >= proie_necessaires:
         proie["nombres"] -= proie_necessaires
+
     else:
-        predateur = proie["nombres"] * 2
-        predateur["nombres"] = predateur
-        proie["nombres"] =  0
+        predateur = proie["nombres"] * 2 #Ca doit être un dico
+        predateur["nombres"] = predateur #Bug
+        proie["nombres"] =  0 
     return proie, predateur, vegetal
 
 
@@ -63,7 +65,7 @@ def main():
         data = json.load(f)
     for i in range(nb_de_jour):
         predateur, proie, vegetal = naissance(data, i+1, predateur, proie, vegetal)
-        #predateur, proie, vegetal = mort(data, i+1, predateur, proie, vegetal)
+        predateur, proie, vegetal = mort(data, i+1, predateur, proie, vegetal)
         print("") #Saute une ligne
         print("Jour :", i + 1)
         print(f"{predateur["nom"]} : {predateur["nombres"]}")
