@@ -9,6 +9,7 @@
 - Problématique initiale : 
 - Objectifs : Crée une simulation capable de modifier l'equilibre entre les être vivants 
 
+Notre projet est une plateforme ludique qui consiste à rééquilibrer l'écosystème tout en s'amusant. Le joueur va devoir résoudre des anomalies, ce qu'il veut dire que certaines zones vont avoir des problèmes d'équilibre. Pour résoudre ces anomalies, le joueur va devoir ajouter artificiellement des êtres vivants pour réguler l'équilibre comme des proie, des herbes ou des prédateurs. Le joueurs va faire passer les journées tout en gardant un oeil sur les zones et résoudres les anomalies si nécessaires. Si le jour ce termine et que l'anomalie d'une zone n'est pas résolue, cette zone est perdue. Si toutes les zones sont perdues avant la fin du cycle, c'est GAME OVER et le joueur perd la partie. S'il arrive à résoudre toutes les anomalies de toutes les zones à la fin du cycle, le joueur gagne.
  
 
 ### 2 - Organisation du travail : 
