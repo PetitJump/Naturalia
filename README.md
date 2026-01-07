@@ -34,15 +34,15 @@ Killian : Algos principales / JSON
 
 
 
-4 - Validation de l’opérationnalité du projet/de son fonctionnement : 
-● état d’avancement du projet au moment du dépôt, 
-● approches mis en œuvre pour vériﬁer l’absence de bugs, 
-● diﬃcultés rencontrées et les solutions apportées. 
+### 4 - Validation de l’opérationnalité du projet/de son fonctionnement : 
+- état d’avancement du projet au moment du dépôt, 
+- approches mis en œuvre pour vériﬁer l’absence de bugs, 
+- diﬃcultés rencontrées et les solutions apportées. 
 
  
 
-5 - Ouverture :  
-● idées d'amélioration du projet, 
-● analyse critique, 
-● compétences personnelles développées. 
-● démarche d'inclusion. 
+### 5 - Ouverture :  
+- idées d'amélioration du projet, 
+- analyse critique, 
+- compétences personnelles développées. 
+- démarche d'inclusion. 
