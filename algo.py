@@ -86,6 +86,11 @@ main()
 
 def tester(jour, continent, predateur, proie, vegetal):
     """Fonction principal qui va etre utiliser par Flask"""
-    nv_predateur, nv_proie, nv_vegetal = naissance()
+    with open('data.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    data = random_repro(data)
+
+    nv_predateur, nv_proie, nv_vegetal = naissance(data, jour, predateur, proie, vegetal)
+    nv_predateur, nv_proie, nv_vegetal = mort(data, jour, predateur, proie, vegetal)
     
     return nv_predateur, nv_proie, nv_vegetal
