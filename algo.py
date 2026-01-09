@@ -18,19 +18,19 @@ def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict
     """Regarde les règles et change les variables en fonction des naissance"""
     if jour % data[predateur["nom"]]["reproduction"][0] == 0: #Si il peut se reproduire en fonction des règles
         nouveau_en_plus = data[predateur["nom"]]["reproduction"][1] * (predateur["nombres"] // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
-        nv_predateur = {"nom" : predateur["nom"], "nombres" : nouveau_en_plus}
+        nv_predateur = {"nom" : predateur["nom"], "nombres" : predateur["nombres"] + nouveau_en_plus}
     else:
         nv_predateur = predateur
 
     if jour % data[proie["nom"]]["reproduction"][0] == 0: 
         nouveau_en_plus = data[proie["nom"]]["reproduction"][1] * (proie["nombres"] // 2)
-        nv_proie = {"nom" : proie["nom"], "nombres" : nouveau_en_plus}
+        nv_proie = {"nom" : proie["nom"], "nombres" : proie["nombres"] + nouveau_en_plus}
     else:
         nv_proie = proie
 
     if jour % data[vegetal["nom"]]["reproduction"][0] == 0: 
         nouveau_en_plus = data[vegetal["nom"]]["reproduction"][1] * (vegetal["nombres"] // 2)
-        nv_vegetal = {"nom" : vegetal["nom"], "nombres" : nouveau_en_plus}
+        nv_vegetal = {"nom" : vegetal["nom"], "nombres" : vegetal["nombres"] + nouveau_en_plus}
     else:
         nv_vegetal = vegetal
 
