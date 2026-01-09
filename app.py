@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-
+from algo import tester #tester() est la fonction principale (la seul utiliser par flask)
 app = Flask(__name__)
 
 @app.route("/")
