@@ -1,6 +1,10 @@
 from random import randint
 import json
 
+"""
+Programme utilisable sur le terminal
+"""
+
 def initialisation_variables():
     """Initalise les variables d'environements"""
     nb_de_jour = int(input("Combien de jour la simulation ? : "))
@@ -83,9 +87,3 @@ def main():
         print(f"{vegetal["nom"]}, {vegetal["nombres"]}")
         input("Appuyer pour continuer")
 main()
-
-def tester(jour, continent, predateur, proie, vegetal):
-    """Fonction principal qui va etre utiliser par Flask"""
-    nv_predateur, nv_proie, nv_vegetal = naissance()
-    
-    return nv_predateur, nv_proie, nv_vegetal
