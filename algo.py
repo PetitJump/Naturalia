@@ -53,7 +53,7 @@ def random_repro(data: dict) -> dict:
         data[i]["reproduction"][1] = nvl_repro 
     return data
 
-def tester(jour, continent, predateur, proie, vegetal):
+def update(jour, predateur, proie, vegetal):
     """Fonction principal qui va etre utiliser par Flask"""
     with open('data.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
