@@ -10,4 +10,4 @@ def index():
 def world():
     return render_template('world.html')
 
-app.run(host = '127.0.0.1', port='5000', debug=True)
+app.run(host = '127.0.0.1', port=5000, debug=True)
