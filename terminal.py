@@ -18,7 +18,7 @@ def initialisation_variables():
     return nb_de_jour, predateur, proie, vegetal
 
 
-def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict): #Modifier avec les nouvelles data
+def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict): 
     """Regarde les règles et change les variables en fonction des naissance"""
     if jour % data[predateur["nom"]]["reproduction"]["tout_les"] == 0: #Si il peut se reproduire en fonction des règles
         nouveau_en_plus = data[predateur["nom"]]["reproduction"]["nombre_de_nv_nee"] * (predateur["nombres"] // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
@@ -40,10 +40,10 @@ def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict
 
     return nv_predateur, nv_proie, nv_vegetal
 
-def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
+def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict): #Modifier avec les nouvelles data
     """Regarde les règles et change les variables en fonction des morts."""
     
-    if jour % data[predateur["nom"]]["mange"][1] == 0: #Modifier avec les nouvelles data
+    if jour % data[predateur["nom"]]["mange"]["tout_les"] == 0: #Exemple ici
         proie_necessaires = predateur["nombres"] // data[predateur["nom"]]["mange"][1]
         if proie["nombres"] >= proie_necessaires:
             proie = {"nom": proie["nom"], "nombres": proie["nombres"] - proie_necessaires}
