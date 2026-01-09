@@ -79,7 +79,7 @@ def main():
     data = random_repro(data)
     for i in range(nb_de_jour):
         predateur, proie, vegetal = naissance(data, i+1, predateur, proie, vegetal)
-        proie, predateur, vegetal = mort(data, i+1, predateur, proie, vegetal)
+        predateur, proie, vegetal = mort(data, i+1, predateur, proie, vegetal)
         print("") #Saute une ligne
         print("Jour :", i + 1)
         print(f"{predateur["nom"]} : {predateur["nombres"]}")
