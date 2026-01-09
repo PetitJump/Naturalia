@@ -1,6 +1,6 @@
 {
     "loup" : {
-        "reproduction" : [10, [1, 5]],
+        "reproduction" : [4, [1, 5]],
         "mange" : ["mouton", 2, 1]
     },
 

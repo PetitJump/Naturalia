@@ -43,20 +43,21 @@ def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict
 def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
     """Regarde les règles et change les variables en fonction des morts."""
     
-    if jour % data[predateur["nom"]]["mange"][1] != 0:
+    if jour % data[predateur["nom"]]["mange"][1] == 0:
         proie_necessaires = predateur["nombres"] // data[predateur["nom"]]["mange"][1]
         if proie["nombres"] >= proie_necessaires:
-            proie = {"nom": "mouton", "nombres": proie["nombres"] - proie_necessaires}
+            proie = {"nom": proie["nom"], "nombres": proie["nombres"] - proie_necessaires}
         else:
-            predateur = {"nom": "loup", "nombres": proie["nombres"] * data[predateur["nom"]]["mange"][1]}
-            proie = {"nom": "mouton", "nombres": 0}
+            predateur = {"nom": predateur["nom"], "nombres": proie["nombres"] * data[predateur["nom"]]["mange"][1]}
+            proie = {"nom": proie["nom"], "nombres": 0}
+
     if jour % data[proie["nom"]]["mange"][1] == 0:
         vegetal_necessaires = proie["nombres"] * data[proie["nom"]]["mange"][2]
         if vegetal["nombres"] >= vegetal_necessaires:
-            vegetal = {"nom": "herbe", "nombres": vegetal["nombres"] - vegetal_necessaires}
+            vegetal = {"nom": vegetal["nom"], "nombres": vegetal["nombres"] - vegetal_necessaires}
         else:
-            proie = {"nom": "mouton", "nombres": vegetal["nombres"] // data[proie["nom"]]["mange"][2]}
-            vegetal = {"nom": "herbe", "nombres": 0}
+            proie = {"nom": proie["nom"], "nombres": vegetal["nombres"] // data[proie["nom"]]["mange"][2]}
+            vegetal = {"nom": vegetal["nom"], "nombres": 0}
     
     return predateur, proie, vegetal
 
