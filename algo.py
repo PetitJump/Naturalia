@@ -83,3 +83,7 @@ def main():
         print(f"{vegetal["nom"]}, {vegetal["nombres"]}")
         input("Appuyer pour continuer")
 main()
+
+def tester(jour, continent):
+    """Fonction principal qui va etre utiliser par Flask"""
+    ...
