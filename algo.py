@@ -52,12 +52,24 @@ def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
         vegetal = {"nom": "herbe", "nombres": vegetal["nombres"] - vegetal_necessaires}
     return predateur, proie, vegetal
 
+
+def random_repro(data: dict) -> dict:
+    """
+    La fonction va prendre en compte la reproduction des êtres vivants. Un nombre aléatoire de bébés vont naitre.
+    C'est ce que la fonction va nous permettre de faire. randomiser le nombre de bébés a chaque naissance pour chaque couples.
+    """
+    for i in data:
+        nvl_repro = randint(data[i]["reproduction"][1][0], data[i]["reproduction"][1][1])
+        data[i]["reproduction"][1] = nvl_repro 
+    return data
+
 def main():
     print("Bienvenue sur ce jeu")
     nb_de_jour, predateur, proie, vegetal = initialisation_variables()
 
     with open('data.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
+    data = random_repro(data)
     for i in range(nb_de_jour):
         predateur, proie, vegetal = naissance(data, i+1, predateur, proie, vegetal)
         proie, predateur, vegetal = mort(data, i+1, predateur, proie, vegetal)
