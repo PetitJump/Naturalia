@@ -18,22 +18,22 @@ def initialisation_variables():
     return nb_de_jour, predateur, proie, vegetal
 
 
-def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
+def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict): #Modifier avec les nouvelles data
     """Regarde les règles et change les variables en fonction des naissance"""
-    if jour % data[predateur["nom"]]["reproduction"][0] == 0: #Si il peut se reproduire en fonction des règles
-        nouveau_en_plus = data[predateur["nom"]]["reproduction"][1] * (predateur["nombres"] // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
+    if jour % data[predateur["nom"]]["reproduction"]["tout_les"] == 0: #Si il peut se reproduire en fonction des règles
+        nouveau_en_plus = data[predateur["nom"]]["reproduction"]["nombre_de_nv_nee"] * (predateur["nombres"] // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
         nv_predateur = {"nom" : predateur["nom"], "nombres" : predateur["nombres"] + nouveau_en_plus}
     else:
         nv_predateur = predateur
 
-    if jour % data[proie["nom"]]["reproduction"][0] == 0: 
-        nouveau_en_plus = data[proie["nom"]]["reproduction"][1] * (proie["nombres"] // 2)
+    if jour % data[proie["nom"]]["reproduction"]["tout_les"] == 0: 
+        nouveau_en_plus = data[proie["nom"]]["reproduction"]["nombre_de_nv_nee"] * (proie["nombres"] // 2)
         nv_proie = {"nom" : proie["nom"], "nombres" : proie["nombres"] + nouveau_en_plus}
     else:
         nv_proie = proie
 
-    if jour % data[vegetal["nom"]]["reproduction"][0] == 0: 
-        nouveau_en_plus = data[vegetal["nom"]]["reproduction"][1] * (vegetal["nombres"] // 2)
+    if jour % data[vegetal["nom"]]["reproduction"]["tout_les"] == 0: 
+        nouveau_en_plus = data[vegetal["nom"]]["reproduction"]["nombre_de_nv_nee"] * (vegetal["nombres"] // 2)
         nv_vegetal = {"nom" : vegetal["nom"], "nombres" : vegetal["nombres"] + nouveau_en_plus}
     else:
         nv_vegetal = vegetal
@@ -43,7 +43,7 @@ def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict
 def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
     """Regarde les règles et change les variables en fonction des morts."""
     
-    if jour % data[predateur["nom"]]["mange"][1] == 0:
+    if jour % data[predateur["nom"]]["mange"][1] == 0: #Modifier avec les nouvelles data
         proie_necessaires = predateur["nombres"] // data[predateur["nom"]]["mange"][1]
         if proie["nombres"] >= proie_necessaires:
             proie = {"nom": proie["nom"], "nombres": proie["nombres"] - proie_necessaires}
@@ -69,14 +69,14 @@ def random_repro(data: dict) -> dict:
     """
     for i in data:
         nvl_repro = randint(data[i]["reproduction"][1][0], data[i]["reproduction"][1][1])
-        data[i]["reproduction"][1] = nvl_repro 
+        data[i]["reproduction"][1] = nvl_repro #Modifier avec les nouvelles data
     return data
 
 def main():
     print("Bienvenue sur ce jeu")
     nb_de_jour, predateur, proie, vegetal = initialisation_variables()
 
-    with open('data.json', 'r', encoding='utf-8') as f:
+    with open('nouvoulles_data.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     data = random_repro(data)
     for i in range(nb_de_jour):
