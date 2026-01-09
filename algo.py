@@ -1,19 +1,6 @@
 from random import randint
 import json
 
-def initialisation_variables():
-    """Initalise les variables d'environements"""
-    nb_de_jour = int(input("Combien de jour la simulation ? : "))
-    nb_loup = int(input("Combien de loup ? : "))
-    nb_mouton = int(input("Combien de mouton ? : "))
-    herbe = int(input("Combien d'herbe ? : "))
-
-    predateur = {"nom" : "loup", "nombres" : nb_loup}
-    proie = {"nom" : "mouton", "nombres" : nb_mouton}
-    vegetal = {"nom" : "herbe", "nombres" : herbe}
-    return nb_de_jour, predateur, proie, vegetal
-
-
 def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
     """Regarde les règles et change les variables en fonction des naissance"""
     if jour % data[predateur["nom"]]["reproduction"][0] == 0: #Si il peut se reproduire en fonction des règles
@@ -65,24 +52,6 @@ def random_repro(data: dict) -> dict:
         nvl_repro = randint(data[i]["reproduction"][1][0], data[i]["reproduction"][1][1])
         data[i]["reproduction"][1] = nvl_repro 
     return data
-
-def main():
-    print("Bienvenue sur ce jeu")
-    nb_de_jour, predateur, proie, vegetal = initialisation_variables()
-
-    with open('data.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    data = random_repro(data)
-    for i in range(nb_de_jour):
-        predateur, proie, vegetal = naissance(data, i+1, predateur, proie, vegetal)
-        predateur, proie, vegetal = mort(data, i+1, predateur, proie, vegetal)
-        print("") #Saute une ligne
-        print("Jour :", i + 1)
-        print(f"{predateur["nom"]} : {predateur["nombres"]}")
-        print(f"{proie["nom"]} : {proie["nombres"]}")
-        print(f"{vegetal["nom"]}, {vegetal["nombres"]}")
-        input("Appuyer pour continuer")
-main()
 
 def tester(jour, continent, predateur, proie, vegetal):
     """Fonction principal qui va etre utiliser par Flask"""
