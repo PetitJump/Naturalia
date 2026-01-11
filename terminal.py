@@ -40,25 +40,30 @@ def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict
 
     return nv_predateur, nv_proie, nv_vegetal
 
-def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict): #Modifier avec les nouvelles data
+def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
     """Regarde les règles et change les variables en fonction des morts."""
-    
-    if jour % data[predateur["nom"]]["mange"]["tout_les"] == 0: #Exemple ici
-        proie_necessaires = predateur["nombres"] // data[predateur["nom"]]["mange"][1]
+    if jour % data[predateur["nom"]]["mange"]["tout_les"] == 0:
+        combien = data[predateur["nom"]]["mange"]["combien"]
+        proie_necessaires = predateur["nombres"] * combien
+
         if proie["nombres"] >= proie_necessaires:
-            proie = {"nom": proie["nom"], "nombres": proie["nombres"] - proie_necessaires}
+            proie = {"nom": proie["nom"],"nombres": proie["nombres"] - proie_necessaires}
         else:
-            predateur = {"nom": predateur["nom"], "nombres": proie["nombres"] * data[predateur["nom"]]["mange"][1]}
+            predateur_survivants = proie["nombres"] // combien
+            predateur = {"nom": predateur["nom"],"nombres": predateur_survivants}
             proie = {"nom": proie["nom"], "nombres": 0}
 
-    if jour % data[proie["nom"]]["mange"][1] == 0:
-        vegetal_necessaires = proie["nombres"] * data[proie["nom"]]["mange"][2]
+    if jour % data[proie["nom"]]["mange"]["tout_les"] == 0:
+        combien = data[proie["nom"]]["mange"]["combien"]
+        vegetal_necessaires = proie["nombres"] * combien
+
         if vegetal["nombres"] >= vegetal_necessaires:
-            vegetal = {"nom": vegetal["nom"], "nombres": vegetal["nombres"] - vegetal_necessaires}
+            vegetal = {"nom": vegetal["nom"],"nombres": vegetal["nombres"] - vegetal_necessaires}
         else:
-            proie = {"nom": proie["nom"], "nombres": vegetal["nombres"] // data[proie["nom"]]["mange"][2]}
+            proie_survivantes = vegetal["nombres"] // combien
+            proie = {"nom": proie["nom"],"nombres": proie_survivantes}
             vegetal = {"nom": vegetal["nom"], "nombres": 0}
-    
+
     return predateur, proie, vegetal
 
 
