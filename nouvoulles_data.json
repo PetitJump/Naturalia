@@ -10,6 +10,6 @@
     },
 
     "herbe" : {
-        "reproduction" : {"tout_les" : 1, "nombre_de_nv_nee" : [5]}
+        "reproduction" : {"tout_les" : 1, "nombre_de_nv_nee" : [1, 5]}
     }
 }
