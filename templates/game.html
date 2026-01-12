@@ -6,11 +6,18 @@
     <title>PLAYING</title>
 </head>
 <body>
-    <form action="/game" method="POST"></form>
-    <a>Jour n° : {{jour}}</a>
-    <a>Nombre de prédateurs : {{predateur}}</a>
-    <a>Nombre de proies : {{proie}}</a>
-    <a>Nombre de vegetaux : {{vegetal}}</a>
-    <input type="button" value="jour suivant" href="./game.html"/>
+    <form action="/game" method="POST">
+        <input type="hidden" name="jour" value="{{jour}}">
+        <input type="hidden" name="loup" value="{{predateur}}">
+        <input type="hidden" name="mouton" value="{{proie}}">
+        <input type="hidden" name="herbe" value="{{vegetal}}">
+
+        <a>Jour n° : {{jour}}</a><br>
+        <a>Nombre de prédateurs : {{predateur}}</a><br>
+        <a>Nombre de proies : {{proie}}</a><br>
+        <a>Nombre de vegetaux : {{vegetal}}</a><br>
+
+    <button type="submit">Jour suivant</button>
+    </form>
 </body>
 </html>

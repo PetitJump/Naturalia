@@ -7,31 +7,34 @@
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
 </head>
 <body>
+  <form action="/game" method="POST">
+    <p>Initialisation :</p>
+    
+    <div>
+      <input type="range" id="loup" name="loup" min="0" max="50" value="90" step="1">
+      <label for="loup">
+        Loup : <span id="qloup"></span>
+      </label>
+    </div>
 
-<p>Initialisation :</p>
+    <div>
+      <input type="range" id="mouton" name="mouton" min="0" max="50" value="90" step="1">
+      <label for="mouton">
+        Mouton : <span id="qmouton"></span>
+      </label>
+    </div>
 
-<div>
-  <input type="range" id="loup" min="0" max="50" value="90" step="1">
-  <label for="loup">
-    Loup : <span id="qloup"></span>
-  </label>
-</div>
+    <div>
+      <input type="range" id="herbe" name="herbe" min="0" max="50" value="90" step="1">
+      <label for="herbe">
+        Herbe : <span id="qherbe"></span>
+      </label>
+    </div>
+    <input type="hidden" name="jour" value="0">
 
-<div>
-  <input type="range" id="mouton" min="0" max="50" value="90" step="1">
-  <label for="mouton">
-    Mouton : <span id="qmouton"></span>
-  </label>
-</div>
-
-<div>
-  <input type="range" id="herbe" min="0" max="50" value="90" step="1">
-  <label for="herbe">
-    Herbe : <span id="qherbe"></span>
-  </label>
-</div>
-
-<a href="/game"><button>Continuer</button></a>
+    <button type="submit">Continuer</button>
+    
+  </form>
 <script src="{{url_for('static',filename='app.js')}}"></script>
 
 </body>

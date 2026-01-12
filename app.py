@@ -4,40 +4,34 @@ from algo import update #tester() est la fonction principale (la seul utiliser p
 app = Flask(__name__)
 
 @app.route("/")
-def index(): #Par Hugo
+def index(): 
     return render_template("index.html")
 
 @app.route("/init")
-def init(): #Par Hugo
-    predateur = {"nom" : "loup", "nombres" : ...}
-    proie = {"nom" : "mouton", "nombres" : ...}
-    vegetal = {"nom" : "herbe", "nombres" : ...}
-    jour = ... #Peut etre utiliser les sessions
-    predateur, proie, vegetal = update(jour, predateur, proie, vegetal) #Va mettre a jour les datas avec les algos
-
+def init(): 
     return render_template('init.html')
 
-@app.route("/game")
-def game(): #Par Margot
-    jour = request.form["jour"]
+@app.route("/game", methods=['GET', 'POST'])
+def game(): 
 
+    jour = int(request.form["jour"])
     predateur = {"nom" : "loup", "nombres" : int(request.form["loup"])}
     proie = {"nom" : "mouton", "nombres" : int(request.form["mouton"])}
     vegetal = {"nom" : "herbe", "nombres" : int(request.form["herbe"])}
+    
 
     predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
     jour += 1
     
-    return render_template('game.html', predateur=predateur["nombres"], jour = jour, proie= proie["nombres"], vegetal=["nombres"])
+    return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"])
 
 @app.route("/regles")
-def regles(): #Par Killian et Carl
-    ...
+def regles(): 
     return render_template('regles.html')
     
     
 @app.route("/modifier", methods=['GET', 'POST'])
-def modifier(): #Par Killian et Carl
+def modifier(): 
     loup_reproduction_tout_les: int = int(request.form['nb_bebe_tout_les_preda'])
     loup_reproduction_combien: list[int] = [int(request.form['nb_bebe_predateur1']), int(request.form['nb_bebe_predateur2'])]
     loup_mange_tout_les: int = int(request.form['nb_de_nourriture_tout_les_predateur'])
