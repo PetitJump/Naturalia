@@ -1,38 +1,38 @@
 {
     "loup": {
         "reproduction": {
-            "tout_les": "23",
+            "tout_les": 5,
             "nombre_de_nv_nee": [
-                "5",
-                "7"
+                1,
+                3
             ]
         },
         "mange": {
             "qui": "mouton",
-            "tout_les": "7",
-            "combien": "65"
+            "tout_les": 5,
+            "combien": 2
         }
     },
     "mouton": {
         "reproduction": {
-            "tout_les": "67",
+            "tout_les": 4,
             "nombre_de_nv_nee": [
-                "6",
-                "7"
+                2,
+                5
             ]
         },
         "mange": {
             "qui": "herbe",
-            "tout_les": "67",
-            "combien": "67"
+            "tout_les": 10,
+            "combien": 2
         }
     },
     "herbe": {
         "reproduction": {
-            "tout_les": "45",
+            "tout_les": 1,
             "nombre_de_nv_nee": [
-                "67",
-                "77"
+                5,
+                10
             ]
         }
     }
