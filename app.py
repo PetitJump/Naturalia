@@ -18,10 +18,14 @@ def init(): #Par Hugo
     return render_template('init.html')
 
 @app.route("/game")
-def game(): #Par Margaux
-    ...
+def game(): #Par Margot
+    predateur = request.form["loup"]
+    proie = request.form["mouton"]
+    vegetal = request.form["herbe"]
+    jour = request.form["jour"]
+    update(jour, predateur, proie, vegetal)
+    jour += 1
     return render_template('game.html')
-
 
 @app.route("/regles")
 def regles(): #Par Killian et Carl
