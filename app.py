@@ -31,18 +31,18 @@ def regles(): #Par Killian et Carl
     
 @app.route("/modifier")
 def modifier(): #Par Killian et Carl
-    loup_reproduction_tout_les: int = request.form['...']
-    loup_reproduction_combien: list[int] = [request.form['...'], request.form['...']]
-    loup_mange_tout_les: int = request.form['...']
-    loup_mange_combien: int = request.form['...']
+    loup_reproduction_tout_les: int = request.form['nb_bebe_tout_les_preda']
+    loup_reproduction_combien: list[int] = [request.form['nb_bebe_predateur1'], request.form['nb_bebe_predateur2']]
+    loup_mange_tout_les: int = request.form['nb_de_nourriture_tout_les_predateur']
+    loup_mange_combien: int = request.form['nb_de_nourriture_predateur']
 
-    mouton_reproduction_tout_les: int = request.form['...']
-    mouton_reproduction_combien: list[int] = [request.form['...'], request.form['...']]
-    mouton_mange_tout_les: int = request.form['...']
-    mouton_mange_combien: int = request.form['...']
+    mouton_reproduction_tout_les: int = request.form['nb_bebe_tout_les_proie']
+    mouton_reproduction_combien: list[int] = [request.form['nb_bebe_proie1'], request.form['nb_bebe_proie2']]
+    mouton_mange_tout_les: int = request.form['nb_de_nourriture_tout_les_proie']
+    mouton_mange_combien: int = request.form['nb_de_nourriture_proie']
 
-    herbe_reproduction_tout_les: int = request.form['...']
-    herbe_reproduction_combien: list[int] = [request.form['...'], request.form['...']]
+    herbe_reproduction_tout_les: int = request.form['nb_bebe_tout_les_vegetal']
+    herbe_reproduction_combien: list[int] = [request.form['nb_bebe_vegetal1'], request.form['nb_bebe_vegetal2']]
 
     data = {
         "loup" : {
@@ -58,8 +58,11 @@ def modifier(): #Par Killian et Carl
         "herbe" : {
             "reproduction" : {"tout_les" : herbe_reproduction_tout_les, "nombre_de_nv_nee" : herbe_reproduction_combien}
         }
-}
+    }
 
+    with open('data.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+        
     return render_template('index.html')
 
 if __name__ == '__main__':
