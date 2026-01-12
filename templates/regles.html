@@ -1,11 +1,29 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regles</title>
+    <title>Modification du monde</title>
 </head>
 <body>
-    Règles :
+    <form method="POST">
+        <label for="predateur">stats des prédateur :</label><br><br>
+        <input type="text" id="nb_bebe_predateur" name="nb_bebe_predateur"  placeholder="reproduction des prédateur" required><br>
+        <input type="text" id="nb_bebe_tout_les_preda" name="nb_bebe_tout_les_preda"  placeholder="tout les combiens de jour ils se reproduise" required><br>
+        <input type="text" id="nb_de_nourriture_predateur" name="nb_de_nourriture_predateur"  placeholder="ils mangent combiens ?" required><br>
+        <input type="text" id="nb_de_nourriture_tout_les_predateur" name="nb_de_nourriture_tout_les_predateur"  placeholder="ils mangent tout les combiens ?" required><br>
+
+        <label for="proie">stats des proie :</label><br><br>
+        <input type="text" id="nb_bebe_proie" name="nb_bebe_proie"  placeholder="reproduction des proie" required><br>
+        <input type="text" id="nb_bebe_tout_les_proie" name="nb_bebe_tout_les_proie"  placeholder="tout les combiens de jour ils se reproduise" required><br>
+        <input type="text" id="nb_de_nourriture_proie" name="nb_de_nourriture_proie"  placeholder="ils mangent combiens ?" required><br>
+        <input type="text" id="nb_de_nourriture_tout_les_proie" name="nb_de_nourriture_tout_les_proie"  placeholder="ils mangent tout les combiens ?" required><br>
+
+                <label for="proie">stats des végétaux :</label><br><br>
+        <input type="text" id="nb_bebe_vegetal" name="nb_bebe_vegetal"  placeholder="reproduction des vetegaux" required><br>
+        <input type="text" id="nb_bebe_tout_les_vegetal" name="nb_bebe_tout_les_vegetal"  placeholder="tout les combiens de jour ils se reproduise" required><br>
+    
+    <input type="submit" value="Envoyer">
+    </form>
 </body>
 </html>
