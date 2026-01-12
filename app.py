@@ -19,13 +19,16 @@ def init(): #Par Hugo
 
 @app.route("/game")
 def game(): #Par Margot
-    predateur = request.form["loup"]
-    proie = request.form["mouton"]
-    vegetal = request.form["herbe"]
     jour = request.form["jour"]
-    update(jour, predateur, proie, vegetal)
+
+    predateur = {"nom" : "loup", "nombres" : int(request.form["loup"])}
+    proie = {"nom" : "mouton", "nombres" : int(request.form["mouton"])}
+    vegetal = {"nom" : "herbe", "nombres" : int(request.form["herbe"])}
+
+    predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
     jour += 1
-    return render_template('game.html')
+    
+    return render_template('game.html', predateur=predateur["nombres"])
 
 @app.route("/regles")
 def regles(): #Par Killian et Carl
