@@ -6,7 +6,7 @@
     <title>Modification du monde</title>
 </head>
 <body>
-    <form method="POST">
+    <form method="POST" action="/modifier">
         <label for="predateur">stats des prédateur :</label><br><br>
         <input type="number" id="nb_bebe_predateur1" name="nb_bebe_predateur1"  placeholder="reproduction des prédateu entre :r" required><br>
         <input type="number" id="nb_bebe_predateur2" name="nb_bebe_predateur2"  placeholder="reproduction des prédateur et " required><br>
@@ -25,7 +25,10 @@
         <input type="number" id="nb_bebe_vegetal1" name="nb_bebe_vegetal1"  placeholder="reproduction des vetegaux entre :" required><br>
         <input type="number" id="nb_bebe_vegetal2" name="nb_bebe_vegetal2"  placeholder="reproduction des vetegaux et :" required><br>
         <input type="number" id="nb_bebe_tout_les_vegetal" name="nb_bebe_tout_les_vegetal"  placeholder="tout les combiens de jour ils se reproduise" required><br>
+    
+        <button type="submit">Sauvegarder</button>
     </form>
-    <a href="/modifier">Sauvegarder</a>
+
+    
 </body>
 </html>

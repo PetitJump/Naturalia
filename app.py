@@ -29,7 +29,7 @@ def regles(): #Par Killian et Carl
     return render_template('regles.html')
     
     
-@app.route("/modifier")
+@app.route("/modifier", methods=['GET', 'POST'])
 def modifier(): #Par Killian et Carl
     loup_reproduction_tout_les: int = request.form['nb_bebe_tout_les_preda']
     loup_reproduction_combien: list[int] = [request.form['nb_bebe_predateur1'], request.form['nb_bebe_predateur2']]
@@ -62,7 +62,7 @@ def modifier(): #Par Killian et Carl
 
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
-        
+
     return render_template('index.html')
 
 if __name__ == '__main__':
