@@ -1,22 +1,23 @@
 from random import randint
 import json
 
-def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
+
+def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict): 
     """Regarde les règles et change les variables en fonction des naissance"""
-    if jour % data[predateur["nom"]]["reproduction"][0] == 0: #Si il peut se reproduire en fonction des règles
-        nouveau_en_plus = data[predateur["nom"]]["reproduction"][1] * (predateur["nombres"] // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
+    if jour % data[predateur["nom"]]["reproduction"]["tout_les"] == 0: #Si il peut se reproduire en fonction des règles
+        nouveau_en_plus = data[predateur["nom"]]["reproduction"]["nombre_de_nv_nee"] * (predateur["nombres"] // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
         nv_predateur = {"nom" : predateur["nom"], "nombres" : predateur["nombres"] + nouveau_en_plus}
     else:
         nv_predateur = predateur
 
-    if jour % data[proie["nom"]]["reproduction"][0] == 0: 
-        nouveau_en_plus = data[proie["nom"]]["reproduction"][1] * (proie["nombres"] // 2)
+    if jour % data[proie["nom"]]["reproduction"]["tout_les"] == 0: 
+        nouveau_en_plus = data[proie["nom"]]["reproduction"]["nombre_de_nv_nee"] * (proie["nombres"] // 2)
         nv_proie = {"nom" : proie["nom"], "nombres" : proie["nombres"] + nouveau_en_plus}
     else:
         nv_proie = proie
 
-    if jour % data[vegetal["nom"]]["reproduction"][0] == 0: 
-        nouveau_en_plus = data[vegetal["nom"]]["reproduction"][1] * (vegetal["nombres"] // 2)
+    if jour % data[vegetal["nom"]]["reproduction"]["tout_les"] == 0: 
+        nouveau_en_plus = data[vegetal["nom"]]["reproduction"]["nombre_de_nv_nee"] * (vegetal["nombres"] // 2)
         nv_vegetal = {"nom" : vegetal["nom"], "nombres" : vegetal["nombres"] + nouveau_en_plus}
     else:
         nv_vegetal = vegetal
@@ -25,23 +26,28 @@ def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict
 
 def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
     """Regarde les règles et change les variables en fonction des morts."""
-    
-    if jour % data[predateur["nom"]]["mange"][1] == 0:
-        proie_necessaires = predateur["nombres"] // data[predateur["nom"]]["mange"][1]
+    if jour % data[predateur["nom"]]["mange"]["tout_les"] == 0:
+        combien = data[predateur["nom"]]["mange"]["combien"]
+        proie_necessaires = predateur["nombres"] * combien
+
         if proie["nombres"] >= proie_necessaires:
-            proie = {"nom": proie["nom"], "nombres": proie["nombres"] - proie_necessaires}
+            proie = {"nom": proie["nom"],"nombres": proie["nombres"] - proie_necessaires}
         else:
-            predateur = {"nom": predateur["nom"], "nombres": proie["nombres"] * data[predateur["nom"]]["mange"][1]}
+            predateur_survivants = proie["nombres"] // combien
+            predateur = {"nom": predateur["nom"],"nombres": predateur_survivants}
             proie = {"nom": proie["nom"], "nombres": 0}
 
-    if jour % data[proie["nom"]]["mange"][1] == 0:
-        vegetal_necessaires = proie["nombres"] * data[proie["nom"]]["mange"][2]
+    if jour % data[proie["nom"]]["mange"]["tout_les"] == 0:
+        combien = data[proie["nom"]]["mange"]["combien"]
+        vegetal_necessaires = proie["nombres"] * combien
+
         if vegetal["nombres"] >= vegetal_necessaires:
-            vegetal = {"nom": vegetal["nom"], "nombres": vegetal["nombres"] - vegetal_necessaires}
+            vegetal = {"nom": vegetal["nom"],"nombres": vegetal["nombres"] - vegetal_necessaires}
         else:
-            proie = {"nom": proie["nom"], "nombres": vegetal["nombres"] // data[proie["nom"]]["mange"][2]}
+            proie_survivantes = vegetal["nombres"] // combien
+            proie = {"nom": proie["nom"],"nombres": proie_survivantes}
             vegetal = {"nom": vegetal["nom"], "nombres": 0}
-    
+
     return predateur, proie, vegetal
 
 

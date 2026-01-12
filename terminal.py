@@ -81,7 +81,7 @@ def main():
     print("Bienvenue sur ce jeu")
     nb_de_jour, predateur, proie, vegetal = initialisation_variables()
 
-    with open('nouvoulles_data.json', 'r', encoding='utf-8') as f:
+    with open('data.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     data = random_repro(data)
     for i in range(nb_de_jour):
