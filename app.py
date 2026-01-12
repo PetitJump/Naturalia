@@ -35,18 +35,18 @@ def regles(): #Par Killian et Carl
     
 @app.route("/modifier", methods=['GET', 'POST'])
 def modifier(): #Par Killian et Carl
-    loup_reproduction_tout_les: int = request.form['nb_bebe_tout_les_preda']
-    loup_reproduction_combien: list[int] = [request.form['nb_bebe_predateur1'], request.form['nb_bebe_predateur2']]
-    loup_mange_tout_les: int = request.form['nb_de_nourriture_tout_les_predateur']
-    loup_mange_combien: int = request.form['nb_de_nourriture_predateur']
+    loup_reproduction_tout_les: int = int(request.form['nb_bebe_tout_les_preda'])
+    loup_reproduction_combien: list[int] = [int(request.form['nb_bebe_predateur1']), int(request.form['nb_bebe_predateur2'])]
+    loup_mange_tout_les: int = int(request.form['nb_de_nourriture_tout_les_predateur'])
+    loup_mange_combien: int = int(request.form['nb_de_nourriture_predateur'])
 
-    mouton_reproduction_tout_les: int = request.form['nb_bebe_tout_les_proie']
-    mouton_reproduction_combien: list[int] = [request.form['nb_bebe_proie1'], request.form['nb_bebe_proie2']]
-    mouton_mange_tout_les: int = request.form['nb_de_nourriture_tout_les_proie']
-    mouton_mange_combien: int = request.form['nb_de_nourriture_proie']
+    mouton_reproduction_tout_les: int = int(request.form['nb_bebe_tout_les_proie'])
+    mouton_reproduction_combien: list[int] = [int(request.form['nb_bebe_proie1']), int(request.form['nb_bebe_proie2'])]
+    mouton_mange_tout_les: int = int(request.form['nb_de_nourriture_tout_les_proie'])
+    mouton_mange_combien: int = int(request.form['nb_de_nourriture_proie'])
 
-    herbe_reproduction_tout_les: int = request.form['nb_bebe_tout_les_vegetal']
-    herbe_reproduction_combien: list[int] = [request.form['nb_bebe_vegetal1'], request.form['nb_bebe_vegetal2']]
+    herbe_reproduction_tout_les: int = int(request.form['nb_bebe_tout_les_vegetal'])
+    herbe_reproduction_combien: list[int] = [int(request.form['nb_bebe_vegetal1']), int(request.form['nb_bebe_vegetal2'])]
 
     data = {
         "loup" : {
