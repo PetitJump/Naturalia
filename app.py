@@ -28,7 +28,7 @@ def game(): #Par Margot
     predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
     jour += 1
     
-    return render_template('game.html', predateur=predateur["nombres"])
+    return render_template('game.html', predateur=predateur["nombres"], jour = jour, proie= proie["nombres"], vegetal=["nombres"])
 
 @app.route("/regles")
 def regles(): #Par Killian et Carl
