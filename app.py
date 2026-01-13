@@ -22,7 +22,7 @@ def game():
 
     predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
     jour += 1
-    
+    print("Anomalie en vu :", anomalie(jour, predateur, proie, vegetal))
     return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"])
 
 @app.route("/regles")

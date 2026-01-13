@@ -63,14 +63,10 @@ def random_repro(data: dict) -> dict:
 
 def anomalie(jour, predateur, proie, vegetal) -> True | False:
     """Renvoie True si une anomalie est en vu. Sinon False"""
-
-    with open('data.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
-
     for i in range(3):
         jour += 1
         predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
-    if predateur["nombres"] == 0 or proie["nombres"] == 0 or vegetal["nombres"] == 0:
+    if predateur["nombres"] == 0 or proie["nombres"] == 0 or vegetal["nombres"] == 10:
         return True
     return False
 
