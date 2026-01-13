@@ -14,3 +14,4 @@
 - Ajout d'un système d'anomalie
 - Ajout d'un système pour ajouter et supprimer les êtres vivants en cas d'anomalie
 - Ajout de graphiques
+- Mise en place d'un leger css
