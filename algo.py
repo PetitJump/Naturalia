@@ -16,7 +16,7 @@ def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict
     else:
         nv_proie = proie
 
-    if jour % data[vegetal["nom"]]["reproduction"]["tout_les"] == 0: 
+    if jour % data[vegetal["nom"]]["reproduction"]["tout_les"] == 0 and vegetal["nombres"] < 2500: 
         nouveau_en_plus = data[vegetal["nom"]]["reproduction"]["nombre_de_nv_nee"] * (vegetal["nombres"] // 2)
         nv_vegetal = {"nom" : vegetal["nom"], "nombres" : vegetal["nombres"] + nouveau_en_plus}
     else:
@@ -70,5 +70,6 @@ def update(jour, predateur, proie, vegetal):
 
     nv_predateur, nv_proie, nv_vegetal = naissance(data, jour, predateur, proie, vegetal)
     nv_predateur, nv_proie, nv_vegetal = mort(data, jour, nv_predateur, nv_proie, nv_vegetal)
-    
+
+
     return nv_predateur, nv_proie, nv_vegetal
