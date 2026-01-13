@@ -83,5 +83,7 @@ def update(jour, predateur, proie, vegetal):
     nv_predateur, nv_proie, nv_vegetal = naissance(data, jour, predateur, proie, vegetal)
     nv_predateur, nv_proie, nv_vegetal = mort(data, jour, nv_predateur, nv_proie, nv_vegetal)
 
-
+    if nv_vegetal["nombres"] < 10:
+        nv_vegetal["nombres"] = 10
+        
     return nv_predateur, nv_proie, nv_vegetal
