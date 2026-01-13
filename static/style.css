@@ -1,0 +1,45 @@
+body {
+    margin: 0;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;   /* ⬅️ IMPORTANT */
+    justify-content: center;  /* centrage vertical */
+    align-items: center;      /* centrage horizontal */
+    gap: 20px;                /* espace entre les boutons */
+    height: 100vh;
+}
+
+button {
+    padding: 12px 30px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+.credits-container {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    background: black;
+    color: white;
+}
+
+.credits {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    bottom: -100%;
+    animation: scrollCredits 15s linear infinite;
+}
+
+@keyframes scrollCredits {
+    from {
+        bottom: -100%;
+    }
+    to {
+        bottom: 100%;
+    }
+}
