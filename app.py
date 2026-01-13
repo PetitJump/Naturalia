@@ -11,6 +11,15 @@ def index():
 def init(): 
     return render_template('init.html')
 
+@app.route("/ajouter", methods=['GET', 'POST'])
+def ajouter(): 
+    return render_template('ajouter.html')
+
+@app.route("/supprimer", methods=['GET', 'POST'])
+def supprimer(): 
+    return render_template('supprimer.html')
+
+
 @app.route("/game", methods=['GET', 'POST'])
 def game(): 
 
@@ -22,8 +31,8 @@ def game():
 
     predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
     jour += 1
-    print("Anomalie en vu :", anomalie(jour, predateur, proie, vegetal))
-    return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"])
+    afficher_bouton = anomalie(jour, predateur, proie, vegetal)
+    return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton)
 
 @app.route("/regles")
 def regles(): 

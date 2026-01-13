@@ -19,6 +19,17 @@
 
     <button type="submit">Jour suivant</button>
     </form>
+
+    {% if afficher_bouton %}
+        <h2>Anomalie détécté durant les prochains jours !!!</h2><br>
+        <form action="/ajouter" method="POST">
+            <button type="submit">Ajouter</button>
+        </form>
+        <br>
+        <form action="/supprimer" method="POST">
+            <button type="submit">Supprimer</button>
+        </form>
+    {% endif %}
     <a href="/">retour</a>
 </body>
 </html>
