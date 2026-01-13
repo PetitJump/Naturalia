@@ -61,6 +61,8 @@ def random_repro(data: dict) -> dict:
         data[i]["reproduction"]["nombre_de_nv_nee"] = nvl_repro 
     return data
 
+def anomalie(jour, predateur, proie, vegetal) -> True | False:
+    """Renvoie True si une anomalie est en vu. Sinon False"""
 
 def update(jour, predateur, proie, vegetal):
     """Fonction principal qui va etre utiliser par Flask"""

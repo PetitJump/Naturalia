@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session
 import json
-from algo import update #tester() est la fonction principale (la seul utiliser par flask)
+from algo import update, anomalie
 app = Flask(__name__)
 
 @app.route("/")
