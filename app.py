@@ -65,6 +65,8 @@ def modifier():
         json.dump(data, f, ensure_ascii=False, indent=4)
 
     return render_template('index.html')
-
+@app.route("/credit")
+def credit():
+    return render_template("credit.html")
 if __name__ == '__main__':
     app.run(host = '127.0.0.1', port=5000, debug=True)
