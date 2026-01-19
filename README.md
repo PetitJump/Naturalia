@@ -14,3 +14,4 @@
 - Ajout d'un système d'âge 
 - Modification des fonctions mort() et naissance() en fonction des âges
 - Ajout de la posibilitée de pouvoir modifier le taux de reproduction d'un espèce
+- La fonction anomalie() marche vraiment. Le random est enlever.
