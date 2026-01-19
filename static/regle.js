@@ -42,3 +42,26 @@ function majnbjpo2(){
 }
 
 nbjpo1.addEventListener('change', majnbjpo2)
+
+
+// bouttonn pour les végétaux
+
+const nbv1 = document.getElementById('nb_bebe_vegetal1')
+const nbv2 = document.getElementById('nb_bebe_vegetal2')
+
+function majnbv2(){
+    nbv2.disabled = false
+    nbv2.min = Number(nbv1.value)
+}
+
+nbv1.addEventListener('change', majnbv2)
+
+const nbtv1 = document.getElementById('nb_bebe_tout_les_vegetal')
+const nbtv2 = document.getElementById('nb_bebe_tout_les_vegetal2')
+
+function majnbtv2(){
+    nbtv2.disabled = false
+    nbtv2.min = Number(nbtv1.value)
+}
+
+nbtv1.addEventListener('change', majnbtv2)
