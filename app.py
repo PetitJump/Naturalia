@@ -11,13 +11,31 @@ def index():
 def init(): 
     return render_template('init.html')
 
+@app.route("/update_ajouter", methods=['GET', 'POST'])
+def update_ajouter(): 
+    jour = int(request.form["base_jour"])
+    nv_preda = int(request.form["loup"]) + int(request.form["base_loup"])
+    nv_proie = int(request.form["mouton"]) + int(request.form["base_mouton"])
+    nv_vegetal = int(request.form["herbe"]) + int(request.form["base_herbe"])
+
+    predateur = {"nom" : "loup", "nombres" : nv_preda}
+    proie = {"nom" : "mouton", "nombres" : nv_proie}
+    vegetal = {"nom" : "herbe", "nombres" : nv_vegetal}
+    
+    predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
+    jour += 1
+    afficher_bouton = anomalie(jour, predateur, proie, vegetal)
+
+    return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton)
+
 @app.route("/ajouter", methods=['GET', 'POST'])
 def ajouter(): 
-    return render_template('ajouter.html')
+    jour = int(request.form["jour"])
+    predateur = {"nom" : "loup", "nombres" : int(request.form["loup"])}
+    proie = {"nom" : "mouton", "nombres" : int(request.form["mouton"])}
+    vegetal = {"nom" : "herbe", "nombres" : int(request.form["herbe"])}
 
-@app.route("/supprimer", methods=['GET', 'POST'])
-def supprimer(): 
-    return render_template('supprimer.html')
+    return render_template('ajouter.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"])
 
 
 @app.route("/game", methods=['GET', 'POST'])

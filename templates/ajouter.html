@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
 </head>
 <body>
-  <form action="/game" method="POST">
+  <form action="/update_ajouter" method="POST">
     <p>Ajouter :</p>
     
     <div>
@@ -30,9 +30,13 @@
         Ajouter Herbe : <span id="qherbe"></span>
       </label>
     </div>
-    <input type="hidden" name="jour" value="0">
 
-    <button type="submit">Continuer</button>
+    <input type="hidden" name="base_jour" value="{{jour}}">
+    <input type="hidden" name="base_loup" value="{{predateur}}">
+    <input type="hidden" name="base_mouton" value="{{proie}}">
+    <input type="hidden" name="base_herbe" value="{{vegetal}}">
+
+    <button type="submit">Jour suivant</button>
     
   </form>
 <script src="{{url_for('static',filename='update.js')}}"></script>

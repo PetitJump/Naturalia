@@ -25,25 +25,3 @@ mouton.addEventListener("input", majm);
 majm();
 majl();
 majh();
-
-
-
-
-function simpleClamp(e) {
-    const changed = e.target;
-    const h = parseInt(herbe.value, 10) || 0;
-    const l = parseInt(loup.value, 10) || 0;
-    const m = parseInt(mouton.value, 10) || 0;
-    const sum = h + l + m;
-    if (sum > 20) {
-        const excess = sum - 20;
-        changed.value = Math.max(0, parseInt(changed.value, 10) - excess);
-    }
-    if (changed === herbe) majh();
-    else if (changed === loup) majl();
-    else majm();
-}
-
-herbe.addEventListener('input', simpleClamp);
-loup.addEventListener('input', simpleClamp);
-mouton.addEventListener('input', simpleClamp);
