@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session
 import json
-from algo import update, anomalie
+from algo import init_age, update, anomalie
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -21,7 +22,7 @@ def update_ajouter():
     predateur = {"nom" : "loup", "nombres" : nv_preda}
     proie = {"nom" : "mouton", "nombres" : nv_proie}
     vegetal = {"nom" : "herbe", "nombres" : nv_vegetal}
-    
+
     predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
     jour += 1
     afficher_bouton = anomalie(jour, predateur, proie, vegetal)
@@ -31,25 +32,33 @@ def update_ajouter():
 @app.route("/ajouter", methods=['GET', 'POST'])
 def ajouter(): 
     jour = int(request.form["jour"])
-    predateur = {"nom" : "loup", "nombres" : int(request.form["loup"])}
-    proie = {"nom" : "mouton", "nombres" : int(request.form["mouton"])}
+    predateur = {"nom" : "loup", "nombres" : int(request.form["loup"]), "age" : predateur["age"]}
+    proie = {"nom" : "mouton", "nombres" : int(request.form["mouton"]), "age" : proie["age"]}
     vegetal = {"nom" : "herbe", "nombres" : int(request.form["herbe"])}
 
     return render_template('ajouter.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"])
 
-
 @app.route("/game", methods=['GET', 'POST'])
 def game(): 
-
+    global predateur, proie, vegetal
     jour = int(request.form["jour"])
-    predateur = {"nom" : "loup", "nombres" : int(request.form["loup"])}
-    proie = {"nom" : "mouton", "nombres" : int(request.form["mouton"])}
-    vegetal = {"nom" : "herbe", "nombres" : int(request.form["herbe"])}
-    
+
+    if jour == 0: #On init
+        predateur = {"nom" : "loup", "nombres" : int(request.form["loup"])}
+        proie = {"nom" : "mouton", "nombres" : int(request.form["mouton"])}
+        vegetal = {"nom" : "herbe", "nombres" : int(request.form["herbe"])}
+        predateur, proie = init_age(predateur, proie) #On init l'âges des être vivants
+        print("Init :", predateur, proie) #Test
+
+
+    predateur["nombres"] = int(request.form["loup"])
+    proie["nombres"] = int(request.form["mouton"])
+    vegetal["nombres"] = int(request.form["herbe"])
 
     predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
     jour += 1
     afficher_bouton = anomalie(jour, predateur, proie, vegetal)
+    print("Jour :", predateur, proie) #Test
     return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton)
 
 @app.route("/regles")
@@ -95,5 +104,6 @@ def modifier():
 @app.route("/credit")
 def credit():
     return render_template("credit.html")
+    
 if __name__ == '__main__':
     app.run(host = '127.0.0.1', port=5000, debug=True)
