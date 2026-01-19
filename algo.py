@@ -57,6 +57,8 @@ def random_repro(data: dict) -> dict:
     C'est ce que la fonction va nous permettre de faire. randomiser le nombre de bébés a chaque naissance pour chaque couples.
     """
     for i in data:
+        nv_j = randint(data[i]["reproduction"]["tout_les"][0], data[i]["reproduction"]["tout_les"][1])
+        data[i]["reproduction"]["tout_les"] =  nv_j
         nvl_repro = randint(data[i]["reproduction"]["nombre_de_nv_nee"][0], data[i]["reproduction"]["nombre_de_nv_nee"][1])
         data[i]["reproduction"]["nombre_de_nv_nee"] = nvl_repro 
     return data
