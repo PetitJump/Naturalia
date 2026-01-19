@@ -73,7 +73,7 @@
                     placeholder=" "
                     class="max"
                     disabled>
-            </label><br><br>
+        </label><br><br>
 
         <label for="proie">
             Les proies ce reproduise entre : 
@@ -89,13 +89,59 @@
                     placeholder="" 
                     disabled>
         </label><br><br>
-        
-        <label for="proie">Les proies mange combien de végétaux ? <input type="number" id="nb_de_nourriture_proie" name="nb_de_nourriture_proie"  placeholder=" " required></label><br><br>
-        <label for="proie">Les proies mange tout les combien de jour ? <input type="number" id="nb_de_nourriture_tout_les_proie" name="nb_de_nourriture_tout_les_proie"  placeholder=" " required></label><br>
+
+        <label for="proie">
+            Les proies mange combien de végétaux ? 
+            <input  type="number" 
+                    id="nb_de_nourriture_proie" 
+                    name="nb_de_nourriture_proie"  
+                    placeholder=" " required>
+        </label><br><br>
+
+        <label for="proie">
+            Les proies mange tout les combien de jour ? 
+            <input  type="number" 
+                    id="nb_de_nourriture_tout_les_proie" 
+                    name="nb_de_nourriture_tout_les_proie"  
+                    placeholder=" " 
+                    required>
+        </label><br>
 
         <label for="proie"><h2>stats des végétaux :</h2></label>
-        <label for="vegetal">Les végétaux ce reproduise entre : <input type="number" id="nb_bebe_vegetal1" name="nb_bebe_vegetal1"  placeholder=" " required> et : <input type="number" id="nb_bebe_vegetal2" name="nb_bebe_vegetal2"  placeholder=" " required></label><br><br>
-        <label for="vegetal">Les végétaux ce reproduise entre : <input type="number" id="nb_bebe_tout_les_vegetal" name="nb_bebe_tout_les_vegetal"  placeholder=" " required> jour et : <input type="number" id="nb_bebe_tout_les_vegetal2" name="nb_bebe_tout_les_vegetal2"  placeholder=" " required></label><br>
+        <label for="vegetal">
+            Les végétaux ce reproduise entre : 
+            <input  type="number" 
+                    id="nb_bebe_vegetal1" 
+                    name="nb_bebe_vegetal1"  
+                    class="min"
+                    placeholder=" " 
+                    required> 
+            et : 
+            <input  type="number" 
+                    id="nb_bebe_vegetal2" 
+                    name="nb_bebe_vegetal2"  
+                    class="max"
+                    placeholder=" " 
+                    disabled>
+        </label><br><br>
+
+        <label for="vegetal">
+            Les végétaux ce reproduise entre : 
+            <input  type="number" 
+                    id="nb_bebe_tout_les_vegetal" 
+                    name="nb_bebe_tout_les_vegetal"  
+                    placeholder=" " 
+                    class="min"
+                    required> 
+                jour et : 
+            <input  type="number" 
+                    id="nb_bebe_tout_les_vegetal2" 
+                    name="nb_bebe_tout_les_vegetal2"  
+                    placeholder=" " 
+                    class="max"
+                    disabled>
+                jour
+        </label><br>
     
         <button type="submit">Sauvegarder</button>
     </form>
