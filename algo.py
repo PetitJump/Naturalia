@@ -13,18 +13,27 @@ def init_age(predateur, proie):
     return predateur, proie
     
 def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict): 
-    """Regarde les règles et change les variables en fonction des naissance"""
+    """Regarde les règles et change les variables en fonction des naissance. Augmente également l'âge"""
     if jour % data[predateur["nom"]]["reproduction"]["tout_les"] == 0: #Si il peut se reproduire en fonction des règles
         nouveau_en_plus = data[predateur["nom"]]["reproduction"]["nombre_de_nv_nee"] * (predateur["nombres"] // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
+        for i in range(nouveau_en_plus):
+            predateur["age"].append(0) #Un nouveau née
         nv_predateur = {"nom" : predateur["nom"], "nombres" : predateur["nombres"] + nouveau_en_plus, "age" : predateur["age"]}
+
     else:
         nv_predateur = predateur
+    for i in range(len(predateur["age"])):
+        nv_predateur["age"][i] += 1
 
     if jour % data[proie["nom"]]["reproduction"]["tout_les"] == 0: 
         nouveau_en_plus = data[proie["nom"]]["reproduction"]["nombre_de_nv_nee"] * (proie["nombres"] // 2)
+        for i in range(nouveau_en_plus):
+            proie["age"].append(0) #Un nouveau née
         nv_proie = {"nom" : proie["nom"], "nombres" : proie["nombres"] + nouveau_en_plus, "age" : proie["age"]}
     else:
         nv_proie = proie
+    for i in range(len(proie["age"])):
+        nv_proie["age"][i] += 1
 
     if jour % data[vegetal["nom"]]["reproduction"]["tout_les"] == 0 and vegetal["nombres"] < 2500: 
         nouveau_en_plus = data[vegetal["nom"]]["reproduction"]["nombre_de_nv_nee"] * (vegetal["nombres"] // 2)
@@ -36,16 +45,29 @@ def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict
 
 def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
     """Regarde les règles et change les variables en fonction des morts."""
+    copie_predateur_age = predateur["age"]
+    for i in range(len(copie_predateur_age)): #Bug ici a corriger
+        if predateur["age"][i] >= 20:
+            predateur["age"].pop(i)
+
+    for i in range(len(proie["age"])):
+        if proie["age"][i] >= 20:
+            proie["age"].pop(i)
+
     if jour % data[predateur["nom"]]["mange"]["tout_les"] == 0:
         combien = data[predateur["nom"]]["mange"]["combien"]
         proie_necessaires = predateur["nombres"] * combien
 
         if proie["nombres"] >= proie_necessaires:
             proie = {"nom": proie["nom"],"nombres":  proie["nombres"] - proie_necessaires, "age" : proie["age"]} #Ici
+            for i in range(proie_necessaires):
+                proie["age"].pop() #Les plus jeunes meurts
         else:
             predateur_survivants = proie["nombres"] // combien
             predateur = {"nom": predateur["nom"],"nombres": predateur_survivants, "age" : predateur["age"]} #Ici
             proie = {"nom": proie["nom"], "nombres": 0 , "age" : []} #Ici
+            for i in range(predateur_survivants):
+                predateur["age"].pop() #Les plus jeunes meurts
 
     if jour % data[proie["nom"]]["mange"]["tout_les"] == 0:
         combien = data[proie["nom"]]["mange"]["combien"]
