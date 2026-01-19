@@ -1,7 +1,7 @@
-# Naturalia v2 : En cours
+# Naturalia v3 : En cours
 
 ## Fonctionnement du programme:
-Notre projet est une plateforme ludique qui consiste à rééquilibrer l'écosystème tout en s'amusant. Le joueur va devoir résoudre des anomalies. Pour résoudre ces anomalies, le joueur va devoir ajouter artificiellement des êtres vivants pour réguler l'équilibre comme des proie, des herbes ou des prédateurs. Le joueurs va faire passer les journées tout en gardant un oeil sur les données et résoudres les anomalies si nécessaires.
+...
 
 ## Differents fichiers :
 - terminal.py : Fichier du programme qui fonctionne sur le terminal. Il suffit de le lancer
@@ -9,8 +9,8 @@ Notre projet est une plateforme ludique qui consiste à rééquilibrer l'écosys
 - algo.py : Tout les algos utiliser.
 - data.json : Loi du monde modifiable via le menus 'règles'
 
-## Ajout en plus comparer a la v1 :
-- Système de règles (loi) beaucoup plus intuitif
-- Ajout d'un système d'anomalie qui regarde si il y aura surement une anomalie (disparition d'une espèce)dans les prochains jours.
-- Ajout d'un système pour ajouter des êtres vivants en cas d'anomalie
-- Mise en place d'un leger css
+## Ajout en plus comparer a la v2 :
+- Ajout d'un système de graphiques pour voir l'évolution des êtres vivants dans le temps
+- Ajout d'un système d'âge 
+- Modification des fonctions mort() et naissance() en fonction des âges
+- Ajout de la posibilitée de pouvoir modifier le taux de reproduction d'un espèce
