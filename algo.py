@@ -45,27 +45,23 @@ def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict
 
 def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
     """Regarde les règles et change les variables en fonction des morts."""
-    copie_predateur_age = predateur["age"]
-    for i in range(len(copie_predateur_age)): #Bug ici a corriger
-        if predateur["age"][i] >= 20:
-            predateur["age"].pop(i)
-
-    for i in range(len(proie["age"])):
-        if proie["age"][i] >= 20:
-            proie["age"].pop(i)
+    predateur["age"] = [k for k in predateur["age"] if k < 20]
+    proie["age"] = [k for k in proie["age"] if k < 20]
 
     if jour % data[predateur["nom"]]["mange"]["tout_les"] == 0:
         combien = data[predateur["nom"]]["mange"]["combien"]
         proie_necessaires = predateur["nombres"] * combien
 
         if proie["nombres"] >= proie_necessaires:
-            proie = {"nom": proie["nom"],"nombres":  proie["nombres"] - proie_necessaires, "age" : proie["age"]} #Ici
+            proie = {"nom": proie["nom"],"nombres":  proie["nombres"] - proie_necessaires, "age" : proie["age"]} 
             for i in range(proie_necessaires):
                 proie["age"].pop() #Les plus jeunes meurts
         else:
             predateur_survivants = proie["nombres"] // combien
-            predateur = {"nom": predateur["nom"],"nombres": predateur_survivants, "age" : predateur["age"]} #Ici
-            proie = {"nom": proie["nom"], "nombres": 0 , "age" : []} #Ici
+            predateur = {"nom": predateur["nom"],"nombres": predateur_survivants, "age" : predateur["age"]}
+            proie = {"nom": proie["nom"], "nombres": 0 , "age" : []} 
+            if predateur_survivants <= 0:
+                predateur["age"] = []
             for i in range(predateur_survivants):
                 predateur["age"].pop() #Les plus jeunes meurts
 

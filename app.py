@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session
 import json
+import copy
 from algo import init_age, update, anomalie
 
 app = Flask(__name__)
@@ -13,24 +14,34 @@ def init():
     return render_template('init.html')
 
 @app.route("/update_ajouter", methods=['GET', 'POST'])
-def update_ajouter(): 
+def update_ajouter():
+    global predateur, proie, vegetal
     jour = int(request.form["base_jour"])
+
     nv_preda = int(request.form["loup"]) + int(request.form["base_loup"])
     nv_proie = int(request.form["mouton"]) + int(request.form["base_mouton"])
     nv_vegetal = int(request.form["herbe"]) + int(request.form["base_herbe"])
 
-    predateur = {"nom" : "loup", "nombres" : nv_preda}
-    proie = {"nom" : "mouton", "nombres" : nv_proie}
-    vegetal = {"nom" : "herbe", "nombres" : nv_vegetal}
+    while len(predateur["age"]) < nv_preda:
+        predateur["age"].append(0) #On ajoute les nouveaux nées
+    predateur["nombres"] = nv_preda
+
+    while len(proie["age"]) < nv_proie:
+        proie["age"].append(0) #On ajoute les nouveaux nées
+    proie["nombres"] = nv_proie
+
+    vegetal["nombres"] = nv_vegetal
 
     predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
     jour += 1
-    afficher_bouton = anomalie(jour, predateur, proie, vegetal)
+    
+    afficher_bouton = anomalie(jour, copy.deepcopy(predateur), copy.deepcopy(proie), copy.deepcopy(vegetal)) #Fait la boucle sans modifier les vrai données (copy.deepcopy())
 
     return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton)
 
 @app.route("/ajouter", methods=['GET', 'POST'])
 def ajouter(): 
+    global predateur, proie, vegetal
     jour = int(request.form["jour"])
     predateur = {"nom" : "loup", "nombres" : int(request.form["loup"]), "age" : predateur["age"]}
     proie = {"nom" : "mouton", "nombres" : int(request.form["mouton"]), "age" : proie["age"]}
