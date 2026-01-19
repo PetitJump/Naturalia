@@ -11,6 +11,6 @@
 
 ## Ajout en plus comparer a la v1 :
 - Système de règles (loi) beaucoup plus intuitif
-- Ajout d'un système d'anomalie
-- Ajout d'un système pour ajouter et supprimer les êtres vivants en cas d'anomalie
+- Ajout d'un système d'anomalie qui regarde si il y aura surement une anomalie (disparition d'une espèce)dans les prochains jours.
+- Ajout d'un système pour ajouter des êtres vivants en cas d'anomalie
 - Mise en place d'un leger css
