@@ -57,7 +57,8 @@ def game():
 
     predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
     jour += 1
-    afficher_bouton = anomalie(jour, predateur, proie, vegetal)
+    #afficher_bouton = anomalie(jour, predateur, proie, vegetal)
+    afficher_bouton = True #Juste pour tester car la commande du haut bug (il update tout seul)
     print("Jour :", predateur, proie) #Test
     return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton)
 
