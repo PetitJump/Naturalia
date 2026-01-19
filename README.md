@@ -1,7 +1,7 @@
 # Naturalia v2 : En cours
 
 ## Fonctionnement du programme:
-...
+Notre projet est une plateforme ludique qui consiste à rééquilibrer l'écosystème tout en s'amusant. Le joueur va devoir résoudre des anomalies. Pour résoudre ces anomalies, le joueur va devoir ajouter artificiellement des êtres vivants pour réguler l'équilibre comme des proie, des herbes ou des prédateurs. Le joueurs va faire passer les journées tout en gardant un oeil sur les données et résoudres les anomalies si nécessaires.
 
 ## Differents fichiers :
 - terminal.py : Fichier du programme qui fonctionne sur le terminal. Il suffit de le lancer
