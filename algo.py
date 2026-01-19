@@ -1,18 +1,28 @@
 from random import randint
 import json
 
+def init_age(predateur, proie):
+    predateur["age"] = []
+    for i in range(predateur["nombres"]):
+        predateur["age"].append(randint(0, 5)) #Les loup de bases auront entre 0 et 5 ans
 
+    proie["age"] = []
+    for i in range(proie["nombres"]):
+        proie["age"].append(randint(0, 5)) #Les moutons de bases auront entre 0 et 5 ans
+
+    return predateur, proie
+    
 def naissance(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict): 
     """Regarde les règles et change les variables en fonction des naissance"""
     if jour % data[predateur["nom"]]["reproduction"]["tout_les"] == 0: #Si il peut se reproduire en fonction des règles
         nouveau_en_plus = data[predateur["nom"]]["reproduction"]["nombre_de_nv_nee"] * (predateur["nombres"] // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
-        nv_predateur = {"nom" : predateur["nom"], "nombres" : predateur["nombres"] + nouveau_en_plus}
+        nv_predateur = {"nom" : predateur["nom"], "nombres" : predateur["nombres"] + nouveau_en_plus, "age" : predateur["age"]}
     else:
         nv_predateur = predateur
 
     if jour % data[proie["nom"]]["reproduction"]["tout_les"] == 0: 
         nouveau_en_plus = data[proie["nom"]]["reproduction"]["nombre_de_nv_nee"] * (proie["nombres"] // 2)
-        nv_proie = {"nom" : proie["nom"], "nombres" : proie["nombres"] + nouveau_en_plus}
+        nv_proie = {"nom" : proie["nom"], "nombres" : proie["nombres"] + nouveau_en_plus, "age" : proie["age"]}
     else:
         nv_proie = proie
 
@@ -31,11 +41,11 @@ def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
         proie_necessaires = predateur["nombres"] * combien
 
         if proie["nombres"] >= proie_necessaires:
-            proie = {"nom": proie["nom"],"nombres": proie["nombres"] - proie_necessaires}
+            proie = {"nom": proie["nom"],"nombres":  proie["nombres"] - proie_necessaires, "age" : proie["age"]} #Ici
         else:
             predateur_survivants = proie["nombres"] // combien
-            predateur = {"nom": predateur["nom"],"nombres": predateur_survivants}
-            proie = {"nom": proie["nom"], "nombres": 0}
+            predateur = {"nom": predateur["nom"],"nombres": predateur_survivants, "age" : predateur["age"]} #Ici
+            proie = {"nom": proie["nom"], "nombres": 0 , "age" : []} #Ici
 
     if jour % data[proie["nom"]]["mange"]["tout_les"] == 0:
         combien = data[proie["nom"]]["mange"]["combien"]
@@ -45,7 +55,7 @@ def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
             vegetal = {"nom": vegetal["nom"],"nombres": vegetal["nombres"] - vegetal_necessaires}
         else:
             proie_survivantes = vegetal["nombres"] // combien
-            proie = {"nom": proie["nom"],"nombres": proie_survivantes}
+            proie = {"nom": proie["nom"],"nombres": proie_survivantes, "age" : proie["age"]}
             vegetal = {"nom": vegetal["nom"], "nombres": 0}
 
     return predateur, proie, vegetal
