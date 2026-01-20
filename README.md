@@ -1,4 +1,4 @@
-# Naturalia v3 : En cours
+# Naturalia v4 : En cours
 
 ## Fonctionnement du programme:
 ...
@@ -9,9 +9,9 @@
 - algo.py : Tout les algos utiliser.
 - data.json : Loi du monde modifiable via le menus 'règles'
 
-## Ajout en plus comparer a la v2 :
-- Ajout d'un système de graphiques pour voir l'évolution des êtres vivants dans le temps
-- Ajout d'un système d'âge 
-- Modification des fonctions mort() et naissance() en fonction des âges
-- Ajout de la posibilitée de pouvoir modifier le taux de reproduction d'un espèce
-- Ajouter un système d'historique qui stock les anciennes données
+## Ajout en plus comparer a la v3 :
+- Ajout et utilisation d'un vrai css
+- Application plus intuitive
+- Ajout d'un logo
+- Ajout d'un fond
+- Application plus jolie
