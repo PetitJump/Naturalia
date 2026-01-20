@@ -20,6 +20,13 @@
     <button type="submit">Jour suivant</button>
     </form>
 
+    {% if graph_url %}
+    <div>
+        <h2>Graphique de l'évolution</h2>
+        <img src="{{ graph_url }}" alt="Graphique de l'évolution" style="max-width: 100%;">
+    </div>
+    {% endif %}
+
     {% if afficher_bouton %}
         <h2>Anomalie détécté durant les prochains jours !!!</h2><br>
         <form action="/ajouter" method="POST">
