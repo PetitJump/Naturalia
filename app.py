@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session
 import json
 import copy
 from algo import init_age, update, anomalie
+from graphique import creer_graphique  # <-- SEULE LIGNE AJOUTÉE
 
 app = Flask(__name__)
 
@@ -15,7 +16,7 @@ def init():
 
 @app.route("/update_ajouter", methods=['GET', 'POST'])
 def update_ajouter():
-    global predateur, proie, vegetal
+    global predateur, proie, vegetal, historique  # <-- historique ajouté
     jour = int(request.form["base_jour"])
 
     nv_preda = int(request.form["loup"]) + int(request.form["base_loup"])
@@ -34,24 +35,28 @@ def update_ajouter():
 
     predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
     jour += 1
-
-    historique["loup"].append(predateur["nombres"])
-    historique["mouton"].append(proie["nombres"])
-    historique["herbe"].append(vegetal["nombres"])
-
+    
+    historique["loup"].append(predateur["nombres"])  # <-- LIGNE AJOUTÉE
+    historique["mouton"].append(proie["nombres"])    # <-- LIGNE AJOUTÉE
+    historique["herbe"].append(vegetal["nombres"])   # <-- LIGNE AJOUTÉE
+    
+    graph_url = creer_graphique(historique)  # <-- LIGNE AJOUTÉE
+    
     afficher_bouton = anomalie(jour, copy.deepcopy(predateur), copy.deepcopy(proie), copy.deepcopy(vegetal)) #Fait la boucle sans modifier les vrai données (copy.deepcopy())
 
-    return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton)
+    return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton, graph_url=graph_url)  # <-- graph_url ajouté
 
 @app.route("/ajouter", methods=['GET', 'POST'])
 def ajouter(): 
-    global predateur, proie, vegetal
+    global predateur, proie, vegetal, historique  # <-- historique ajouté
     jour = int(request.form["jour"])
     predateur = {"nom" : "loup", "nombres" : int(request.form["loup"]), "age" : predateur["age"]}
     proie = {"nom" : "mouton", "nombres" : int(request.form["mouton"]), "age" : proie["age"]}
     vegetal = {"nom" : "herbe", "nombres" : int(request.form["herbe"])}
+    
+    graph_url = creer_graphique(historique)  # <-- LIGNE AJOUTÉE
 
-    return render_template('ajouter.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"])
+    return render_template('ajouter.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], graph_url=graph_url)  # <-- graph_url ajouté
 
 @app.route("/game", methods=['GET', 'POST'])
 def game(): 
@@ -77,11 +82,11 @@ def game():
     historique["mouton"].append(proie["nombres"])
     historique["herbe"].append(vegetal["nombres"])
 
-    afficher_bouton = anomalie(jour, copy.deepcopy(predateur), copy.deepcopy(proie), copy.deepcopy(vegetal)) #Fait la boucle sans modifier les vrai données (copy.deepcopy())
-    
-    print("Jour :", predateur, proie) #Test
-    print("Historique :", historique)
-    return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton)
+    graph_url = creer_graphique(historique)
+
+    #afficher_bouton = anomalie(jour, predateur, proie, vegetal)
+    afficher_bouton = True #Juste pour tester car la commande du haut bug (il update tout seul)
+    return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton, graph_url=graph_url)  # <-- graph_url ajouté
 
 @app.route("/regles")
 def regles(): 
