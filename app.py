@@ -38,7 +38,7 @@ def update_ajouter():
     historique["loup"].append(predateur["nombres"])
     historique["mouton"].append(proie["nombres"])
     historique["herbe"].append(vegetal["nombres"])
-    
+
     afficher_bouton = anomalie(jour, copy.deepcopy(predateur), copy.deepcopy(proie), copy.deepcopy(vegetal)) #Fait la boucle sans modifier les vrai données (copy.deepcopy())
 
     return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton)
@@ -77,8 +77,8 @@ def game():
     historique["mouton"].append(proie["nombres"])
     historique["herbe"].append(vegetal["nombres"])
 
-    #afficher_bouton = anomalie(jour, predateur, proie, vegetal)
-    afficher_bouton = True #Juste pour tester car la commande du haut bug (il update tout seul)
+    afficher_bouton = anomalie(jour, copy.deepcopy(predateur), copy.deepcopy(proie), copy.deepcopy(vegetal)) #Fait la boucle sans modifier les vrai données (copy.deepcopy())
+    
     print("Jour :", predateur, proie) #Test
     print("Historique :", historique)
     return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton)
