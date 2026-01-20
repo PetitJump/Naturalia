@@ -51,9 +51,9 @@ def ajouter():
 
 @app.route("/game", methods=['GET', 'POST'])
 def game(): 
-    global predateur, proie, vegetal
+    global predateur, proie, vegetal, historique
     jour = int(request.form["jour"])
-
+    
     if jour == 0: #On init
         predateur = {"nom" : "loup", "nombres" : int(request.form["loup"])}
         proie = {"nom" : "mouton", "nombres" : int(request.form["mouton"])}
@@ -68,9 +68,15 @@ def game():
 
     predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
     jour += 1
+
+    historique["loup"].append(predateur["nombres"])
+    historique["mouton"].append(proie["nombres"])
+    historique["herbe"].append(vegetal["nombres"])
+
     #afficher_bouton = anomalie(jour, predateur, proie, vegetal)
     afficher_bouton = True #Juste pour tester car la commande du haut bug (il update tout seul)
     print("Jour :", predateur, proie) #Test
+    print("Historique :", historique)
     return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton)
 
 @app.route("/regles")
@@ -118,4 +124,5 @@ def credit():
     return render_template("credit.html")
     
 if __name__ == '__main__':
+    historique = {"loup" : [], "mouton" : [], "herbe" : []}
     app.run(host = '127.0.0.1', port=5000, debug=True)
