@@ -34,6 +34,10 @@ def update_ajouter():
 
     predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
     jour += 1
+
+    historique["loup"].append(predateur["nombres"])
+    historique["mouton"].append(proie["nombres"])
+    historique["herbe"].append(vegetal["nombres"])
     
     afficher_bouton = anomalie(jour, copy.deepcopy(predateur), copy.deepcopy(proie), copy.deepcopy(vegetal)) #Fait la boucle sans modifier les vrai données (copy.deepcopy())
 

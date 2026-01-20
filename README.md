@@ -15,3 +15,4 @@
 - Modification des fonctions mort() et naissance() en fonction des âges
 - Ajout de la posibilitée de pouvoir modifier le taux de reproduction d'un espèce
 - La fonction anomalie() marche vraiment. Le random est enlever.
+- Ajouter un système d'historique qui stock les anciennes données
