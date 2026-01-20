@@ -91,12 +91,12 @@ def random_repro(data: dict) -> dict:
         data[i]["reproduction"]["nombre_de_nv_nee"] = nvl_repro 
     return data
 
-def anomalie(jour, predateur, proie, vegetal) -> True | False:
+def anomalie(jour, predateur, proie, vegetal) -> bool:
     """Renvoie True si une anomalie est en vu. Sinon False"""
-    for i in range(3):
+    for i in range(2):
         jour += 1
         predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
-    if predateur["nombres"] == 0 or proie["nombres"] == 0 or vegetal["nombres"] == 10:
+    if predateur["nombres"] == 0 or proie["nombres"] == 0:
         return True
     return False
 
