@@ -59,3 +59,20 @@ html, body {
     object-fit: cover;
     z-index: -10;
 }
+
+.customrangerouge {
+    
+    accent-color: red; 
+    cursor: pointer;
+}
+
+.customrangebleu {
+    
+    accent-color: rgb(0, 255, 251); 
+    cursor: pointer;
+}
+
+.customrangevert {
+    accent-color: rgb(37, 181, 1); 
+    cursor: pointer;
+}
