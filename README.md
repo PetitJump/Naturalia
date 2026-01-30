@@ -1,4 +1,4 @@
-# Naturalia v4 : En cours
+# Naturalia v5 : En cours
 
 ## Fonctionnement du programme:
 ...
@@ -9,9 +9,6 @@
 - algo.py : Tout les algos utiliser.
 - data.json : Loi du monde modifiable via le menus 'règles'
 
-## Ajout en plus comparer a la v3 :
-- Ajout et utilisation d'un vrai css
-- Application plus intuitive
-- Ajout d'un fond
-- Application plus jolie
-- Ajout de couleurs dans le init.html et le ajouter.html
+## Ajout en plus comparer a la v4 :
+- Les règles sont plus intuitives
+- Ajout de la POO
