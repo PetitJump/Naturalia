@@ -12,7 +12,6 @@
 ## Ajout en plus comparer a la v3 :
 - Ajout et utilisation d'un vrai css
 - Application plus intuitive
-- Ajout d'un logo
 - Ajout d'un fond
 - Application plus jolie
 - Ajout de couleurs dans le init.html et le ajouter.html
