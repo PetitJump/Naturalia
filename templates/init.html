@@ -13,7 +13,8 @@
   </video>
 
   <form action="/game" method="POST">
-    <p>Initialisation :</p>
+    <div class="container">
+    <h1>Initialisation :</h1>
     
     <div>
       <input type="range" id="loup" name="loup" min="0" max="50" value="90" step="1">
@@ -23,7 +24,7 @@
     </div>
 
     <div>
-      <input type="range" id="mouton" name="mouton" min="0" max="500" value="90" step="1">
+      <input type="range" id="mouton" name="mouton" min="0" max="500" value="90" step="1" style="background-color: blue;">
       <label for="mouton">
         Mouton : <span id="qmouton"></span>
       </label>
@@ -38,6 +39,7 @@
     <input type="hidden" name="jour" value="0">
 
     <button type="submit">Continuer</button>
+    </div>
     
   </form>
 <script src="{{url_for('static',filename='app.js')}}"></script>
