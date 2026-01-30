@@ -14,9 +14,9 @@ def creer_graphique(historique):
     nb_jours = min(10000, len(historique["loup"]))
     jours = list(range(len(historique["loup"]) - nb_jours + 1, len(historique["loup"]) + 1))
     
-    loups = historique["loup"][-nb_jours:]
-    moutons = historique["mouton"][-nb_jours:]
-    herbes = historique["herbe"][-nb_jours:]
+    loups =[ math.log10(x) for x in historique["loup"][-nb_jours:]]
+    moutons =[ math.log10(x) for x in historique["mouton"][-nb_jours:]]
+    herbes = [ math.log10(x) for x in historique["herbe"][-nb_jours:]]
     
     # Créer l'histogramme empilé pour loups et moutons
     x = range(len(jours))
@@ -74,4 +74,5 @@ def creer_histogramme(predateur, proie):
     plt.close()
     
     return f'data:image/png;base64,{hist_url}'
+
 
