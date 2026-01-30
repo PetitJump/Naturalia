@@ -9,7 +9,7 @@ def creer_graphique(historique):
     if not historique["loup"]:  # Si l'historique est vide
         return None
     
-    fig, ax = plt.subplots(figsize=(12, 7))
+    fig, ax = plt.subplots(figsize=(10, 5))
     
     nb_jours = min(10000, len(historique["loup"]))
     jours = list(range(len(historique["loup"]) - nb_jours + 1, len(historique["loup"]) + 1))
