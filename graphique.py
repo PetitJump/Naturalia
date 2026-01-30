@@ -1,8 +1,7 @@
 import matplotlib
 matplotlib.use('Agg')  # Backend non-interactif pour Flask
 import matplotlib.pyplot as plt
-import io
-import base64
+import io,base64,math
 
 def creer_graphique(historique):
     """Crée un histogramme empilé avec l'herbe en ligne et le retourne en base64 pour l'affichage HTML"""
@@ -74,5 +73,6 @@ def creer_histogramme(predateur, proie):
     plt.close()
     
     return f'data:image/png;base64,{hist_url}'
+
 
 
