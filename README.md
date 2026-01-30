@@ -15,3 +15,4 @@
 - Ajout d'un logo
 - Ajout d'un fond
 - Application plus jolie
+- Ajout de couleurs dans le init.html et le ajouter.html
