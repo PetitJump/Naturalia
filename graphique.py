@@ -11,7 +11,7 @@ def creer_graphique(historique):
     
     fig, ax = plt.subplots(figsize=(12, 7))
     
-    nb_jours = min(10, len(historique["loup"]))
+    nb_jours = min(10000, len(historique["loup"]))
     jours = list(range(len(historique["loup"]) - nb_jours + 1, len(historique["loup"]) + 1))
     
     loups = historique["loup"][-nb_jours:]
@@ -74,3 +74,4 @@ def creer_histogramme(predateur, proie):
     plt.close()
     
     return f'data:image/png;base64,{hist_url}'
+
