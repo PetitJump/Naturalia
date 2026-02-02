@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session
 import json
 import copy
-from algoPOO import update, anomalie, Predateur, Vegetal, Proie, Jeu
+from algoPOO import Predateur, Vegetal, Proie, Jeu
 from graphique import creer_graphique
 
 app = Flask(__name__)
@@ -16,47 +16,37 @@ def init():
 
 @app.route("/update_ajouter", methods=['GET', 'POST'])
 def update_ajouter():
-    global predateur, proie, vegetal, historique
+    global jeu, historique
     jour = int(request.form["base_jour"])
 
-    nv_preda = int(request.form["loup"]) + int(request.form["base_loup"])
-    nv_proie = int(request.form["mouton"]) + int(request.form["base_mouton"])
-    nv_vegetal = int(request.form["herbe"]) + int(request.form["base_herbe"])
+    for _ in range(int(request.form["loup"])):
+        jeu.predateurs.append(Predateur("loup", 0))
 
-    while len(predateur["age"]) < nv_preda:
-        predateur["age"].append(0) #On ajoute les nouveaux nées
-    predateur["nombres"] = nv_preda
+    for _ in range(int(request.form["mouton"])):
+        jeu.predateurs.append(Proie("mouton", 0))
 
-    while len(proie["age"]) < nv_proie:
-        proie["age"].append(0) #On ajoute les nouveaux nées
-    proie["nombres"] = nv_proie
+    for _ in range(int(request.form["herbe"])):
+        jeu.predateurs.append(Vegetal("herbe"))
 
-    vegetal["nombres"] = nv_vegetal
-
-    predateur, proie, vegetal = update(jour, predateur, proie, vegetal)
+    jeu.update(jour)
     jour += 1
     
-    historique["loup"].append(predateur["nombres"])
-    historique["mouton"].append(proie["nombres"])
-    historique["herbe"].append(vegetal["nombres"])
-    
-    graph_url = creer_graphique(historique)
-    
-    afficher_bouton = anomalie(jour, copy.deepcopy(predateur), copy.deepcopy(proie), copy.deepcopy(vegetal)) #Fait la boucle sans modifier les vrai données (copy.deepcopy())
+    historique["loup"].append(len(jeu.predateurs))
+    historique["mouton"].append(len(jeu.proies))
+    historique["herbe"].append(len(jeu.vegetaux))
 
-    return render_template('game.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], afficher_bouton=afficher_bouton, graph_url=graph_url)
+    graph_url = creer_graphique(historique)
+
+    return render_template('game.html', predateur=len(jeu.predateurs), jour=jour, proie=len(jeu.proies), vegetal=len(jeu.vegetaux), afficher_bouton=True, graph_url=graph_url)
 
 @app.route("/ajouter", methods=['GET', 'POST'])
 def ajouter(): 
     global jeu, historique
     jour = int(request.form["jour"])
-    predateur = {"nom" : "loup", "nombres" : int(request.form["loup"]), "age" : predateur["age"]}
-    proie = {"nom" : "mouton", "nombres" : int(request.form["mouton"]), "age" : proie["age"]}
-    vegetal = {"nom" : "herbe", "nombres" : int(request.form["herbe"])}
-    
+
     graph_url = creer_graphique(historique)
 
-    return render_template('ajouter.html', predateur=predateur["nombres"], jour=jour, proie=proie["nombres"], vegetal=vegetal["nombres"], graph_url=graph_url)
+    return render_template('ajouter.html', predateur=len(jeu.predateurs), jour=jour, proie=len(jeu.proies), vegetal=len(jeu.vegetaux), graph_url=graph_url)
 
 @app.route("/game", methods=['GET', 'POST'])
 def game(): 
@@ -78,7 +68,7 @@ def game():
 
     graph_url = creer_graphique(historique)
 
-    return render_template('game.html', predateur=..., jour=jour, proie=..., vegetal=..., afficher_bouton=True, graph_url=graph_url)
+    return render_template('game.html', predateur=len(jeu.predateurs), jour=jour, proie=len(jeu.proies), vegetal=len(jeu.vegetaux), afficher_bouton=True, graph_url=graph_url)
 
 @app.route("/regles")
 def regles(): 
