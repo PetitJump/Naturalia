@@ -10,15 +10,15 @@ class Proie:
 
 class Vegetal:
     def __init__(self, nom: str):
-        pass
+        self.nom = nom
 
 class Jeu:
     def __init__(self, predateurs: list[Predateur], proies: list[Proie], vegetaux: list[Vegetal]):
-        self.predateurs = predateurs
-        self.proies = proies
-        self.vegetaux = vegetaux
+        self.predateurs: list = predateurs
+        self.proies: list = proies
+        self.vegetaux: list = vegetaux
 
-    def naissance(self): #A faire par Carl
+    def naissance(self): #A faire par Petit Hugo
         """Regarde les règles et change les variables en fonction des naissance. Augmente également l'âge"""
         ...
         return self.predateurs, self.proies, self.vegetaux
@@ -30,7 +30,7 @@ class Jeu:
 
 ##########################################################################
 
-def update(jour, predateur, proie, vegetal): #A faire par Killian et a finir par Hugo
+def update(jour, predateur, proie, vegetal): #A faire par Carl
     """Fonction principal qui va etre utiliser par Flask"""
     ...
     return predateur, proie, vegetal
