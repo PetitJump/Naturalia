@@ -21,16 +21,11 @@ class Jeu:
     def naissance(self): #A faire par Petit Hugo
         """Regarde les règles et change les variables en fonction des naissance. Augmente également l'âge"""
         ...
-        return self.predateurs, self.proies, self.vegetaux
     
     def mort(self): #A faire par Marre Go
         """Regarde les règles et change les variables en fonction des morts."""
         ...
-        return self.predateurs, self.proies, self.vegetaux
-
-##########################################################################
-
-def update(jour, predateur, proie, vegetal): #A faire par Carl
-    """Fonction principal qui va etre utiliser par Flask"""
-    ...
-    return predateur, proie, vegetal
+    
+    def update(self, jour): #A faire par Carl
+        """Fonction principal qui va etre utiliser par Flask"""
+        ...
