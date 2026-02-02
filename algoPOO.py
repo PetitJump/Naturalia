@@ -28,4 +28,17 @@ class Jeu:
     
     def update(self, jour): #A faire par Carl
         """Fonction principal qui va etre utiliser par Flask"""
-        ...
+        import json
+        from algo import random_repro
+
+        with open('data.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        data = random_repro(data)
+
+        nv_predateur, nv_proie, nv_vegetal = self.naissance()
+        nv_predateur, nv_proie, nv_vegetal = self.mort()
+
+        if nv_vegetal["nombres"] < 10:
+            nv_vegetal["nombres"] = 10
+            
+        return nv_predateur, nv_proie, nv_vegetal
