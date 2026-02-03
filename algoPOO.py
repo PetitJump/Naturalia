@@ -46,9 +46,26 @@ class Jeu:
                 for _ in range(nb_pousses):
                     self.vegetaux.append(Vegetal(nom_v))
     
-    def mort(self): #A faire par Marre Go
+    def mort(self, otr, jour : int, data : dict): #A faire par Marre Go
         """Regarde les règles et change les variables en fonction des morts."""
-        ...
+        self.age += 1
+
+        if jour % data[self.nom]["mange"]["tout_les"] == 0:
+            combien = data[self.nom]["mange"]["combien"]
+            animal_necessaires = self.nombres * combien
+
+        if otr.nombres >= animal_necessaires:
+            otr.nom = {"nom": otr.nom,"nombres":  otr.nombres - animal_necessaires, "age" : otr.age} 
+            """for i in range(animal_necessaires):
+                otr.age.pop()""" 
+        else:
+            animal_survivants = otr.nombres // combien
+            self.nom = {"nom": self.nom,"nombres": animal_survivants, "age" : self.age}
+            otr.nom = {"nom": otr.nom, "nombres": 0 , "age" : []} 
+            if animal_survivants <= 0:
+                self.age = []
+            """for i in range(animal_survivants):
+                self.age.pop()"""
     
     def update(self, jour): #A faire par Carl
         """Fonction principal qui va etre utiliser par Flask"""
