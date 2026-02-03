@@ -18,9 +18,7 @@ class Jeu:
         self.proies: list = proies
         self.vegetaux: list = vegetaux
 
-    def naissance(self): #A faire par Petit Hugo
-        """Regarde les règles et change les variables en fonction des naissance. Augmente également l'âge"""
-        def naissance(self, data: dict, jour: int):
+    def naissance(self, data: dict, jour: int):
         """Regarde les règles et change les variables en fonction des naissances. Augmente également l'âge."""
         if self.predateurs:
             nom_p = self.predateurs[0].nom
@@ -47,7 +45,6 @@ class Jeu:
                 nb_pousses = regle_v["nombre_de_nv_nee"] * (len(self.vegetaux) // 2)
                 for _ in range(nb_pousses):
                     self.vegetaux.append(Vegetal(nom_v))
-    
     
     def mort(self): #A faire par Marre Go
         """Regarde les règles et change les variables en fonction des morts."""
