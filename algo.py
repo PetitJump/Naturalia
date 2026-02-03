@@ -1,49 +1,64 @@
-from random import randint
+class Predateur:
+    def __init__(self, nom: str, age: int):
+        self.nom = nom
+        self.age = age
 
-def mort(data: dict, jour: int, predateur: dict, proie: dict, vegetal: dict):
-    """Regarde les règles et change les variables en fonction des morts."""
-    predateur["age"] = [k for k in predateur["age"] if k < 20]
-    proie["age"] = [k for k in proie["age"] if k < 20]
+class Proie:
+    def __init__(self, nom: str, age: int):
+        self.nom = nom
+        self.age = age
 
-    if jour % data[predateur["nom"]]["mange"]["tout_les"] == 0:
-        combien = data[predateur["nom"]]["mange"]["combien"]
-        proie_necessaires = predateur["nombres"] * combien
+class Vegetal:
+    def __init__(self, nom: str):
+        self.nom = nom
 
-        if proie["nombres"] >= proie_necessaires:
-            proie = {"nom": proie["nom"],"nombres":  proie["nombres"] - proie_necessaires, "age" : proie["age"]} 
-            for i in range(proie_necessaires):
-                proie["age"].pop() #Les plus jeunes meurts
-        else:
-            predateur_survivants = proie["nombres"] // combien
-            predateur = {"nom": predateur["nom"],"nombres": predateur_survivants, "age" : predateur["age"]}
-            proie = {"nom": proie["nom"], "nombres": 0 , "age" : []} 
-            if predateur_survivants <= 0:
-                predateur["age"] = []
-            for i in range(predateur_survivants):
-                predateur["age"].pop() #Les plus jeunes meurts
+class Jeu:
+    def __init__(self, predateurs: list[Predateur], proies: list[Proie], vegetaux: list[Vegetal]):
+        self.predateurs: list[Predateur] = predateurs
+        self.proies: list[Proie] = proies
+        self.vegetaux: list[Vegetal] = vegetaux
 
-    if jour % data[proie["nom"]]["mange"]["tout_les"] == 0:
-        combien = data[proie["nom"]]["mange"]["combien"]
-        vegetal_necessaires = proie["nombres"] * combien
+    def naissance(self, data: dict, jour: int):
+        """Regarde les règles et change les variables en fonction des naissances. Augmente également l'âge."""
+        if jour % data["loup"]["reproduction"]["tout_les"] == 0: #Si il peut se reproduire en fonction des règles
+            nouveau_en_plus = data["loup"]["reproduction"]["nombre_de_nv_nee"] * (len(self.predateurs) // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
+            for _ in range(nouveau_en_plus):
+                self.predateurs.append(Predateur("loup", 0)) #Un nouveau née d'age 0
 
-        if vegetal["nombres"] >= vegetal_necessaires:
-            vegetal = {"nom": vegetal["nom"],"nombres": vegetal["nombres"] - vegetal_necessaires}
-        else:
-            proie_survivantes = vegetal["nombres"] // combien
-            proie = {"nom": proie["nom"],"nombres": proie_survivantes, "age" : proie["age"]}
-            vegetal = {"nom": vegetal["nom"], "nombres": 0}
+        for k in self.predateurs: #On augmente l'age
+            k.age += 1
 
-    return predateur, proie, vegetal
+        if jour % data["mouton"]["reproduction"]["tout_les"] == 0: 
+            nouveau_en_plus = data["mouton"]["reproduction"]["nombre_de_nv_nee"] * (len(self.proies) // 2)
+            for _ in range(nouveau_en_plus):
+                self.proies.append(Proie("loup", 0)) #Un nouveau née d'age 0
 
+        for k in self.proies: #On augmente l'age
+            k.age += 1
 
-def random_repro(data: dict) -> dict:
-    """
-    La fonction va prendre en compte la reproduction des êtres vivants. Un nombre aléatoire de bébés vont naitre.
-    C'est ce que la fonction va nous permettre de faire. randomiser le nombre de bébés a chaque naissance pour chaque couples.
-    """
-    for i in data:
-        nv_j = randint(data[i]["reproduction"]["tout_les"][0], data[i]["reproduction"]["tout_les"][1])
-        data[i]["reproduction"]["tout_les"] =  nv_j
-        nvl_repro = randint(data[i]["reproduction"]["nombre_de_nv_nee"][0], data[i]["reproduction"]["nombre_de_nv_nee"][1])
-        data[i]["reproduction"]["nombre_de_nv_nee"] = nvl_repro 
-    return data
+        if jour % data["herbe"]["reproduction"]["tout_les"] == 0 and len(self.vegetaux) < 2500: 
+            nouveau_en_plus = data["herbe"]["reproduction"]["nombre_de_nv_nee"] * (len(self.vegetaux) // 2)
+            for _ in range(nouveau_en_plus):
+                self.vegetaux.append(Vegetal("herbe"))
+
+    
+    def mort(self, data : dict, jour : int): 
+        """Regarde les règles et change les variables en fonction des morts."""
+        ...
+    
+    def update(self, jour): 
+        """Fonction principal qui va etre utiliser par Flask"""
+        import json
+        from petites_fonctions import random_repro
+
+        with open('data.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        data = random_repro(data)
+
+        nv_predateur, nv_proie, nv_vegetal = self.naissance(data, jour)
+        nv_predateur, nv_proie, nv_vegetal = self.mort(data, jour)
+
+        if nv_vegetal["nombres"] < 10: #Probleme ici
+            nv_vegetal["nombres"] = 10 #Probleme ici
+            
+        return nv_predateur, nv_proie, nv_vegetal

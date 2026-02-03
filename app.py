@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session
 import json
 import copy
-from algoPOO import Predateur, Vegetal, Proie, Jeu
+from algo import Predateur, Vegetal, Proie, Jeu
 from graphique import creer_graphique
 
 app = Flask(__name__)
