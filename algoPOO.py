@@ -42,11 +42,11 @@ class Jeu:
                 self.vegetaux.append(Vegetal("herbe"))
 
     
-    def mort(self, data : dict, jour : int): #A faire par Marre Go
+    def mort(self, data : dict, jour : int): 
         """Regarde les règles et change les variables en fonction des morts."""
         ...
     
-    def update(self, jour): #A faire par Carl
+    def update(self, jour): 
         """Fonction principal qui va etre utiliser par Flask"""
         import json
         from algo import random_repro
@@ -58,7 +58,7 @@ class Jeu:
         nv_predateur, nv_proie, nv_vegetal = self.naissance(data, jour)
         nv_predateur, nv_proie, nv_vegetal = self.mort(data, jour)
 
-        if nv_vegetal["nombres"] < 10:
-            nv_vegetal["nombres"] = 10
+        if nv_vegetal["nombres"] < 10: #Probleme ici
+            nv_vegetal["nombres"] = 10 #Probleme ici
             
         return nv_predateur, nv_proie, nv_vegetal
