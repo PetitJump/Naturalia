@@ -3,6 +3,10 @@ class Predateur:
         self.nom = nom
         self.age = age
 
+class Meute:
+    def __init__(self, predateurs: list[Predateur]):
+        self.predateurs = predateurs
+
 class Proie:
     def __init__(self, nom: str, age: int):
         self.nom = nom
