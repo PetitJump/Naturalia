@@ -23,12 +23,14 @@ def update_ajouter():
         jeu.predateurs.append(Predateur("loup", 0))
 
     for _ in range(int(request.form["mouton"])):
-        jeu.predateurs.append(Proie("mouton", 0))
+        jeu.proies.append(Proie("mouton", 0))
+
 
     for _ in range(int(request.form["herbe"])):
-        jeu.predateurs.append(Vegetal("herbe"))
+        jeu.vegetaux.append(Vegetal("herbe"))
 
     jeu.update(jour)
+
     jour += 1
     
     historique["loup"].append(len(jeu.predateurs))
