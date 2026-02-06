@@ -48,7 +48,23 @@ class Jeu:
     
     def mort(self, data : dict, jour : int): 
         """Regarde les règles et change les variables en fonction des morts."""
-        ...
+        self.predateurs = [k for k in self.predateurs if k.age < 20]
+        self.proies = [k for k in self.proies if k.age < 20]
+
+        if jour % data["loup"]["mange"]["tout_les"] == 0:
+            combien = data["loup"]["mange"]["combien"]
+            proie_necessaires = len(self.predateurs) * combien
+
+            if len(self.proies) >= proie_necessaires:
+                for i in range(proie_necessaires):
+                    self.proies.pop() #Les plus jeunes meurts
+            else: #Si il n'y a pas assez de moutons pour tout les loups
+                predateur_survivants = len(self.proies) // combien
+                self.proies = []
+                if predateur_survivants <= 0:
+                    self.predateurs = []
+                for _ in range(predateur_survivants):
+                    self.predateurs.pop() #Les plus jeunes meurts
     
     def update(self, jour): 
         """Fonction principal qui va etre utiliser par Flask"""
