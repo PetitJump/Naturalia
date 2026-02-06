@@ -13,3 +13,4 @@
 - Les règles sont plus intuitives
 - Ajout de la POO
 - Ajout d'une class Meute (pas encore utiliser)
+- Règles plus intuitives
