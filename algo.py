@@ -75,10 +75,11 @@ class Jeu:
             data = json.load(f)
         data = random_repro(data)
 
-        nv_predateur, nv_proie, nv_vegetal = self.naissance(data, jour)
-        nv_predateur, nv_proie, nv_vegetal = self.mort(data, jour)
+        self.naissance(data, jour)
+        self.mort(data, jour)
 
-        if nv_vegetal["nombres"] < 10: #Probleme ici
-            nv_vegetal["nombres"] = 10 #Probleme ici
+        if len(self.vegetaux) < 10: 
+            for _ in range(15):
+                self.vegetaux.append(Vegetal("herbe"))
             
-        return nv_predateur, nv_proie, nv_vegetal
+        return self.predateurs, self.proies, self.vegetaux
