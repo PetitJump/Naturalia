@@ -10,7 +10,7 @@ def creer_graphique(historique):
     
     fig, ax = plt.subplots(figsize=(10, 5))
     
-    nb_jours = min(10000, len(historique["loup"]))
+    nb_jours = min( 5, len(historique["loup"]))
     jours = list(range(len(historique["loup"]) - nb_jours + 1, len(historique["loup"]) + 1))
     
     loups = [0 if x <= 0 else math.log10(x) for x in historique["loup"][-nb_jours:]]
