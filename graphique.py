@@ -14,14 +14,14 @@ def creer_graphique(historique):
     jours = list(range(len(historique["loup"]) - nb_jours + 1, len(historique["loup"]) + 1))
     
     loups = [0 if x <= 0 else math.log10(x) for x in historique["loup"][-nb_jours:]]
-    moutons = [0 if x <= 0 else math.log10(x) for x in historique["mouton"][-nb_jours:]]
+    cerfs = [0 if x <= 0 else math.log10(x) for x in historique["cerf"][-nb_jours:]]
     herbes = [0 if x <= 0 else math.log10(x) for x in historique["herbe"][-nb_jours:]]
      
-    # Créer l'histogramme empilé pour loups et moutons
+    # Créer l'histogramme empilé pour loups et cerfs
     x = range(len(jours))
     
     ax.bar(x, loups, label='Loups', color='red', alpha=0.7, edgecolor='black')
-    ax.bar(x, moutons, bottom=loups, label='Moutons', color='blue', alpha=0.7, edgecolor='black')
+    ax.bar(x, cerfs, bottom=loups, label='cerfs', color='blue', alpha=0.7, edgecolor='black')
     
     ax.plot(x, herbes, label='Herbe', color='green', linewidth=3, marker='o', markersize=6)
     
@@ -58,7 +58,7 @@ def creer_histogramme(predateur, proie):
     
     if proie.get("age"):
         ax2.hist(proie["age"], bins=20, color='blue', alpha=0.7, edgecolor='black')
-        ax2.set_title('Distribution des âges - Moutons', fontsize=12, fontweight='bold')
+        ax2.set_title('Distribution des âges - cerfs', fontsize=12, fontweight='bold')
         ax2.set_xlabel('Âge', fontsize=10)
         ax2.set_ylabel('Nombre', fontsize=10)
         ax2.grid(True, alpha=0.3)

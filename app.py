@@ -22,8 +22,8 @@ def update_ajouter():
     for _ in range(int(request.form["loup"])):
         jeu.predateurs.append(Predateur("loup", 0))
 
-    for _ in range(int(request.form["mouton"])):
-        jeu.proies.append(Proie("mouton", 0))
+    for _ in range(int(request.form["cerf"])):
+        jeu.proies.append(Proie("cerf", 0))
 
 
     for _ in range(int(request.form["herbe"])):
@@ -34,7 +34,7 @@ def update_ajouter():
     jour += 1
     
     historique["loup"].append(len(jeu.predateurs))
-    historique["mouton"].append(len(jeu.proies))
+    historique["cerf"].append(len(jeu.proies))
     historique["herbe"].append(len(jeu.vegetaux))
 
     graph_url = creer_graphique(historique)
@@ -57,7 +57,7 @@ def game():
     
     if jour == 0: #On init
         predateurs = [Predateur("loup", 0) for i in range(int(request.form["loup"]))]
-        proies = [Predateur("loup", 0) for i in range(int(request.form["mouton"]))]
+        proies = [Predateur("loup", 0) for i in range(int(request.form["cerf"]))]
         vegetaux = [Predateur("loup", 0) for i in range(int(request.form["herbe"]))]
         jeu = Jeu(predateurs, proies, vegetaux)
 
@@ -65,7 +65,7 @@ def game():
     jour += 1
 
     historique["loup"].append(len(jeu.predateurs))
-    historique["mouton"].append(len(jeu.proies))
+    historique["cerf"].append(len(jeu.proies))
     historique["herbe"].append(len(jeu.vegetaux))
 
     graph_url = creer_graphique(historique)
@@ -83,10 +83,10 @@ def modifier():
     loup_mange_tout_les: int = int(request.form['nb_de_nourriture_tout_les_predateur'])
     loup_mange_combien: int = int(request.form['nb_de_nourriture_predateur'])
 
-    mouton_reproduction_tout_les: int = int(request.form['nb_bebe_tout_les_proie'])
-    mouton_reproduction_combien: list[int] = [int(request.form['nb_bebe_proie1']), int(request.form['nb_bebe_proie2'])]
-    mouton_mange_tout_les: int = int(request.form['nb_de_nourriture_tout_les_proie'])
-    mouton_mange_combien: int = int(request.form['nb_de_nourriture_proie'])
+    cerf_reproduction_tout_les: int = int(request.form['nb_bebe_tout_les_proie'])
+    cerf_reproduction_combien: list[int] = [int(request.form['nb_bebe_proie1']), int(request.form['nb_bebe_proie2'])]
+    cerf_mange_tout_les: int = int(request.form['nb_de_nourriture_tout_les_proie'])
+    cerf_mange_combien: int = int(request.form['nb_de_nourriture_proie'])
 
     herbe_reproduction_tout_les: int = int(request.form['nb_bebe_tout_les_vegetal'])
     herbe_reproduction_combien: list[int] = [int(request.form['nb_bebe_vegetal1']), int(request.form['nb_bebe_vegetal2'])]
@@ -94,12 +94,12 @@ def modifier():
     data = {
         "loup" : {
             "reproduction" : {"tout_les" : loup_reproduction_tout_les, "nombre_de_nv_nee" : loup_reproduction_combien}, 
-            "mange" : {"qui" : "mouton", "tout_les" : loup_mange_tout_les, "combien" : loup_mange_combien}
+            "mange" : {"qui" : "cerf", "tout_les" : loup_mange_tout_les, "combien" : loup_mange_combien}
         },
 
-        "mouton" : {
-            "reproduction" : {"tout_les" : mouton_reproduction_tout_les, "nombre_de_nv_nee" : mouton_reproduction_combien},
-            "mange" : {"qui" : "herbe", "tout_les" : mouton_mange_tout_les, "combien" : mouton_mange_combien}
+        "cerf" : {
+            "reproduction" : {"tout_les" : cerf_reproduction_tout_les, "nombre_de_nv_nee" : cerf_reproduction_combien},
+            "mange" : {"qui" : "herbe", "tout_les" : cerf_mange_tout_les, "combien" : cerf_mange_combien}
         },
 
         "herbe" : {
@@ -116,5 +116,5 @@ def credit():
     return render_template("credit.html")
     
 if __name__ == '__main__':
-    historique = {"loup" : [], "mouton" : [], "herbe" : []}
+    historique = {"loup" : [], "cerf" : [], "herbe" : []}
     app.run(host = '127.0.0.1', port=5000, debug=True)

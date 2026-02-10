@@ -11,12 +11,12 @@
             ]
         },
         "mange": {
-            "qui": "mouton",
+            "qui": "cerf",
             "tout_les": 5,
             "combien": 2
         }
     },
-    "mouton": {
+    "cerf": {
         "reproduction": {
             "tout_les": [
                 4,

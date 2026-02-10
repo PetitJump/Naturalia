@@ -32,8 +32,8 @@ class Jeu:
         for k in self.predateurs: #On augmente l'age
             k.age += 1
 
-        if jour % data["mouton"]["reproduction"]["tout_les"] == 0: 
-            nouveau_en_plus = data["mouton"]["reproduction"]["nombre_de_nv_nee"] * (len(self.proies) // 2)
+        if jour % data["cerf"]["reproduction"]["tout_les"] == 0: 
+            nouveau_en_plus = data["cerf"]["reproduction"]["nombre_de_nv_nee"] * (len(self.proies) // 2)
             for _ in range(nouveau_en_plus):
                 self.proies.append(Proie("loup", 0)) #Un nouveau née d'age 0
 
@@ -58,7 +58,7 @@ class Jeu:
             if len(self.proies) >= proie_necessaires:
                 for i in range(proie_necessaires):
                     self.proies.pop() #Les plus jeunes meurts
-            else: #Si il n'y a pas assez de moutons pour tout les loups
+            else: #Si il n'y a pas assez de cerfs pour tout les loups
                 predateur_survivants = len(self.proies) // combien
                 self.proies = []
                 if predateur_survivants <= 0:
