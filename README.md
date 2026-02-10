@@ -10,4 +10,7 @@
 - graphique.py : Fichier qui va gerer l'affichage du graphique.
 
 ## Ajout en plus comparer a la v5 :
-...
+- Ajout d'un logo
+- Refonte de l'interface graphique
+- Changement du graphique
+- Ajout d'un système de Meute
