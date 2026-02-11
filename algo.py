@@ -25,7 +25,8 @@ class Jeu:
     def naissance(self, data: dict, jour: int):
         """Regarde les règles et change les variables en fonction des naissances. Augmente également l'âge."""
         if jour % data["loup"]["reproduction"]["tout_les"] == 0: #Si il peut se reproduire en fonction des règles
-            nouveau_en_plus = data["loup"]["reproduction"]["nombre_de_nv_nee"] * (len(self.predateurs) // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
+            predateurs_majeurs = [k for k in self.predateurs if k.age > 2] #Touts les predateurs qui on plus que 2 ans
+            nouveau_en_plus = data["loup"]["reproduction"]["nombre_de_nv_nee"] * (len(predateurs_majeurs) // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
             for _ in range(nouveau_en_plus):
                 self.predateurs.append(Predateur("loup", 0)) #Un nouveau née d'age 0
 
@@ -33,7 +34,8 @@ class Jeu:
             k.age += 1
 
         if jour % data["cerf"]["reproduction"]["tout_les"] == 0: 
-            nouveau_en_plus = data["cerf"]["reproduction"]["nombre_de_nv_nee"] * (len(self.proies) // 2)
+            proies_majeurs = [k for k in self.proies if k.age > 2] #Toutes les proie qui on plus que 2 ans
+            nouveau_en_plus = data["cerf"]["reproduction"]["nombre_de_nv_nee"] * (len(proies_majeurs) // 2)
             for _ in range(nouveau_en_plus):
                 self.proies.append(Proie("loup", 0)) #Un nouveau née d'age 0
 
@@ -48,8 +50,8 @@ class Jeu:
     
     def mort(self, data : dict, jour : int): 
         """Regarde les règles et change les variables en fonction des morts."""
-        self.predateurs = [k for k in self.predateurs if k.age < 20]
-        self.proies = [k for k in self.proies if k.age < 20]
+        self.predateurs = [k for k in self.predateurs if k.age < 20] #Tue tout les predateurs qui ont plus de 20 ans
+        self.proies = [k for k in self.proies if k.age < 20] #Tue toutes les proies qui ont plus de 20 ans
 
         if jour % data["loup"]["mange"]["tout_les"] == 0:
             combien = data["loup"]["mange"]["combien"]
