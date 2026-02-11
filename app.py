@@ -72,9 +72,9 @@ def game():
 
     return render_template('game.html', predateur=len(jeu.predateurs), jour=jour, proie=len(jeu.proies), vegetal=len(jeu.vegetaux), afficher_bouton=True, graph_url=graph_url)
 
-@app.route("/regles")
+@app.route("/parametre")
 def regles(): 
-    return render_template('regles.html')
+    return render_template('parametre.html')
     
 @app.route("/modifier", methods=['GET', 'POST'])
 def modifier(): 
@@ -93,12 +93,12 @@ def modifier():
 
     data = {
         "loup" : {
-            "reproduction" : {"tout_les" : loup_reproduction_tout_les, "nombre_de_nv_nee" : loup_reproduction_combien}, 
+            "reproduction" : {"tout_les" : loup_reproduction_tout_les, "nombre_de_nv_nee" : loup_reproduction_combien, "maturiter_sexuel" : 2}, 
             "mange" : {"qui" : "cerf", "tout_les" : loup_mange_tout_les, "combien" : loup_mange_combien}
         },
 
         "cerf" : {
-            "reproduction" : {"tout_les" : cerf_reproduction_tout_les, "nombre_de_nv_nee" : cerf_reproduction_combien},
+            "reproduction" : {"tout_les" : cerf_reproduction_tout_les, "nombre_de_nv_nee" : cerf_reproduction_combien, "maturiter_sexuel" : 2},
             "mange" : {"qui" : "herbe", "tout_les" : cerf_mange_tout_les, "combien" : cerf_mange_combien}
         },
 

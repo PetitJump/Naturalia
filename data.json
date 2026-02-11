@@ -8,7 +8,9 @@
             "nombre_de_nv_nee": [
                 1,
                 3
-            ]
+            ],
+            "maturiter_sexuel" : 2
+            
         },
         "mange": {
             "qui": "cerf",
@@ -25,7 +27,8 @@
             "nombre_de_nv_nee": [
                 2,
                 5
-            ]
+            ],
+            "maturiter_sexuel" : 2
         },
         "mange": {
             "qui": "herbe",
