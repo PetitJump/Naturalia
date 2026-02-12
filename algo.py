@@ -1,3 +1,5 @@
+import random
+
 class Predateur:
     def __init__(self, nom: str, age: int):
         self.nom = nom
@@ -53,6 +55,7 @@ class Jeu:
         """Regarde les règles et change les variables en fonction des morts."""
         self.meute.predateurs = [k for k in self.meute.predateurs if k.age < 20] #Tue tout les predateurs qui ont plus de 20 ans
         self.proies = [k for k in self.proies if k.age < 20] #Tue toutes les proies qui ont plus de 20 ans
+        self.taux_de_survie()
 
         if jour % data["loup"]["mange"]["tout_les"] == 0:
             combien = data["loup"]["mange"]["combien"]
@@ -69,6 +72,33 @@ class Jeu:
                 for _ in range(predateur_survivants):
                     self.meute.predateurs.pop() #Les plus jeunes meurts
     
+    def taux_de_survie(self):
+        """Gère le système de taux de survie naturel"""
+        survivants_predateurs = []
+        for k in self.meute.predateurs:
+            if k.age == 0:
+                taux = 0.6 #Un nouveau né a un taux de survie de 60%
+            else:
+                taux = 0.9 #Taux de survie de 90%
+
+            if random.random() < taux: #random.random() renvoie un float entre 0.0 et 1.0
+                survivants_predateurs.append(k)
+
+        self.meute.predateurs = survivants_predateurs
+
+        survivants_proies = []
+        for k in self.proies:
+            if k.age == 0:
+                taux = 0.6 #Un nouveau né a un taux de survie de 60%
+            else:
+                taux = 0.9 #Taux de survie de 90%
+
+            if random.random() < taux:
+                survivants_proies.append(k)
+
+        self.proies = survivants_proies
+
+
     def update(self, jour): 
         """Fonction principal qui va etre utiliser par Flask"""
         import json
