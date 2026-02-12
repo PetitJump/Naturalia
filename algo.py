@@ -6,7 +6,6 @@ class Predateur:
 class Meute:
     def __init__(self, predateurs: list[Predateur]):
         self.predateurs = predateurs
-
 class Proie:
     def __init__(self, nom: str, age: int):
         self.nom = nom
@@ -17,21 +16,21 @@ class Vegetal:
         self.nom = nom
 
 class Jeu:
-    def __init__(self, predateurs: list[Predateur], proies: list[Proie], vegetaux: list[Vegetal]):
-        self.predateurs: list[Predateur] = predateurs
-        self.proies: list[Proie] = proies
-        self.vegetaux: list[Vegetal] = vegetaux
+    def __init__(self, meute: Meute, proies: list[Proie], vegetaux: list[Vegetal]):
+        self.meute = meute
+        self.proies = proies
+        self.vegetaux = vegetaux
 
     def naissance(self, data: dict, jour: int):
         """Regarde les règles et change les variables en fonction des naissances. Augmente également l'âge."""
         if jour % data["loup"]["reproduction"]["tout_les"] == 0: #Si il peut se reproduire en fonction des règles
             age_min = data["loup"]["reproduction"]["maturiter_sexuel"]
-            predateurs_majeurs = [k for k in self.predateurs if k.age > age_min] #Touts les predateurs qui on plus que x ans
+            predateurs_majeurs = [k for k in self.meute.predateurs if k.age > age_min] #Touts les predateurs qui on plus que x ans
             nouveau_en_plus = data["loup"]["reproduction"]["nombre_de_nv_nee"] * (len(predateurs_majeurs) // 2) #On prend le nombres de nouveau né et on le mutltiplie avec le nombre de couple de loup
             for _ in range(nouveau_en_plus):
-                self.predateurs.append(Predateur("loup", 0)) #Un nouveau née d'age 0
+                self.meute.predateurs.append(Predateur("loup", 0)) #Un nouveau née d'age 0
 
-        for k in self.predateurs: #On augmente l'age
+        for k in self.meute.predateurs: #On augmente l'age
             k.age += 1
 
         if jour % data["cerf"]["reproduction"]["tout_les"] == 0: 
@@ -52,12 +51,12 @@ class Jeu:
     
     def mort(self, data : dict, jour : int): 
         """Regarde les règles et change les variables en fonction des morts."""
-        self.predateurs = [k for k in self.predateurs if k.age < 20] #Tue tout les predateurs qui ont plus de 20 ans
+        self.meute.predateurs = [k for k in self.meute.predateurs if k.age < 20] #Tue tout les predateurs qui ont plus de 20 ans
         self.proies = [k for k in self.proies if k.age < 20] #Tue toutes les proies qui ont plus de 20 ans
 
         if jour % data["loup"]["mange"]["tout_les"] == 0:
             combien = data["loup"]["mange"]["combien"]
-            proie_necessaires = len(self.predateurs) * combien
+            proie_necessaires = len(self.meute.predateurs) * combien
 
             if len(self.proies) >= proie_necessaires:
                 for i in range(proie_necessaires):
@@ -66,9 +65,9 @@ class Jeu:
                 predateur_survivants = len(self.proies) // combien
                 self.proies = []
                 if predateur_survivants <= 0:
-                    self.predateurs = []
+                    self.meute.predateurs = []
                 for _ in range(predateur_survivants):
-                    self.predateurs.pop() #Les plus jeunes meurts
+                    self.meute.predateurs.pop() #Les plus jeunes meurts
     
     def update(self, jour): 
         """Fonction principal qui va etre utiliser par Flask"""
@@ -86,4 +85,4 @@ class Jeu:
             for _ in range(15):
                 self.vegetaux.append(Vegetal("herbe"))
             
-        return self.predateurs, self.proies, self.vegetaux
+        return self.meute.predateurs, self.proies, self.vegetaux
