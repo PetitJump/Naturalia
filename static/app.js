@@ -4,8 +4,8 @@ const qherbe = document.getElementById("qherbe");
 const loup = document.getElementById("loup");
 const qloup = document.getElementById("qloup");
 
-const mouton = document.getElementById("mouton");
-const qmouton = document.getElementById("qmouton");
+const cerf = document.getElementById("cerf");
+const qcerf = document.getElementById("qcerf");
 
 function majh() {
     qherbe.textContent = herbe.value;
@@ -18,9 +18,9 @@ function majl() {
 loup.addEventListener("input", majl);
 
 function majm() {
-    qmouton.textContent = mouton.value;
+    qcerf.textContent = cerf.value;
 }
-mouton.addEventListener("input", majm);
+cerf.addEventListener("input", majm);
 
 majm();
 majl();
