@@ -1,4 +1,5 @@
 import random
+import json
 
 class Predateur:
     def __init__(self, nom: str, age: int):
@@ -98,10 +99,20 @@ class Jeu:
 
         self.proies = survivants_proies
 
+    def evenement_meteo(self):
+        """Gère les évènement météorologique"""
+        with open('meteo.json', 'r', encoding='utf-8') as f:
+            meteo = json.load(f)
+        ... #On regarde si c le moment
+        #Si c le moment alors on gère le système de dégats/mort
+
+        """A un moment il y aura obligatoirement ca :"""
+        self.meute.predateurs #Liste des Prédateurs dans le jeu
+        self.proies #Liste des Proies dans le jeu
+        self.vegetaux #Liste des Vegetal dans le jeu
 
     def update(self, jour): 
         """Fonction principal qui va etre utiliser par Flask"""
-        import json
         from petites_fonctions import random_repro
 
         with open('data.json', 'r', encoding='utf-8') as f:
@@ -110,6 +121,8 @@ class Jeu:
 
         self.naissance(data, jour)
         self.mort(data, jour)
+        #self.evenement_meteo()
+        #Si on veut tester la fonction on enlève le commentaire
 
         if len(self.vegetaux) < 10: 
             for _ in range(15):

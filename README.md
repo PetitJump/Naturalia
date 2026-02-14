@@ -16,3 +16,4 @@
 - Ajout d'un système de Meute
 - Ajout d'un système de taux de survie 
 - Ajout d'un système de maturité sexuel
+- Ajout d'un système d'évènement météorologique
