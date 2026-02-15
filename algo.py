@@ -41,7 +41,7 @@ class Jeu:
             proies_majeurs = [k for k in self.proies if k.age > age_min] #Toutes les proie qui on plus que x ans
             nouveau_en_plus = data["cerf"]["reproduction"]["nombre_de_nv_nee"] * (len(proies_majeurs) // 2)
             for _ in range(nouveau_en_plus):
-                self.proies.append(Proie("loup", 0)) #Un nouveau née d'age 0
+                self.proies.append(Proie("cerf", 0)) #Un nouveau née d'age 0
 
         for k in self.proies: #On augmente l'age
             k.age += 1
