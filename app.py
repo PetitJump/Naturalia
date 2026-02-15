@@ -173,9 +173,6 @@ def modifier():
     return render_template('index.html')
 
 
-@app.route("/credit")
-def credit():
-    return render_template("credit.html")
     
 
 if __name__ == '__main__':
