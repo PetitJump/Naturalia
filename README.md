@@ -11,8 +11,6 @@
 
 ## Ajout en plus comparer a la v5 :
 - Ajout d'un logo
-- Refonte de l'interface graphique
-- Changement du graphique
 - Ajout d'un système de Meute
 - Ajout d'un système de taux de survie 
 - Ajout d'un système de maturité sexuel
