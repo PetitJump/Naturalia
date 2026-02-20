@@ -1,4 +1,4 @@
-# Naturalia v6 : En cours
+# Naturalia v7 : En cours
 
 ## Fonctionnement du programme:
 ...
@@ -9,9 +9,7 @@
 - data.json : Loi du monde modifiable via le menus 'règles'
 - graphique.py : Fichier qui va gerer l'affichage du graphique.
 
-## Ajout en plus comparer a la v5 :
-- Ajout d'un logo
-- Ajout d'un système de Meute
-- Ajout d'un système de taux de survie 
-- Ajout d'un système de maturité sexuel
-- Ajout d'un système d'évènement météorologique
+## Ajout en plus comparer a la v6 :
+- Ajout d'un vrai système d'évènement météorologique
+- Faire un vrai jeu
+- Système de meute fonctionel
