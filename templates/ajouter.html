@@ -1,52 +1,91 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajouter des espèces — Naturalia</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body { background: var(--papier); }
+    .page { justify-content: flex-start; padding-top: 90px; padding-bottom: 60px; }
+  </style>
 </head>
 <body>
-  
-  <video id="video-bg" autoplay muted loop playsinline>
-        <source src="{{ url_for('static', filename='fond_index.mp4') }}" type="video/mp4">
-  </video>
 
-  <form action="/update_ajouter" method="POST">
-    <p>Ajouter :</p>
-    
-    <div>
-      <input type="range" id="loup" name="loup" min="0" max="20" value="0" step="1" class="customrangerouge">
-      <label for="loup" style="color: rgb(255, 0, 0);">
-        Ajouter Loup : <span id="qloup"></span>
-      </label>
+  <div class="cadre"></div>
+  <a href="/game" class="nav-retour" onclick="history.back(); return false;">← Retour</a>
+
+  <div class="page">
+
+    <div class="a1" style="text-align:center">
+      <span class="label-petit">Jour {{jour}} · Intervention</span>
+      <h1 style="font-family:var(--font-titre);font-size:clamp(26px,4vw,40px);color:var(--foret);margin-top:8px">
+        Ajouter des individus
+      </h1>
+      <p style="font-family:var(--font-titre);font-style:italic;font-size:15px;color:var(--terre);margin-top:6px">
+        Intervenez dans l'écosystème pour rééquilibrer les populations
+      </p>
     </div>
 
-    <div>
-      <input type="range" id="cerf" name="cerf" min="0" max="20" value="0" step="1"class="customrangebleu">
-      <label for="cerf" style="color: rgb(0, 0, 255);">
-        Ajouter cerf : <span id="qcerf"></span>
-      </label>
-    </div>
+    <form action="/update_ajouter" method="POST" style="width:100%">
 
-    <div>
-      <input type="range" id="herbe" name="herbe" min="0" max="20" value="0" step="1"class="customrangevert">
-      <label for="herbe" style="color: rgb(0, 255, 0);">
-        Ajouter Herbe : <span id="qherbe"></span>
-      </label>
-    </div>
+      <div class="bloc-sliders a2">
 
-    <input type="hidden" name="base_jour" value="{{jour}}">
-    <input type="hidden" name="base_loup" value="{{predateur}}">
-    <input type="hidden" name="base_cerf" value="{{proie}}">
-    <input type="hidden" name="base_herbe" value="{{vegetal}}">
+        <div class="ligne-slider loup-bloc">
+          <div class="slider-entete">
+            <span class="slider-nom">🐺 Ajouter des Loups</span>
+            <span class="slider-valeur" id="qloup">0</span>
+          </div>
+          <p class="slider-description">Actuellement <strong>{{predateur}}</strong> loup(s) dans l'écosystème.</p>
+          <input type="range" id="loup" name="loup" min="0" max="20" value="0" step="1" class="customrangerouge">
+        </div>
 
-    <button type="submit">Jour suivant</button>
-    
-  </form>
-<script src="{{url_for('static',filename='update.js')}}"></script>
+        <div class="ligne-slider cerf-bloc">
+          <div class="slider-entete">
+            <span class="slider-nom">🦌 Ajouter des Cerfs</span>
+            <span class="slider-valeur" id="qcerf">0</span>
+          </div>
+          <p class="slider-description">Actuellement <strong>{{proie}}</strong> cerf(s) dans l'écosystème.</p>
+          <input type="range" id="cerf" name="cerf" min="0" max="20" value="0" step="1" class="customrangebleu">
+        </div>
+
+        <div class="ligne-slider herbe-bloc">
+          <div class="slider-entete">
+            <span class="slider-nom">🌿 Ajouter de l'Herbe</span>
+            <span class="slider-valeur" id="qherbe">0</span>
+          </div>
+          <p class="slider-description">Actuellement <strong>{{vegetal}}</strong> touffes d'herbe dans l'écosystème.</p>
+          <input type="range" id="herbe" name="herbe" min="0" max="20" value="0" step="1" class="customrangevert">
+        </div>
+
+      </div>
+
+      <input type="hidden" name="base_jour" value="{{jour}}">
+      <input type="hidden" name="base_loup" value="{{predateur}}">
+      <input type="hidden" name="base_cerf" value="{{proie}}">
+      <input type="hidden" name="base_herbe" value="{{vegetal}}">
+
+      <div class="a3" style="display:flex;justify-content:center;margin-top:32px">
+        <button type="submit" class="btn btn-principal" style="padding:14px 48px">
+          Continuer →
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+  <script src="{{ url_for('static', filename='update.js') }}"></script>
+  <script>
+    ['loup','cerf','herbe'].forEach(id => {
+      const el = document.getElementById(id);
+      const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
+      el.style.setProperty('--pct', pct + '%');
+      el.addEventListener('input', () => {
+        el.style.setProperty('--pct', ((el.value - el.min) / (el.max - el.min)) * 100 + '%');
+      });
+    });
+  </script>
 
 </body>
 </html>
-
-

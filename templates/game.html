@@ -1,43 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLAYING</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jour {{jour}} — Naturalia</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body { background: var(--papier); overflow-y: auto; }
+    .page { justify-content: flex-start; padding-top: 90px; padding-bottom: 60px; min-height: 100vh; }
+  </style>
 </head>
 <body>
 
-    <form action="/game" method="POST">
+  <div class="cadre"></div>
+  <a href="/" class="nav-retour">← Accueil</a>
+
+  <div class="page">
+
+    <!-- Badge jour -->
+    <div class="badge-jour a1">
+      <span class="libelle">Jour</span>
+      <span class="numero">{{jour}}</span>
+    </div>
+
+    <!-- Stats population -->
+    <div class="grille-stats a2">
+
+      <div class="carte-stat loup-stat" id="card-loup">
+        <div class="stat-espece">Loups</div>
+        <div class="stat-nombre" id="val-loup">{{predateur}}</div>
+        <div class="stat-barre-wrap">
+          <div class="stat-barre" id="barre-loup" style="width:{{ [predateur / 0.5, 100] | min }}%"></div>
+        </div>
+      </div>
+
+      <div class="carte-stat cerf-stat" id="card-cerf">
+        <div class="stat-espece">Cerfs</div>
+        <div class="stat-nombre" id="val-cerf">{{proie}}</div>
+        <div class="stat-barre-wrap">
+          <div class="stat-barre" id="barre-cerf" style="width:{{ [proie / 5, 100] | min }}%"></div>
+        </div>
+      </div>
+
+      <div class="carte-stat herbe-stat" id="card-herbe">
+        <div class="stat-espece">Herbe</div>
+        <div class="stat-nombre" id="val-herbe">{{vegetal}}</div>
+        <div class="stat-barre-wrap">
+          <div class="stat-barre" id="barre-herbe" style="width:{{ [vegetal / 10, 100] | min }}%"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-jeu a3">
+
+      <form action="/game" method="POST">
         <input type="hidden" name="jour" value="{{jour}}">
         <input type="hidden" name="loup" value="{{predateur}}">
         <input type="hidden" name="cerf" value="{{proie}}">
         <input type="hidden" name="herbe" value="{{vegetal}}">
+        <button type="submit" class="btn btn-principal">Jour suivant →</button>
+      </form>
 
-        <a>Jour n° : {{jour}}</a><br>
-        <a>Nombre de prédateurs : {{predateur}}</a><br>
-        <a>Nombre de proies : {{proie}}</a><br>
-        <a>Nombre de vegetaux : {{vegetal}}</a><br>
+      <form action="/ajouter" method="POST">
+        <input type="hidden" name="jour" value="{{jour}}">
+        <input type="hidden" name="loup" value="{{predateur}}">
+        <input type="hidden" name="cerf" value="{{proie}}">
+        <input type="hidden" name="herbe" value="{{vegetal}}">
+        <button type="submit" class="btn btn-ajout">+ Ajouter des espèces</button>
+      </form>
 
-    <button type="submit">Jour suivant</button>
-    </form>
+    </div>
 
+    <!-- Graphique -->
     {% if graph_url %}
-    <div>
-        <h2>Graphique de l'évolution</h2>
-        <img src="{{ graph_url }}" alt="Graphique de l'évolution" style="max-width: 100%;">
+    <div class="section-graphique a4">
+      <p class="titre-section">Évolution des populations au fil du temps</p>
+      <img src="{{ graph_url }}" alt="Graphique de l'évolution des populations">
     </div>
     {% endif %}
 
-    {% if afficher_bouton %}
-        <h2>Anomalie détécté durant les prochains jours !!!</h2><br>
-        <form action="/ajouter" method="POST">
-            <input type="hidden" name="jour" value="{{jour}}">
-            <input type="hidden" name="loup" value="{{predateur}}">
-            <input type="hidden" name="cerf" value="{{proie}}">
-            <input type="hidden" name="herbe" value="{{vegetal}}">
-            <button type="submit">Ajouter</button>
-        </form>
-    {% endif %}
-    <a href="/">retour</a>
+  </div>
+
+  <script>
+    // Flash sur les cartes au chargement pour signaler la mise à jour
+    ['loup','cerf','herbe'].forEach(id => {
+      setTimeout(() => {
+        const card = document.getElementById('card-' + id);
+        card.classList.add('update');
+        setTimeout(() => card.classList.remove('update'), 700);
+      }, 400);
+    });
+  </script>
+
 </body>
 </html>

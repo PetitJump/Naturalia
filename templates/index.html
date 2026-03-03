@@ -1,36 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>index</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naturalia — Simulation d'écosystème</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-    <video id="video-bg" autoplay muted loop playsinline>
-        <source src="{{ url_for('static', filename='fond_index.mp4') }}" type="video/mp4">
-    </video>
-    
-     <center>
-    <img 
-    src="{{ url_for('static', filename='Ecologic.png') }}" 
-    alt="Logo" 
-    width="200"
-    height="250"
-    align="middle" 
-    valign="top"
-    />
-    </center>
+  <canvas id="particules"></canvas>
 
-    <div class="container">
-        <a class="jouer" href="/init"><button>Jouer</button></a>
-        <a class="parametre" href="/parametre"><button>Paramètre</button> </a>
+  <video id="video-bg" autoplay muted loop playsinline>
+    <source src="{{ url_for('static', filename='fond_index.mp4') }}" type="video/mp4">
+  </video>
+
+  <div class="page" style="gap:28px">
+
+    <div class="entete a1">
+      <img src="{{ url_for('static', filename='Ecologic.png') }}" alt="Logo Naturalia">
+      <span class="label-petit">Projet NSI · Thème Nature</span>
     </div>
 
+    <div class="a2" style="text-align:center">
+      <h1 class="titre-hero">Naturalia</h1>
+      <p class="sous-titre" style="margin-top:10px">
+        Une simulation de chaîne alimentaire.<br>
+        Loups, cerfs et herbe en équilibre fragile.
+      </p>
+    </div>
+
+    <div class="ornement a3">✦</div>
+
+    <div class="a4" style="text-align:center;max-width:340px">
+      <p style="font-size:13px;color:var(--terre);line-height:1.8">
+        Choisissez les populations de départ,<br>
+        avancez jour par jour, observez l'évolution.
+      </p>
+    </div>
+
+    <div class="groupe-boutons a5">
+      <a href="/init" class="btn btn-principal">▶ Lancer la simulation</a>
+      <a href="/parametre" class="btn btn-secondaire">⚙ Modifier les paramètres</a>
+    </div>
+
+  </div>
+
+  <script>
+    // Particules organiques flottantes (feuilles / spores)
+    const canvas = document.getElementById('particules');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particules = Array.from({length: 28}, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 3 + 1,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: -Math.random() * 0.5 - 0.1,
+      opacite: Math.random() * 0.5 + 0.15,
+      phase: Math.random() * Math.PI * 2,
+      couleur: ['#2d4a2d','#4a7c4a','#8b6f47','#7ab87a'][Math.floor(Math.random()*4)]
+    }));
+
+    function dessiner() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const t = Date.now() / 1000;
+      particules.forEach(p => {
+        p.x += p.vx + Math.sin(t * 0.4 + p.phase) * 0.25;
+        p.y += p.vy;
+        if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+        if (p.x < -10) p.x = canvas.width + 10;
+        if (p.x > canvas.width + 10) p.x = -10;
+
+        ctx.save();
+        ctx.globalAlpha = p.opacite;
+        ctx.fillStyle = p.couleur;
+        // Forme feuille simple
+        ctx.beginPath();
+        ctx.ellipse(p.x, p.y, p.r * 2.5, p.r, Math.sin(t * 0.3 + p.phase) * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+      requestAnimationFrame(dessiner);
+    }
+    dessiner();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+
 </body>
-
 </html>
-
-

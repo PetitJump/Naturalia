@@ -1,155 +1,160 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modification du monde</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paramètres — Naturalia</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body { background: var(--papier); overflow-y: auto; }
+    .page { justify-content: flex-start; padding-top: 90px; padding-bottom: 60px; }
+  </style>
 </head>
 <body>
 
-    <form method="POST" action="/modifier">
-        <label for="predateur"><h2>stats des loups :</h2></label>
-        <label for="predateur">
-            Une portée de loups donne entre : 
-            <input  type="number"
-                    id="nb_bebe_predateur1" 
-                    name="nb_bebe_predateur1" 
-                    class="min" required> 
-            et :  
-            <input  type="number" 
-                    id="nb_bebe_predateur2"
-                    name="nb_bebe_predateur2" 
-                    class="max" disabled>
-            louveteau
-        </label><br><br>
-        <label for="predateur">
-            La gestation dure entre :
-            <input  type="number"
-                    id="nb_bebe_tout_les_preda" 
-                    name="nb_bebe_tout_les_preda"  
-                    placeholder=" " required> 
-            jour, et : 
-            <input  type="number"
-                    id="nb_bebe_tout_les_preda2" 
-                    name="nb_bebe_tout_les_preda2"  
-                    placeholder=" " 
-                    disabled>
-            jour
-        </label><br><br>
+  <div class="cadre"></div>
+  <a href="/" class="nav-retour">← Accueil</a>
 
+  <div class="page">
 
-        <label for="predateur">
-            Les loups mange combien de prois ? 
-            <input  type="number" 
-                    id="nb_de_nourriture_predateur" 
-                    name="nb_de_nourriture_predateur"  
-                    placeholder=" " 
-                    required>
-        </label><br><br>
+    <div class="a1" style="text-align:center">
+      <span class="label-petit">Règles biologiques</span>
+      <h1 style="font-family:var(--font-titre);font-size:clamp(28px,5vw,44px);color:var(--foret);margin-top:8px">
+        Paramètres
+      </h1>
+      <p style="font-family:var(--font-titre);font-style:italic;font-size:15px;color:var(--terre);margin-top:6px">
+        Modifiez les lois naturelles qui régissent l'écosystème
+      </p>
+    </div>
 
+    <form method="POST" action="/modifier" class="form-conteneur a2">
 
-        <label for="predateur">
-            Les loups mange tout les combien de jour ?
-            <input  type="number" 
-                    id="nb_de_nourriture_tout_les_predateur" 
-                    name="nb_de_nourriture_tout_les_predateur"  
-                    placeholder=" " 
-                    required>
-        </label><br>
+      <!-- LOUPS -->
+      <div class="section-param loup-param">
+        <div class="titre-param">🐺 Loups — Canis lupus</div>
 
+        <div class="champ-ligne">
+          <span class="champ-label">Nombre de petits par portée</span>
+          <div class="champ-inputs">
+            <span class="unite">entre</span>
+            <input type="number" id="nb_bebe_predateur1" name="nb_bebe_predateur1" class="min" placeholder="min" required>
+            <span class="unite">et</span>
+            <input type="number" id="nb_bebe_predateur2" name="nb_bebe_predateur2" class="max" placeholder="max" disabled>
+            <span class="unite">louveteaux</span>
+          </div>
+        </div>
 
+        <div class="champ-ligne">
+          <span class="champ-label">Durée de gestation</span>
+          <div class="champ-inputs">
+            <span class="unite">entre</span>
+            <input type="number" id="nb_bebe_tout_les_preda" name="nb_bebe_tout_les_preda" placeholder="min" required>
+            <span class="unite">et</span>
+            <input type="number" id="nb_bebe_tout_les_preda2" name="nb_bebe_tout_les_preda2" placeholder="max" disabled>
+            <span class="unite">jours</span>
+          </div>
+        </div>
 
-        <label for="proie"><h2>stats des cerfs :</h2></label>
+        <div class="champ-ligne">
+          <span class="champ-label">Proies consommées par repas</span>
+          <div class="champ-inputs">
+            <input type="number" id="nb_de_nourriture_predateur" name="nb_de_nourriture_predateur" placeholder="0" required>
+            <span class="unite">cerf(s)</span>
+          </div>
+        </div>
 
-        <label for="proie">
-            Une portée de cerfs donne entre :
-            <input  type="number" 
-                    id="nb_bebe_proie1" 
-                    name="nb_bebe_proie1"  
-                    placeholder=" " 
-                    class="min"
-                    required>
-                et : 
-            <input  type="number" 
-                    id="nb_bebe_proie2" 
-                    name="nb_bebe_proie2"  
-                    placeholder=" "
-                    class="max"
-                    disabled>
-                faon
-        </label><br><br>
+        <div class="champ-ligne">
+          <span class="champ-label">Fréquence des repas</span>
+          <div class="champ-inputs">
+            <span class="unite">tous les</span>
+            <input type="number" id="nb_de_nourriture_tout_les_predateur" name="nb_de_nourriture_tout_les_predateur" placeholder="0" required>
+            <span class="unite">jours</span>
+          </div>
+        </div>
+      </div>
 
-        <label for="proie">
-            La gestation dure entre : 
-            <input  type="number" 
-                    id="nb_bebe_tout_les_proie" 
-                    name="nb_bebe_tout_les_proie"  
-                    placeholder="" 
-                    required> 
-                jour et : 
-            <input  type="number" 
-                    id="nb_bebe_tout_les_proie2" 
-                    name="nb_bebe_tout_les_proie2"  
-                    placeholder="" 
-                    disabled>
-        </label><br><br>
+      <!-- CERFS -->
+      <div class="section-param cerf-param">
+        <div class="titre-param">🦌 Cerfs — Cervus elaphus</div>
 
-        <label for="proie">
-            Les cerfs mange combien de herbes ? 
-            <input  type="number" 
-                    id="nb_de_nourriture_proie" 
-                    name="nb_de_nourriture_proie"  
-                    placeholder=" " required>
-        </label><br><br>
+        <div class="champ-ligne">
+          <span class="champ-label">Nombre de petits par portée</span>
+          <div class="champ-inputs">
+            <span class="unite">entre</span>
+            <input type="number" id="nb_bebe_proie1" name="nb_bebe_proie1" class="min" placeholder="min" required>
+            <span class="unite">et</span>
+            <input type="number" id="nb_bebe_proie2" name="nb_bebe_proie2" class="max" placeholder="max" disabled>
+            <span class="unite">faon(s)</span>
+          </div>
+        </div>
 
-        <label for="proie">
-            Les cerfs mange tout les combien de jour ? 
-            <input  type="number" 
-                    id="nb_de_nourriture_tout_les_proie" 
-                    name="nb_de_nourriture_tout_les_proie"  
-                    placeholder=" " 
-                    required>
-        </label><br>
+        <div class="champ-ligne">
+          <span class="champ-label">Durée de gestation</span>
+          <div class="champ-inputs">
+            <span class="unite">entre</span>
+            <input type="number" id="nb_bebe_tout_les_proie" name="nb_bebe_tout_les_proie" placeholder="min" required>
+            <span class="unite">et</span>
+            <input type="number" id="nb_bebe_tout_les_proie2" name="nb_bebe_tout_les_proie2" placeholder="max" disabled>
+            <span class="unite">jours</span>
+          </div>
+        </div>
 
-        <label for="proie"><h2>stats des herbes :</h2></label>
-        <label for="vegetal">
-            Le taux de croissance de l'herbe entre : 
-            <input  type="number" 
-                    id="nb_bebe_vegetal1" 
-                    name="nb_bebe_vegetal1"  
-                    class="min"
-                    placeholder=" " 
-                    required> 
-            et : 
-            <input  type="number" 
-                    id="nb_bebe_vegetal2" 
-                    name="nb_bebe_vegetal2"  
-                    class="max"
-                    placeholder=" " 
-                    disabled>
-        </label><br><br>
+        <div class="champ-ligne">
+          <span class="champ-label">Herbe consommée par repas</span>
+          <div class="champ-inputs">
+            <input type="number" id="nb_de_nourriture_proie" name="nb_de_nourriture_proie" placeholder="0" required>
+            <span class="unite">touffe(s)</span>
+          </div>
+        </div>
 
-        <label for="vegetal">
-            Les herbes ce reproduise entre : 
-            <input  type="number" 
-                    id="nb_bebe_tout_les_vegetal" 
-                    name="nb_bebe_tout_les_vegetal"  
-                    placeholder=" " 
-                    class="min"
-                    required> 
-                jour et : 
-            <input  type="number" 
-                    id="nb_bebe_tout_les_vegetal2" 
-                    name="nb_bebe_tout_les_vegetal2"  
-                    placeholder=" " 
-                    class="max"
-                    disabled>
-                jour
-        </label><br>
-    
-        <button type="submit">Sauvegarder</button>
+        <div class="champ-ligne">
+          <span class="champ-label">Fréquence des repas</span>
+          <div class="champ-inputs">
+            <span class="unite">tous les</span>
+            <input type="number" id="nb_de_nourriture_tout_les_proie" name="nb_de_nourriture_tout_les_proie" placeholder="0" required>
+            <span class="unite">jours</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HERBE -->
+      <div class="section-param herbe-param">
+        <div class="titre-param">🌿 Herbe — Végétation</div>
+
+        <div class="champ-ligne">
+          <span class="champ-label">Taux de croissance par cycle</span>
+          <div class="champ-inputs">
+            <span class="unite">entre</span>
+            <input type="number" id="nb_bebe_vegetal1" name="nb_bebe_vegetal1" class="min" placeholder="min" required>
+            <span class="unite">et</span>
+            <input type="number" id="nb_bebe_vegetal2" name="nb_bebe_vegetal2" class="max" placeholder="max" disabled>
+            <span class="unite">pousses</span>
+          </div>
+        </div>
+
+        <div class="champ-ligne">
+          <span class="champ-label">Fréquence de reproduction</span>
+          <div class="champ-inputs">
+            <span class="unite">tous les</span>
+            <input type="number" id="nb_bebe_tout_les_vegetal" name="nb_bebe_tout_les_vegetal" class="min" placeholder="min" required>
+            <span class="unite">à</span>
+            <input type="number" id="nb_bebe_tout_les_vegetal2" name="nb_bebe_tout_les_vegetal2" class="max" placeholder="max" disabled>
+            <span class="unite">jours</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="a3" style="display:flex;justify-content:center;margin-top:8px">
+        <button type="submit" class="btn btn-principal" style="padding:14px 48px">
+          Sauvegarder les paramètres
+        </button>
+      </div>
+
     </form>
-    <a href="/">retour</a>
-    <script src="{{url_for('static', filename='regle.js')}}"></script>
+
+  </div>
+
+  <script src="{{ url_for('static', filename='regle.js') }}"></script>
+
 </body>
 </html>
