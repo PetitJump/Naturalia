@@ -13,4 +13,3 @@
 - Ajout d'un vrai système d'évènement météorologique
 - Faire un vrai jeu
 - Système de meute fonctionel
-- Interface (avec Claude)

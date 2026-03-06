@@ -1,5 +1,5 @@
 {
-  "premier_pas": false,
+  "premier_pas": true,
   "equilibre": false,
   "meute_royale": false,
   "troupeau": false,
@@ -7,5 +7,5 @@
   "survie_seche": false,
   "survie_hiver": false,
   "cycle": false,
-  "extinction": false
+  "extinction": true
 }
