@@ -26,38 +26,72 @@ class Jeu:
         self.vegetaux = vegetaux
 
     def naissance(self, data: dict, annee: int):
-        """Naissances et vieillissement."""
-        if annee % data["loup"]["reproduction"]["tout_les"] == 0:
+        """Naissances et vieillissement.
+        Respecte exactement les parametres configures par l'utilisateur.
+        tout_les [min,max] : frequence de reproduction
+        nombre_de_nv_nee [min,max] : petits par couple
+        """
+        import random as _rnd
+        from random import randint
+
+        # Loups
+        freq_loup = randint(data["loup"]["reproduction"]["tout_les"][0],
+                            data["loup"]["reproduction"]["tout_les"][1])
+        if annee % freq_loup == 0:
             age_min = data["loup"]["reproduction"]["maturiter_sexuel"]
             majeurs = [k for k in self.meute.predateurs if k.age > age_min]
-            nb = data["loup"]["reproduction"]["nombre_de_nv_nee"] * (len(majeurs) // 2)
-            for _ in range(nb):
-                self.meute.predateurs.append(Predateur("loup", 0))
+            nb_couples = len(majeurs) // 2
+            for _ in range(nb_couples):
+                petits = randint(data["loup"]["reproduction"]["nombre_de_nv_nee"][0],
+                                 data["loup"]["reproduction"]["nombre_de_nv_nee"][1])
+                for _ in range(petits):
+                    if _rnd.random() < 0.35:  # 35% survie juvénile loups
+                        self.meute.predateurs.append(Predateur("loup", 0))
 
         for k in self.meute.predateurs:
             k.age += 1
 
-        if annee % data["cerf"]["reproduction"]["tout_les"] == 0:
+        # Cerfs - repro limitée par la disponibilité de l'herbe
+        freq_cerf = randint(data["cerf"]["reproduction"]["tout_les"][0],
+                            data["cerf"]["reproduction"]["tout_les"][1])
+        if annee % freq_cerf == 0:
             age_min = data["cerf"]["reproduction"]["maturiter_sexuel"]
             majeurs = [k for k in self.proies if k.age > age_min]
-            nb = data["cerf"]["reproduction"]["nombre_de_nv_nee"] * (len(majeurs) // 2)
-            for _ in range(nb):
-                self.proies.append(Proie("cerf", 0))
+            nb_couples = len(majeurs) // 2
+            # Si l'herbe est rare, les cerfs se reproduisent moins bien
+            nb_cerfs = max(1, len(self.proies))
+            herbe_par_cerf = len(self.vegetaux) / nb_cerfs
+            # Seuil de confort: 5 touffes/cerf = repro pleine. Moins = repro réduite
+            facteur_herbe = min(1.0, herbe_par_cerf / 5.0)
+            for _ in range(nb_couples):
+                if _rnd.random() > facteur_herbe:
+                    continue  # pas de repro si herbe insuffisante
+                petits = randint(data["cerf"]["reproduction"]["nombre_de_nv_nee"][0],
+                                 data["cerf"]["reproduction"]["nombre_de_nv_nee"][1])
+                for _ in range(petits):
+                    if _rnd.random() < 0.40:
+                        self.proies.append(Proie("cerf", 0))
 
         for k in self.proies:
             k.age += 1
 
-        if annee % data["herbe"]["reproduction"]["tout_les"] == 0 and len(self.vegetaux) < 2500:
-            nb = data["herbe"]["reproduction"]["nombre_de_nv_nee"] * (len(self.vegetaux) // 2)
-            for _ in range(nb):
-                self.vegetaux.append(Vegetal("herbe"))
+        # Herbe - croissance logistique
+        N = len(self.vegetaux)
+        r = data["herbe"]["reproduction"]["taux_r"]
+        K = data["herbe"]["reproduction"]["capacite"]
+        croissance = int(r * N * (1 - N / K))
+        croissance = max(0, croissance)
+        for _ in range(croissance):
+            self.vegetaux.append(Vegetal("herbe"))
+
 
     def mort(self, data: dict, annee: int):
         """Morts naturelles et prédation."""
         self.meute.predateurs = [k for k in self.meute.predateurs if k.age < 20]
-        self.proies           = [k for k in self.proies           if k.age < 20]
+        self.proies           = [k for k in self.proies           if k.age < 12]  # cerfs vivent moins longtemps
         self.taux_de_survie()
 
+        # ── Loups chassent les cerfs ──────────────────────
         if annee % data["loup"]["mange"]["tout_les"] == 0:
             combien = data["loup"]["mange"]["combien"]
             necessaires = len(self.meute.predateurs) * combien
@@ -72,15 +106,40 @@ class Jeu:
                 else:
                     self.meute.predateurs = self.meute.predateurs[:survivants]
 
+        # ── Cerfs broutent l'herbe ────────────────────────
+        # Chaque cerf mange X touffes par an.
+        # Si l'herbe manque, la pression de faim est progressive :
+        # les cerfs meurent proportionnellement au manque, pas tous d'un coup.
+        touffes_dispo    = len(self.vegetaux)
+        touffes_par_cerf = data["cerf"]["mange"]["combien"]
+        nb_cerfs         = len(self.proies)
+        touffes_requises = nb_cerfs * touffes_par_cerf
+
+        if touffes_dispo >= touffes_requises:
+            # Assez d'herbe pour tout le monde
+            self.vegetaux = self.vegetaux[touffes_requises:]
+        elif touffes_dispo > 0:
+            # Manque d'herbe : taux de survie proportionnel à la disponibilité
+            taux_satisfaction = touffes_dispo / touffes_requises
+            # Les cerfs meurent partiellement — mortalité douce par famine
+            import random as _r
+            self.proies = [c for c in self.proies if _r.random() < (0.3 + 0.7 * taux_satisfaction)]
+            self.vegetaux = []
+        else:
+            # Plus d'herbe du tout — forte mortalité mais pas extinction immédiate
+            import random as _r
+            self.proies = [c for c in self.proies if _r.random() < 0.2]
+            self.vegetaux = []
+
     def taux_de_survie(self):
         """Mortalité naturelle aléatoire."""
         self.meute.predateurs = [
             k for k in self.meute.predateurs
-            if random.random() < (0.6 if k.age == 0 else 0.9)
+            if random.random() < (0.5 if k.age == 0 else 0.95)
         ]
         self.proies = [
             k for k in self.proies
-            if random.random() < (0.6 if k.age == 0 else 0.9)
+            if random.random() < (0.5 if k.age == 0 else 0.95)
         ]
 
     def appliquer_meteo(self, evenement: dict) -> dict:
@@ -130,7 +189,7 @@ class Jeu:
 
         with open('data.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
-        data = random_repro(data)
+        # random_repro supprime - les parametres sont appliques directement dans naissance()
 
         self.naissance(data, annee)
         self.mort(data, annee)

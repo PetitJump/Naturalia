@@ -202,6 +202,47 @@ def game():
     args = build_render_args(annee, predateur, proie, vegetal, meteo_event, [], prev_l, prev_c, prev_v)
     return render_template("game.html", **args)
 
+@app.route("/accelerer", methods=["POST"])
+def accelerer():
+    """Simule N années d'un coup et redirige vers game.html."""
+    global historique, jeu
+    nb_annees = max(1, min(50, int(request.form.get("nb_annees", 5))))
+    annee = int(request.form["annee"])
+
+    prev_l = historique["loup"][-1] if historique["loup"] else None
+    prev_c = historique["cerf"][-1] if historique["cerf"] else None
+    prev_v = historique["herbe"][-1] if historique["herbe"] else None
+
+    dernier_meteo = None
+    for _ in range(nb_annees):
+        _, _, _, meteo_event = jeu.update(annee)
+        annee += 1
+        predateur = len(jeu.meute.predateurs)
+        proie     = len(jeu.proies)
+        vegetal   = len(jeu.vegetaux)
+        historique["loup"].append(predateur)
+        historique["cerf"].append(proie)
+        historique["herbe"].append(vegetal)
+        if meteo_event:
+            dernier_meteo = meteo_event
+        if predateur == 0 or proie == 0 or vegetal == 0:
+            espece_morte = "loups" if predateur == 0 else ("cerfs" if proie == 0 else "herbe")
+            sc = charger_succes_permanents()
+            verifier_succes(annee, predateur, proie, vegetal,
+                            meteo_event["cle"] if meteo_event else None, sc)
+            sauvegarder_succes_permanents(sc)
+            return render_template("fin.html",
+                annee=annee, espece_morte=espece_morte,
+                predateur=predateur, proie=proie, vegetal=vegetal,
+                succes_list=SUCCES_DEF, succes_courants=sc,
+                historique=json.dumps(historique))
+
+    args = build_render_args(annee, predateur, proie, vegetal,
+                             dernier_meteo, [], prev_l, prev_c, prev_v)
+    # Indiquer combien d'années ont été sautées
+    args["annees_sautees"] = nb_annees
+    return render_template("game.html", **args)
+
 @app.route("/update_ajouter", methods=["GET", "POST"])
 def update_ajouter():
     global jeu, historique
@@ -253,32 +294,63 @@ def reset_succes():
 
 @app.route("/parametre")
 def regles():
-    return render_template("parametre.html")
+    import json as _json
+    with open("data.json", "r", encoding="utf-8") as f:
+        data = _json.load(f)
+    # S'assurer que tout_les est toujours une liste [min, max]
+    for espece in data:
+        tl = data[espece]["reproduction"]["tout_les"]
+        if isinstance(tl, int):
+            data[espece]["reproduction"]["tout_les"] = [tl, tl]
+    return render_template("parametre.html", data=data)
 
 @app.route("/modifier", methods=["GET", "POST"])
 def modifier():
+    # Vitesse de repousse de l'herbe
+    vitesse_herbe = request.form.get("vitesse_herbe", "normal")
+    # Croissance linéaire sans plafond — les cerfs régulent naturellement
+    # Lent: +60/an  → prairie fragile, cerfs en compétition
+    # Normal: +120/an → équilibre naturel
+    # Rapide: +250/an → prairie vivace, cerfs bien nourris
+    # taux_r : vitesse de montée, capacite : plafond souple
+    # Lent: pousse douce, plafond bas → prairies fragiles
+    # Normal: équilibre naturel, plafond 3500
+    # Rapide: prairie vivace, plafond plus haut
+    herbe_presets = {
+        "lent":   {"taux_r": 0.15, "capacite": 2500, "tout_les": [1, 1], "nombre_de_nv_nee": [1, 1]},
+        "normal": {"taux_r": 0.25, "capacite": 3500, "tout_les": [1, 1], "nombre_de_nv_nee": [1, 1]},
+        "rapide": {"taux_r": 0.40, "capacite": 5000, "tout_les": [1, 1], "nombre_de_nv_nee": [1, 1]},
+    }
+    herbe_repro = herbe_presets.get(vitesse_herbe, herbe_presets["normal"])
+
+    def to_annees(val, unite_key):
+        v = max(1, int(val))
+        if request.form.get(unite_key) == "mois":
+            return max(1, round(v / 12))
+        return v
+
+    tl_preda = to_annees(request.form["nb_bebe_tout_les_preda"], "unite_repro_loup")
+    tl_proie = to_annees(request.form["nb_bebe_tout_les_proie"], "unite_repro_cerf")
+
     data = {
         "loup": {
             "reproduction": {
-                "tout_les": int(request.form["nb_bebe_tout_les_preda"]),
+                "tout_les": [tl_preda, tl_preda],
                 "nombre_de_nv_nee": [int(request.form["nb_bebe_predateur1"]), int(request.form["nb_bebe_predateur2"])],
                 "maturiter_sexuel": 2
             },
-            "mange": {"qui": "cerf",  "tout_les": int(request.form["nb_de_nourriture_tout_les_predateur"]), "combien": int(request.form["nb_de_nourriture_predateur"])}
+            "mange": {"qui": "cerf", "tout_les": 1, "combien": int(request.form["nb_de_nourriture_predateur"])}
         },
         "cerf": {
             "reproduction": {
-                "tout_les": int(request.form["nb_bebe_tout_les_proie"]),
+                "tout_les": [tl_proie, tl_proie],
                 "nombre_de_nv_nee": [int(request.form["nb_bebe_proie1"]), int(request.form["nb_bebe_proie2"])],
                 "maturiter_sexuel": 2
             },
-            "mange": {"qui": "herbe", "tout_les": int(request.form["nb_de_nourriture_tout_les_proie"]),  "combien": int(request.form["nb_de_nourriture_proie"])}
+            "mange": {"qui": "herbe", "tout_les": 1, "combien": int(request.form["nb_de_nourriture_proie"])}
         },
         "herbe": {
-            "reproduction": {
-                "tout_les": int(request.form["nb_bebe_tout_les_vegetal"]),
-                "nombre_de_nv_nee": [int(request.form["nb_bebe_vegetal1"]), int(request.form["nb_bebe_vegetal2"])]
-            }
+            "reproduction": herbe_repro
         }
     }
     with open("data.json", "w", encoding="utf-8") as f:

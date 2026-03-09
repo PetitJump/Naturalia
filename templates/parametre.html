@@ -8,51 +8,58 @@
   <style>
     body { background: var(--papier); overflow-y: auto; }
     .page { justify-content: flex-start; padding-top: 90px; padding-bottom: 80px; gap: 20px; }
+    .form-conteneur { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 16px; }
 
-    .form-conteneur { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 16px; }
-
-    .section-param {
-      background: white;
-      border: 1px solid rgba(0,0,0,.08);
-      border-top: 3px solid;
-      padding: 20px 24px;
-    }
+    .section-param { background: white; border: 1px solid rgba(0,0,0,.08); border-top: 3px solid; padding: 22px 24px; }
     .loup-param  { border-top-color: var(--sang); }
     .cerf-param  { border-top-color: var(--ciel); }
     .herbe-param { border-top-color: var(--mousse); }
 
-    .titre-param {
-      font-family: var(--font-corps); font-size: 13px; font-weight: 700;
-      letter-spacing: .12em; text-transform: uppercase;
-      color: var(--encre); margin-bottom: 16px;
-    }
+    .titre-param { font-family:var(--font-corps); font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--encre); margin-bottom:18px; }
 
-    .param-ligne {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,.06);
-      gap: 16px;
-    }
-    .param-ligne:last-child { border-bottom: none; padding-bottom: 0; }
+    .param-ligne { display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-bottom:1px solid rgba(0,0,0,.06); gap:16px; }
+    .param-ligne:last-child { border-bottom:none; padding-bottom:0; }
+    .param-label { font-family:var(--font-titre); font-size:15px; color:var(--foret); flex:1; line-height:1.4; }
+    .param-label small { display:block; font-size:11px; color:var(--terre); opacity:.65; font-style:italic; margin-top:2px; }
 
-    .param-label {
-      font-family: var(--font-titre); font-size: 14px; color: var(--foret);
-      flex: 1; line-height: 1.4;
-    }
-    .param-label small {
-      display: block; font-size: 11px; color: var(--terre); opacity: .7;
-      font-style: italic; margin-top: 2px;
-    }
-
-    .param-ctrl { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .param-ctrl { display:flex; align-items:center; gap:7px; flex-shrink:0; }
     .param-ctrl input[type=number] {
-      width: 58px; padding: 7px 8px; text-align: center;
-      border: 1px solid rgba(0,0,0,.2); background: var(--papier);
-      font-family: var(--font-code); font-size: 16px; font-weight: 700;
-      color: var(--encre); outline: none; transition: border-color .2s;
+      width:58px; padding:8px 6px; text-align:center;
+      border:1px solid rgba(0,0,0,.18); background:var(--papier);
+      font-family:var(--font-code); font-size:16px; font-weight:700; color:var(--encre);
+      outline:none; transition:border-color .2s;
     }
-    .param-ctrl input:focus { border-color: var(--foret); }
-    .param-ctrl input:disabled { opacity: .35; background: #eee; }
-    .param-unite { font-family: var(--font-corps); font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--terre); opacity: .7; white-space: nowrap; }
+    .param-ctrl input:focus { border-color:var(--foret); }
+    .param-ctrl input:disabled { opacity:.3; background:#eee; cursor:not-allowed; }
+    .param-unite { font-family:var(--font-corps); font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--terre); opacity:.65; white-space:nowrap; }
+
+    /* Curseur herbe */
+    .herbe-curseur { display:flex; gap:0; margin-top:4px; width:100%; }
+    .herbe-option { flex:1; }
+    .herbe-option input[type=radio] { display:none; }
+    .herbe-option label {
+      display:block; text-align:center; padding:10px 8px;
+      font-family:var(--font-corps); font-size:11px; font-weight:700;
+      letter-spacing:.08em; text-transform:uppercase;
+      border:1px solid rgba(0,0,0,.15); border-right:none;
+      cursor:pointer; transition:all .15s;
+      color:var(--terre); background:white;
+    }
+    .herbe-option:last-child label { border-right:1px solid rgba(0,0,0,.15); }
+    .herbe-option input:checked + label {
+      background:var(--mousse); color:white; border-color:var(--mousse);
+    }
+    .herbe-option:not(:first-child) input:checked + label { border-left-color:var(--mousse); }
+    .herbe-desc { font-family:var(--font-titre); font-style:italic; font-size:12px; color:var(--terre); opacity:.6; margin-top:8px; text-align:center; min-height:18px; }
+    /* Sélecteur mois/ans */
+    .select-unite {
+      appearance:none; -webkit-appearance:none;
+      border:1px solid rgba(0,0,0,.18); background:var(--papier);
+      font-family:var(--font-corps); font-size:11px; font-weight:700;
+      letter-spacing:.06em; text-transform:uppercase; color:var(--terre);
+      padding:7px 10px; cursor:pointer; outline:none; transition:border-color .2s;
+    }
+    .select-unite:focus { border-color:var(--foret); }
   </style>
 </head>
 <body>
@@ -66,147 +73,134 @@
       <span class="label-petit">Réglages biologiques</span>
       <h1 style="font-family:var(--font-titre);font-size:clamp(28px,5vw,44px);color:var(--foret);margin-top:8px">Paramètres</h1>
       <p style="font-family:var(--font-titre);font-style:italic;font-size:15px;color:var(--terre);margin-top:6px">
-        Modifiez les règles naturelles de l'écosystème
+        Ajustez les comportements naturels de chaque espèce
       </p>
     </div>
 
     <form method="POST" action="/modifier" class="form-conteneur a2">
 
-      <!-- LOUPS -->
+      <!-- ── LOUPS ── -->
       <div class="section-param loup-param">
         <div class="titre-param">🐺 Loups</div>
 
         <div class="param-ligne">
           <div class="param-label">
             Petits par portée
-            <small>Nombre de louveteaux à chaque naissance</small>
+            <small>Louveteaux nés à chaque reproduction</small>
           </div>
           <div class="param-ctrl">
-            <span class="param-unite">entre</span>
-            <input type="number" id="nb_bebe_predateur1" name="nb_bebe_predateur1" min="1" max="10" value="1" required>
-            <span class="param-unite">et</span>
-            <input type="number" id="nb_bebe_predateur2" name="nb_bebe_predateur2" min="1" max="10" value="3" disabled>
+            <input type="number" id="nb_bebe_predateur1" name="nb_bebe_predateur1"
+                   min="1" max="10" value="{{ data.loup.reproduction.nombre_de_nv_nee[0] }}" required>
+            <span class="param-unite">à</span>
+            <input type="number" id="nb_bebe_predateur2" name="nb_bebe_predateur2"
+                   min="1" max="10" value="{{ data.loup.reproduction.nombre_de_nv_nee[1] }}">
           </div>
         </div>
 
         <div class="param-ligne">
           <div class="param-label">
             Fréquence de reproduction
-            <small>Une portée tous les X ans</small>
+            <small>Une portée tous les X…</small>
           </div>
           <div class="param-ctrl">
-            <input type="number" id="nb_bebe_tout_les_preda" name="nb_bebe_tout_les_preda" min="1" max="10" value="2" required>
-            <span class="param-unite">an(s)</span>
+            <input type="number" id="nb_bebe_tout_les_preda" name="nb_bebe_tout_les_preda"
+                   min="1" max="120" value="{{ data.loup.reproduction.tout_les[0] }}" required>
+            <select name="unite_repro_loup" class="select-unite">
+              <option value="ans">ans</option>
+              <option value="mois">mois</option>
+            </select>
           </div>
         </div>
 
         <div class="param-ligne">
           <div class="param-label">
             Cerfs chassés par loup
-            <small>À chaque période de chasse</small>
+            <small>Chaque loup chasse X cerfs par an</small>
           </div>
           <div class="param-ctrl">
-            <input type="number" id="nb_de_nourriture_predateur" name="nb_de_nourriture_predateur" min="1" max="10" value="2" required>
+            <input type="number" id="nb_de_nourriture_predateur" name="nb_de_nourriture_predateur"
+                   min="1" max="10" value="{{ data.loup.mange.combien }}" required>
             <span class="param-unite">cerf(s)</span>
-          </div>
-        </div>
-
-        <div class="param-ligne">
-          <div class="param-label">
-            Fréquence des chasses
-            <small>Une chasse tous les X ans</small>
-          </div>
-          <div class="param-ctrl">
-            <input type="number" id="nb_de_nourriture_tout_les_predateur" name="nb_de_nourriture_tout_les_predateur" min="1" max="10" value="3" required>
-            <span class="param-unite">an(s)</span>
           </div>
         </div>
       </div>
 
-      <!-- CERFS -->
+      <!-- ── CERFS ── -->
       <div class="section-param cerf-param">
         <div class="titre-param">🦌 Cerfs</div>
 
         <div class="param-ligne">
           <div class="param-label">
             Petits par portée
-            <small>Nombre de faons à chaque naissance</small>
+            <small>Faons nés à chaque reproduction</small>
           </div>
           <div class="param-ctrl">
-            <span class="param-unite">entre</span>
-            <input type="number" id="nb_bebe_proie1" name="nb_bebe_proie1" min="1" max="10" value="2" required>
-            <span class="param-unite">et</span>
-            <input type="number" id="nb_bebe_proie2" name="nb_bebe_proie2" min="1" max="10" value="5" disabled>
+            <input type="number" id="nb_bebe_proie1" name="nb_bebe_proie1"
+                   min="1" max="10" value="{{ data.cerf.reproduction.nombre_de_nv_nee[0] }}" required>
+            <span class="param-unite">à</span>
+            <input type="number" id="nb_bebe_proie2" name="nb_bebe_proie2"
+                   min="1" max="10" value="{{ data.cerf.reproduction.nombre_de_nv_nee[1] }}">
           </div>
         </div>
 
         <div class="param-ligne">
           <div class="param-label">
             Fréquence de reproduction
-            <small>Une portée tous les X ans</small>
+            <small>Une portée tous les X…</small>
           </div>
           <div class="param-ctrl">
-            <input type="number" id="nb_bebe_tout_les_proie" name="nb_bebe_tout_les_proie" min="1" max="10" value="2" required>
-            <span class="param-unite">an(s)</span>
+            <input type="number" id="nb_bebe_tout_les_proie" name="nb_bebe_tout_les_proie"
+                   min="1" max="120" value="{{ data.cerf.reproduction.tout_les[0] }}" required>
+            <select name="unite_repro_cerf" class="select-unite">
+              <option value="ans">ans</option>
+              <option value="mois">mois</option>
+            </select>
           </div>
         </div>
 
         <div class="param-ligne">
           <div class="param-label">
             Herbe consommée par cerf
-            <small>À chaque période de pâturage</small>
+            <small>Touffes mangées par an</small>
           </div>
           <div class="param-ctrl">
-            <input type="number" id="nb_de_nourriture_proie" name="nb_de_nourriture_proie" min="1" max="10" value="2" required>
+            <input type="number" id="nb_de_nourriture_proie" name="nb_de_nourriture_proie"
+                   min="1" max="100" value="{{ data.cerf.mange.combien }}" required>
             <span class="param-unite">touffe(s)</span>
           </div>
         </div>
-
-        <div class="param-ligne">
-          <div class="param-label">
-            Fréquence du pâturage
-            <small>Un repas tous les X ans</small>
-          </div>
-          <div class="param-ctrl">
-            <input type="number" id="nb_de_nourriture_tout_les_proie" name="nb_de_nourriture_tout_les_proie" min="1" max="10" value="1" required>
-            <span class="param-unite">an(s)</span>
-          </div>
-        </div>
       </div>
 
-      <!-- HERBE -->
+      <!-- ── HERBE ── -->
       <div class="section-param herbe-param">
-        <div class="titre-param">🌿 Herbe</div>
+        <div class="titre-param">🌿 Herbe — Vitesse de repousse</div>
 
-        <div class="param-ligne">
-          <div class="param-label">
-            Nouvelles pousses par cycle
-            <small>Par paire de touffes existantes</small>
-          </div>
-          <div class="param-ctrl">
-            <span class="param-unite">entre</span>
-            <input type="number" id="nb_bebe_vegetal1" name="nb_bebe_vegetal1" min="1" max="20" value="5" required>
-            <span class="param-unite">et</span>
-            <input type="number" id="nb_bebe_vegetal2" name="nb_bebe_vegetal2" min="1" max="20" value="10" disabled>
-          </div>
+        <div style="font-family:var(--font-titre);font-size:13px;color:var(--terre);line-height:1.7;margin-bottom:16px;padding:12px 14px;background:#f4f9f4;border-left:3px solid var(--mousse);">
+          <strong style="font-style:normal;color:var(--foret);">Croissance logistique</strong> —
+          L'herbe pousse vite quand elle est rare, <em>de plus en plus lentement</em> en s'approchant
+          de sa capacité maximale. Pas de mur abrupt — juste un ralentissement progressif et naturel.
+          Ce sont aussi les <strong>cerfs qui la régulent</strong> en broutant activement.
         </div>
 
-        <div class="param-ligne">
-          <div class="param-label">
-            Fréquence de repousse
-            <small>Un cycle de croissance tous les X ans</small>
+        <div class="herbe-curseur">
+          <div class="herbe-option">
+            <input type="radio" id="h-lent" name="vitesse_herbe" value="lent">
+            <label for="h-lent">🐢 Lente</label>
           </div>
-          <div class="param-ctrl">
-            <input type="number" id="nb_bebe_tout_les_vegetal" name="nb_bebe_tout_les_vegetal" min="1" max="10" value="1" required>
-            <span class="param-unite">an(s)</span>
+          <div class="herbe-option">
+            <input type="radio" id="h-normal" name="vitesse_herbe" value="normal" checked>
+            <label for="h-normal">🌿 Normale</label>
+          </div>
+          <div class="herbe-option">
+            <input type="radio" id="h-rapide" name="vitesse_herbe" value="rapide">
+            <label for="h-rapide">⚡ Rapide</label>
           </div>
         </div>
+        <div class="herbe-desc" id="herbe-desc">Repousse équilibrée — prairie viable à long terme.</div>
       </div>
 
       <div style="display:flex;justify-content:center;margin-top:8px">
-        <button type="submit" class="btn btn-principal" style="padding:14px 48px">
-          Sauvegarder
-        </button>
+        <button type="submit" class="btn btn-principal" style="padding:14px 52px">Sauvegarder</button>
       </div>
 
     </form>
@@ -214,6 +208,19 @@
   </div>
 
   <script src="{{ url_for('static', filename='regle.js') }}"></script>
+  <script>
+    // Description dynamique du curseur herbe
+    const descs = {
+      lent:   "+60 touffes/an — prairie fragile, les cerfs doivent rester peu nombreux.",
+      normal: "+120 touffes/an — équilibre naturel entre les espèces.",
+      rapide: "+250 touffes/an — prairie vivace, les cerfs peuvent proliférer sans risque."
+    };
+    document.querySelectorAll('input[name="vitesse_herbe"]').forEach(r => {
+      r.addEventListener('change', () => {
+        document.getElementById('herbe-desc').textContent = descs[r.value];
+      });
+    });
+  </script>
 
 </body>
 </html>
