@@ -37,7 +37,7 @@
     },
     "herbe": {
         "reproduction": {
-            "taux_r": 0.6,
+            "taux_r": 0.4,
             "capacite": 5000,
             "tout_les": [
                 1,
