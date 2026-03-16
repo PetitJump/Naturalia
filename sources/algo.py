@@ -187,30 +187,35 @@ class Jeu:
         return evenement
 
     def update(self, annee: int):
-        """Fonction principale appelée par Flask. Retourne aussi l'évent météo éventuel."""
-
-        with open(os.path.join(BASE_DIR, 'data', 'data.json'), 'r', encoding='utf-8') as f:
+        """
+        La fonction update permet de mettre à jour le jeu.
+        """
+        #On appelle le fichier data avec les information sur les animaux.
+        with open('data.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
-        # random_repro supprime - les parametres sont appliques directement dans naissance()
-
+        
+        #On appelle les fonctions mort et naissance. 
+        #Ces fonctions vont donc être appelée pour permettre a l'écosystème de paraitre plus naturel.
+        #Pour avoir plus d'information sur ces fonctions, veuillez regarder les fonctions
         self.naissance(data, annee)
         self.mort(data, annee)
 
-        # Plancher végétal minimal
+        #Il y a un nombre minimum d'herbe à avoir dans le jeu. 
+        #Si celui-ci est plus bas que 10 herbes, d'autres se rajoutent automatiquement.
         if len(self.vegetaux) < 10:
             for _ in range(15):
                 self.vegetaux.append(Vegetal("herbe"))
 
-        # ── Météo ─────────────────────────────────────────
+        #On va maintenant appliquer les météos
         meteo_event = None
-        with open(os.path.join(BASE_DIR, 'data', 'meteo.json'), 'r', encoding='utf-8') as f:
-            meteo = json.load(f)
+        with open('meteo.json', 'r', encoding='utf-8') as f:
+            meteo = json.load(f) #On va ouvrir le fichier Json pour pouvoir le lire
 
-        for cle, ev in meteo.items():
-            if random.random() < ev["chance"]:
-                meteo_event = dict(ev)
-                meteo_event["cle"] = cle
-                self.appliquer_meteo(ev)
+        for cle, ev in meteo.items(): #On va instancier deux variables qui sont dans meteo
+            if random.random() < ev["chance"]: #On va prendre un decimal random. si celui-ci est plus petit que la probilité de la météo
+                meteo_event = dict(ev) 
+                meteo_event["cle"] = cle 
+                self.appliquer_meteo(ev) #On va enfin finir par appeler la fonction qui permet d'appliquer l'evenement meteo dans la partie
                 break  # un seul événement par année
 
         return self.meute.predateurs, self.proies, self.vegetaux, meteo_event
