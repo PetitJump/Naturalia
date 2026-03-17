@@ -16,6 +16,10 @@
     .chargement { position:fixed; inset:0; background:var(--papier); z-index:500; opacity:0; pointer-events:none; transition:opacity .2s; }
     .chargement.actif { opacity:1; pointer-events:all; }
 
+    /* Canvas : fond immédiat pour éviter le flash transparent lors du swap */
+    #graph-canvas { background: #ede8d8; }
+    #donut-canvas { background: white; }
+
     /* ── Badge année ── */
     .badge-annee { display:inline-flex; align-items:baseline; gap:8px; padding:10px 28px; background:var(--foret); color:var(--papier); }
     .badge-annee .libelle { font-family:var(--font-corps); font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; opacity:.7; }
@@ -431,6 +435,7 @@
   // Variables globales pour le pré-chargement
   let nextYearHtml = null;
   let isPreloading = false;
+  let preloadAbortController = null;
 
   function lancerChargement() {
     const loader = document.getElementById('chargement');
@@ -668,18 +673,21 @@
     if(isPreloading) return;
     const form = document.getElementById('form-annee-suivante');
     if(!form) return;
-    
+
     isPreloading = true;
+    preloadAbortController = new AbortController();
     try {
       const response = await fetch('/game', {
         method: 'POST',
-        body: new URLSearchParams(new FormData(form))
+        body: new URLSearchParams(new FormData(form)),
+        signal: preloadAbortController.signal
       });
       nextYearHtml = await response.text();
     } catch(e) {
-      console.error("Erreur préchargement", e);
+      if(e.name !== 'AbortError') console.error("Erreur préchargement", e);
     } finally {
       isPreloading = false;
+      preloadAbortController = null;
     }
   }
 
@@ -687,18 +695,29 @@
   document.addEventListener('submit', async (e) => {
     if(e.target.id === 'form-annee-suivante') {
       e.preventDefault();
-      
+
+      // Annuler le préchargement en cours s'il existe (évite double avance)
+      if(isPreloading && preloadAbortController) {
+        preloadAbortController.abort();
+        nextYearHtml = null;
+      }
+
       if(nextYearHtml) {
         appliquerNouvellePage(nextYearHtml);
       } else {
-        lancerChargement();
-        // Si pas encore chargé, on attend ou on laisse faire le form normalement
-        const response = await fetch('/game', {
-          method: 'POST',
-          body: new URLSearchParams(new FormData(e.target))
-        });
-        const html = await response.text();
-        appliquerNouvellePage(html);
+        // Pas d'overlay blanc — on indique juste sur le bouton que ça charge
+        const btn = document.getElementById('btn-annee-suivante');
+        if(btn) { btn.disabled = true; btn.textContent = '⏳ Calcul…'; }
+        try {
+          const response = await fetch('/game', {
+            method: 'POST',
+            body: new URLSearchParams(new FormData(e.target))
+          });
+          const html = await response.text();
+          appliquerNouvellePage(html);
+        } catch(err) {
+          if(btn) { btn.disabled = false; btn.textContent = 'Année suivante →'; }
+        }
       }
     }
   });
@@ -706,26 +725,25 @@
   function appliquerNouvellePage(html) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
-    
+
     // Vérifier si c'est une redirection (ex: fin de partie)
     if(doc.querySelector('title').textContent.includes('Extinction')) {
-      // Si c'est la fin, on laisse le navigateur rediriger proprement
       const form = document.getElementById('form-annee-suivante');
       if(form) form.submit();
       return;
     }
 
+    const container = document.getElementById('app-container');
     const newContent = doc.getElementById('app-container');
-    if(newContent) {
-      document.getElementById('app-container').innerHTML = newContent.innerHTML;
-      document.title = doc.title;
-      nextYearHtml = null;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      initGame();
-    } else {
-      // Cas de secours : rechargement normal
-      location.reload();
-    }
+    if(!newContent) { location.reload(); return; }
+
+    container.innerHTML = newContent.innerHTML;
+    // Supprimer les animations d'entrée qui flashent opacity:0 lors du swap
+    container.querySelectorAll('.a1,.a2,.a3,.a4,.a5').forEach(el => el.style.animation = 'none');
+    document.title = doc.title;
+    nextYearHtml = null;
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    initGame();
   }
 
   // Initialisation au premier chargement

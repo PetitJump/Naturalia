@@ -593,11 +593,28 @@ def update_ajouter():
     annee = int(request.form["base_annee"])
     nb_interventions = session.get("nb_interventions", 0)
     if nb_interventions < MAX_INTERVENTIONS:
-        for _ in range(int(request.form["loup"])): jeu.meute.predateurs.append(Predateur("loup", 0))
-        for _ in range(int(request.form["cerf"])): jeu.proies.append(Proie("cerf", 0))
-        for _ in range(int(request.form["herbe"])): jeu.vegetaux.append(Vegetal("herbe"))
+        nb_loup  = max(0, min(20, int(request.form.get("loup",  0))))
+        nb_cerf  = max(0, min(20, int(request.form.get("cerf",  0))))
+        nb_herbe = max(0, min(20, int(request.form.get("herbe", 0))))
+        for _ in range(nb_loup):  jeu.meute.predateurs.append(Predateur("loup", 0))
+        for _ in range(nb_cerf):  jeu.proies.append(Proie("cerf", 0))
+        for _ in range(nb_herbe): jeu.vegetaux.append(Vegetal("herbe"))
         session["nb_interventions"] = nb_interventions + 1
         session.modified = True
+        # Entrée journal
+        parties = []
+        if nb_loup:  parties.append(f"+{nb_loup} loup{'s' if nb_loup > 1 else ''}")
+        if nb_cerf:  parties.append(f"+{nb_cerf} cerf{'s' if nb_cerf > 1 else ''}")
+        if nb_herbe: parties.append(f"+{nb_herbe} touffe{'s' if nb_herbe > 1 else ''} d'herbe")
+        if parties:
+            journal = session.get("journal", [])
+            journal.insert(0, {
+                "emoji": "🧑‍🔬",
+                "annee": annee,
+                "texte": f"Intervention humaine : {', '.join(parties)}."
+            })
+            session["journal"] = journal
+            session.modified = True
 
     prev_l = historique["loup"][-1] if historique["loup"] else None
     prev_c = historique["cerf"][-1] if historique["cerf"] else None
@@ -638,6 +655,8 @@ def ajouter():
     if jeu is None:
         return redirect(url_for('init'))
     annee = int(request.form["annee"])
+    session['annee_courante'] = annee
+    session.modified = True
     nb_interventions = session.get("nb_interventions", 0)
     return render_template("ajouter.html",
         annee=annee, predateur=len(jeu.meute.predateurs),
@@ -645,6 +664,37 @@ def ajouter():
         nb_interventions=nb_interventions,
         max_interventions=MAX_INTERVENTIONS,
         limite_atteinte=(nb_interventions >= MAX_INTERVENTIONS))
+
+@app.route("/retour_jeu")
+def retour_jeu():
+    jeu = get_jeu()
+    if jeu is None:
+        return redirect(url_for('init'))
+    historique = get_historique()
+    annee = session.get('annee_courante', 1)
+    predateur = len(jeu.meute.predateurs)
+    proie = len(jeu.proies)
+    vegetal = len(jeu.vegetaux)
+    hist_l = historique.get("loup", [])
+    hist_c = historique.get("cerf", [])
+    hist_h = historique.get("herbe", [])
+    prev_l = hist_l[-2] if len(hist_l) >= 2 else None
+    prev_c = hist_c[-2] if len(hist_c) >= 2 else None
+    prev_v = hist_h[-2] if len(hist_h) >= 2 else None
+    delta_l = predateur - prev_l if prev_l is not None else None
+    delta_c = proie     - prev_c if prev_c is not None else None
+    delta_v = vegetal   - prev_v if prev_v is not None else None
+    succes_courants = charger_succes_permanents()
+    return render_template("game.html",
+        annee=annee,
+        predateur=predateur, proie=proie, vegetal=vegetal,
+        delta_l=delta_l, delta_c=delta_c, delta_v=delta_v,
+        meteo=None, nouveaux_succes=[],
+        succes_list=SUCCES_DEF, succes_courants=succes_courants,
+        historique=json.dumps(historique),
+        journal=session.get("journal", []),
+        prevision=None,
+        annees_sautees=None)
 
 @app.route("/reset_succes")
 def reset_succes():

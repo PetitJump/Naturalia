@@ -10,6 +10,7 @@ Usage :
     python base_donnee.py --leaderboard
     python base_donnee.py --supprimer <pseudo>
     python base_donnee.py --reset <pseudo>
+    python base_donnee.py --reset-all
     python base_donnee.py --export
     python base_donnee.py --help
 """
@@ -178,6 +179,38 @@ def cmd_reset(username):
         conn.close()
 
 
+def cmd_reset_all():
+    """Réinitialise Stats et Succès pour TOUS les utilisateurs (profils conservés)."""
+    conn = get_conn()
+    try:
+        nb_comptes = conn.execute("SELECT COUNT(*) FROM Compte").fetchone()[0]
+        if nb_comptes == 0:
+            print(f"{JAUNE}Aucun utilisateur dans la base.{RESET}")
+            return
+
+        print(f"\n{JAUNE}Utilisateurs concernés : {nb_comptes}{RESET}")
+        print(f"{ROUGE}Cette action remet à zéro les Stats et les Succès de TOUS les comptes.{RESET}")
+        print(f"{GRIS}Les profils (pseudos/mots de passe) et réglages sont conservés.{RESET}")
+        confirm = input(f"Confirmer le reset total ? {ROUGE}(oui/non){RESET} : ").strip().lower()
+        if confirm != "oui":
+            print(f"{GRIS}Annulé.{RESET}")
+            return
+
+        conn.execute("UPDATE Stats  SET nb_parties=0, max_loups=0, max_cerfs=0, max_annees=0")
+        conn.execute("UPDATE Succes SET obtenu=0")
+        conn.commit()
+
+        nb_stats  = conn.execute("SELECT COUNT(*) FROM Stats").fetchone()[0]
+        nb_succes = conn.execute("SELECT COUNT(*) FROM Succes").fetchone()[0]
+    finally:
+        conn.close()
+
+    print(f"\n{VERT}Reset total effectué :{RESET}")
+    print(f"  {VERT}✓{RESET} Stats réinitialisées  : {nb_stats} ligne(s)")
+    print(f"  {VERT}✓{RESET} Succès réinitialisés   : {nb_succes} ligne(s)")
+    print(f"  {GRIS}Comptes conservés       : {nb_comptes}{RESET}\n")
+
+
 def cmd_export():
     """Exporte tous les utilisateurs et stats dans un fichier CSV."""
     conn = get_conn()
@@ -226,6 +259,7 @@ Exemples :
   python base_donnee.py --leaderboard
   python base_donnee.py --supprimer killian
   python base_donnee.py --reset alice
+  python base_donnee.py --reset-all
   python base_donnee.py --export
         """
     )
@@ -252,6 +286,12 @@ Exemples :
         help="Remettre les stats d'un utilisateur à zéro"
     )
     group.add_argument(
+        "--reset-all",
+        action="store_true",
+        dest="reset_all",
+        help="Remettre Stats et Succès à zéro pour TOUS les utilisateurs (profils conservés)"
+    )
+    group.add_argument(
         "--export",
         action="store_true",
         help="Exporter toutes les données dans un fichier CSV"
@@ -267,6 +307,8 @@ Exemples :
         cmd_supprimer(args.supprimer)
     elif args.reset:
         cmd_reset(args.reset)
+    elif args.reset_all:
+        cmd_reset_all()
     elif args.export:
         cmd_export()
 
