@@ -7,7 +7,32 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
     body { background: var(--papier); }
-    .page { justify-content: flex-start; padding-top: 90px; padding-bottom: 60px; }
+    
+    /* On s'assure que la page centre ses enfants horizontalement */
+    .page { 
+      display: flex;
+      flex-direction: column;
+      align-items: center; 
+      justify-content: flex-start; 
+      padding-top: 90px; 
+      padding-bottom: 60px; 
+      width: 100%;
+    }
+
+    /* Le bloc qui contient les sliders est limité en largeur et centré */
+    .bloc-sliders {
+      width: 100%;
+      max-width: 500px; /* Ajuste cette valeur selon la largeur voulue pour tes carrés */
+      margin: 0 auto;   /* C'est ici que la magie du centrage opère */
+      display: flex;
+      flex-direction: column;
+      gap: 20px;        /* Espace entre les blocs loup, cerf, herbe */
+    }
+
+    /* Optionnel : s'assurer que chaque ligne prend toute la largeur du conteneur centré */
+    .ligne-slider {
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -17,7 +42,7 @@
 
   <div class="page">
 
-    <div class="a1" style="text-align:center">
+    <div class="a1" style="text-align:center; margin-bottom: 20px;">
       <span class="label-petit">Année {{annee}} · Intervention</span>
       <h1 style="font-family:var(--font-titre);font-size:clamp(26px,4vw,40px);color:var(--foret);margin-top:8px">
         Ajouter des individus
@@ -79,11 +104,14 @@
   <script>
     ['loup','cerf','herbe'].forEach(id => {
       const el = document.getElementById(id);
-      const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
-      el.style.setProperty('--pct', pct + '%');
-      el.addEventListener('input', () => {
-        el.style.setProperty('--pct', ((el.value - el.min) / (el.max - el.min)) * 100 + '%');
-      });
+      if(el) {
+          const updatePct = () => {
+            const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
+            el.style.setProperty('--pct', pct + '%');
+          };
+          updatePct();
+          el.addEventListener('input', updatePct);
+      }
     });
   </script>
 
