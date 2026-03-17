@@ -165,6 +165,10 @@ def index():
 def init():
     return render_template("init.html")
 
+@app.route("/complexite")
+def complexite():
+    return render_template("complexite.html")
+
 @app.route("/game", methods=["GET", "POST"])
 def game():
     global historique, jeu

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paramètres — Naturalia</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body { background: var(--papier); overflow-y: auto; }
+    .page { justify-content: flex-start; padding-top: 90px; padding-bottom: 80px; gap: 20px; }
+    .form-conteneur { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 16px; }
+
+    .section-param { background: white; border: 1px solid rgba(0,0,0,.08); border-top: 3px solid; padding: 22px 24px; }
+    .loup-param  { border-top-color: var(--sang); }
+    .cerf-param  { border-top-color: var(--ciel); }
+    .herbe-param { border-top-color: var(--mousse); }
+
+    .titre-param { font-family:var(--font-corps); font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--encre); margin-bottom:18px; }
+
+    .param-ligne { display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-bottom:1px solid rgba(0,0,0,.06); gap:16px; }
+    .param-ligne:last-child { border-bottom:none; padding-bottom:0; }
+    .param-label { font-family:var(--font-titre); font-size:15px; color:var(--foret); flex:1; line-height:1.4; }
+    .param-label small { display:block; font-size:11px; color:var(--terre); opacity:.65; font-style:italic; margin-top:2px; }
+
+    .param-ctrl { display:flex; align-items:center; gap:7px; flex-shrink:0; }
+    .param-ctrl input[type=number] {
+      width:58px; padding:8px 6px; text-align:center;
+      border:1px solid rgba(0,0,0,.18); background:var(--papier);
+      font-family:var(--font-code); font-size:16px; font-weight:700; color:var(--encre);
+      outline:none; transition:border-color .2s;
+    }
+    .param-ctrl input:focus { border-color:var(--foret); }
+    .param-ctrl input:disabled { opacity:.3; background:#eee; cursor:not-allowed; }
+    .param-unite { font-family:var(--font-corps); font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--terre); opacity:.65; white-space:nowrap; }
+
+    /* Curseur herbe */
+    .herbe-curseur { display:flex; gap:0; margin-top:4px; width:100%; }
+    .herbe-option { flex:1; }
+    .herbe-option input[type=radio] { display:none; }
+    .herbe-option label {
+      display:block; text-align:center; padding:10px 8px;
+      font-family:var(--font-corps); font-size:11px; font-weight:700;
+      letter-spacing:.08em; text-transform:uppercase;
+      border:1px solid rgba(0,0,0,.15); border-right:none;
+      cursor:pointer; transition:all .15s;
+      color:var(--terre); background:white;
+    }
+    .herbe-option:last-child label { border-right:1px solid rgba(0,0,0,.15); }
+    .herbe-option input:checked + label {
+      background:var(--mousse); color:white; border-color:var(--mousse);
+    }
+    .herbe-option:not(:first-child) input:checked + label { border-left-color:var(--mousse); }
+    .herbe-desc { font-family:var(--font-titre); font-style:italic; font-size:12px; color:var(--terre); opacity:.6; margin-top:8px; text-align:center; min-height:18px; }
+    /* Sélecteur mois/ans */
+    .select-unite {
+      appearance:none; -webkit-appearance:none;
+      border:1px solid rgba(0,0,0,.18); background:var(--papier);
+      font-family:var(--font-corps); font-size:11px; font-weight:700;
+      letter-spacing:.06em; text-transform:uppercase; color:var(--terre);
+      padding:7px 10px; cursor:pointer; outline:none; transition:border-color .2s;
+    }
+    .select-unite:focus { border-color:var(--foret); }
+  </style>
+</head>
+
+<body>
+
+  <div class="cadre"></div>
+  <a href="/" class="nav-retour">← Accueil</a>
+
+  <div class="page">
+
+    <div class="a1" style="text-align:center">
+      <span class="label-petit">Info algo</span>
+      <h1 style="font-family:var(--font-titre);font-size:clamp(28px,5vw,44px);color:var(--foret);margin-top:8px">Complexiter de nos algos</h1>
+      <p style="font-family:var(--font-titre);font-style:italic;font-size:15px;color:var(--terre);margin-top:6px">
+        Regarder et comprenez comment fonctionne nos algos
+      </p>
+    </div>
+
+    <form class="form-conteneur a2">
+
+      <!-- ── NAISSANCE ── -->
+      <div class="section-param cerf-param">
+        <div class="titre-param">Naissance</div>
+
+        <div class="param-ligne">
+          <div class="param-label">
+            Naissance de base
+            <small>Les nouveaux nées naissent en fonction des règles de la simulation (modifiable pas l'utilisateur).</small>
+          </div>
+        </div>
+
+        <div class="param-ligne">
+          <div class="param-label">
+            Maturité sexuel
+            <small>Les nouveaux nées de moins de 2 ans ne se reproduise pas.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MORT ── -->
+      <div class="section-param loup-param">
+        <div class="titre-param">Mort</div>
+
+        <div class="param-ligne">
+          <div class="param-label">
+            Mort tué
+            <small>Les cerfs et l'herbes peuvent se faire manger</small>
+          </div>
+        </div>
+
+        <div class="param-ligne">
+          <div class="param-label">
+            Mort par vieillesse
+            <small>Les êtres ont un âge. Une fois l'âge de 15 ans atteint l'être meurt.</small>
+          </div>
+        </div>
+
+        <div class="param-ligne">
+          <div class="param-label">
+            Mort par famine
+            <small>Les êtres meurt s'il n'arrive pas a se nourir.</small>
+            <small>Exemple : Il n'y a pas assez de cerfs pour les loups</small>
+          </div>
+        </div>
+
+        <div class="param-ligne">
+          <div class="param-label">
+            Mort naturelement
+            <small>Il y a un pourcentage de change qu'un être meurt de manière naturel</small>
+            <small>Les nouveaux nées ont plus de chance de mourir</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── METEO ── -->
+      <div class="section-param herbe-param">
+        <div class="titre-param">Météo</div>
+
+        <div class="param-ligne">
+          <div class="param-label">
+            Météos differents
+            <small>Il y a 5 évènement météo possible</small>
+            <small>Il est possible d'ajouter des évènements dans le meteo.json</small>
+          </div>
+        </div>
+
+        <div class="param-ligne">
+          <div class="param-label">
+            Effets
+            <small>Les effets des évènement diffère</small>
+          </div>
+        </div>
+
+        
+    </div>
+
+</body>
+</html>
