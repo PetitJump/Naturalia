@@ -3,63 +3,159 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Paramètres — Naturalia</title>
+  <title>Algorithmes — Ecologic</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
     body { background: var(--papier); overflow-y: auto; }
-    .page { justify-content: flex-start; padding-top: 90px; padding-bottom: 80px; gap: 20px; }
-    .form-conteneur { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 16px; }
+    .page { justify-content: flex-start; padding-top: 90px; padding-bottom: 80px; gap: 24px; }
+    .contenu { width: 100%; max-width: 620px; display: flex; flex-direction: column; gap: 20px; }
 
-    .section-param { background: white; border: 1px solid rgba(0,0,0,.08); border-top: 3px solid; padding: 22px 24px; }
-    .loup-param  { border-top-color: var(--sang); }
-    .cerf-param  { border-top-color: var(--ciel); }
-    .herbe-param { border-top-color: var(--mousse); }
-
-    .titre-param { font-family:var(--font-corps); font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--encre); margin-bottom:18px; }
-
-    .param-ligne { display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-bottom:1px solid rgba(0,0,0,.06); gap:16px; }
-    .param-ligne:last-child { border-bottom:none; padding-bottom:0; }
-    .param-label { font-family:var(--font-titre); font-size:15px; color:var(--foret); flex:1; line-height:1.4; }
-    .param-label small { display:block; font-size:11px; color:var(--terre); opacity:.65; font-style:italic; margin-top:2px; }
-
-    .param-ctrl { display:flex; align-items:center; gap:7px; flex-shrink:0; }
-    .param-ctrl input[type=number] {
-      width:58px; padding:8px 6px; text-align:center;
-      border:1px solid rgba(0,0,0,.18); background:var(--papier);
-      font-family:var(--font-code); font-size:16px; font-weight:700; color:var(--encre);
-      outline:none; transition:border-color .2s;
+    .carte {
+      background: white;
+      border: 1px solid rgba(0,0,0,.08);
+      border-top: 3px solid;
+      padding: 24px 26px;
     }
-    .param-ctrl input:focus { border-color:var(--foret); }
-    .param-ctrl input:disabled { opacity:.3; background:#eee; cursor:not-allowed; }
-    .param-unite { font-family:var(--font-corps); font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--terre); opacity:.65; white-space:nowrap; }
+    .carte-naissance { border-top-color: var(--mousse); }
+    .carte-mort      { border-top-color: var(--sang); }
+    .carte-meteo     { border-top-color: var(--ciel); }
 
-    /* Curseur herbe */
-    .herbe-curseur { display:flex; gap:0; margin-top:4px; width:100%; }
-    .herbe-option { flex:1; }
-    .herbe-option input[type=radio] { display:none; }
-    .herbe-option label {
-      display:block; text-align:center; padding:10px 8px;
-      font-family:var(--font-corps); font-size:11px; font-weight:700;
-      letter-spacing:.08em; text-transform:uppercase;
-      border:1px solid rgba(0,0,0,.15); border-right:none;
-      cursor:pointer; transition:all .15s;
-      color:var(--terre); background:white;
+    .titre-carte {
+      font-family: var(--font-corps);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--encre);
+      margin-bottom: 18px;
     }
-    .herbe-option:last-child label { border-right:1px solid rgba(0,0,0,.15); }
-    .herbe-option input:checked + label {
-      background:var(--mousse); color:white; border-color:var(--mousse);
+
+    .ligne {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      align-items: flex-start;
     }
-    .herbe-option:not(:first-child) input:checked + label { border-left-color:var(--mousse); }
-    .herbe-desc { font-family:var(--font-titre); font-style:italic; font-size:12px; color:var(--terre); opacity:.6; margin-top:8px; text-align:center; min-height:18px; }
-    /* Sélecteur mois/ans */
-    .select-unite {
-      appearance:none; -webkit-appearance:none;
-      border:1px solid rgba(0,0,0,.18); background:var(--papier);
-      font-family:var(--font-corps); font-size:11px; font-weight:700;
-      letter-spacing:.06em; text-transform:uppercase; color:var(--terre);
-      padding:7px 10px; cursor:pointer; outline:none; transition:border-color .2s;
+    .ligne:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .ligne-num {
+      font-family: var(--font-data);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--terre);
+      opacity: .45;
+      flex-shrink: 0;
+      margin-top: 3px;
+      min-width: 20px;
     }
-    .select-unite:focus { border-color:var(--foret); }
+
+    .ligne-titre {
+      font-family: var(--font-titre);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--foret);
+      margin-bottom: 6px;
+    }
+    .ligne-desc {
+      font-family: var(--font-corps);
+      font-size: 13px;
+      color: var(--encre);
+      line-height: 1.65;
+      opacity: .78;
+    }
+    .ligne-desc code {
+      font-family: var(--font-data);
+      font-size: 12px;
+      background: rgba(0,0,0,.06);
+      padding: 1px 5px;
+    }
+
+    .complexite {
+      display: inline-block;
+      font-family: var(--font-data);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--foret);
+      background: rgba(74,124,74,.1);
+      border: 1px solid rgba(74,124,74,.25);
+      padding: 1px 7px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .formule-wrap {
+      background: var(--papier);
+      border-left: 3px solid var(--or);
+      padding: 14px 18px;
+      margin-top: 12px;
+    }
+    .formule-wrap pre {
+      font-family: var(--font-data);
+      font-size: 12.5px;
+      color: var(--encre);
+      line-height: 1.9;
+      white-space: pre;
+      margin: 0;
+    }
+    .kw  { color: var(--mousse); font-weight: 700; }
+    .cm  { color: var(--terre); opacity: .6; font-style: italic; }
+    .nb  { color: var(--sang); }
+
+    .formule-legende {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0,0,0,.08);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .formule-legende span {
+      font-family: var(--font-corps);
+      font-size: 12px;
+      color: var(--terre);
+      line-height: 1.5;
+    }
+    .formule-legende b {
+      font-family: var(--font-data);
+      font-size: 12px;
+      color: var(--encre);
+    }
+
+    .tableau-meteo {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .tableau-meteo th {
+      font-family: var(--font-corps);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--terre);
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 2px solid rgba(0,0,0,.08);
+    }
+    .tableau-meteo td {
+      font-family: var(--font-corps);
+      font-size: 12.5px;
+      color: var(--encre);
+      padding: 9px 10px;
+      border-bottom: 1px solid rgba(0,0,0,.05);
+      line-height: 1.4;
+      vertical-align: middle;
+    }
+    .tableau-meteo tr:last-child td { border-bottom: none; }
+    .tableau-meteo .ev-proba {
+      font-family: var(--font-data);
+      font-size: 12px;
+      color: var(--ciel);
+      font-weight: 700;
+    }
+    .pos { color: var(--mousse); font-weight: 700; }
+    .neg { color: var(--sang);   font-weight: 700; }
   </style>
 </head>
 
@@ -71,90 +167,271 @@
   <div class="page">
 
     <div class="a1" style="text-align:center">
-      <span class="label-petit">Info algo</span>
-      <h1 style="font-family:var(--font-titre);font-size:clamp(28px,5vw,44px);color:var(--foret);margin-top:8px">Complexiter de nos algos</h1>
-      <p style="font-family:var(--font-titre);font-style:italic;font-size:15px;color:var(--terre);margin-top:6px">
-        Regarder et comprenez comment fonctionne nos algos
+      <span class="label-petit">Documentation technique</span>
+      <h1 style="font-family:var(--font-titre);font-size:clamp(26px,5vw,42px);color:var(--foret);margin-top:8px">
+        Complexité algorithmique
+      </h1>
+      <p style="font-family:var(--font-titre);font-style:italic;font-size:15px;color:var(--terre);margin-top:6px;max-width:440px;margin-inline:auto">
+        Modèles mathématiques et structures de données qui régissent la simulation
       </p>
     </div>
 
-    <form class="form-conteneur a2">
+    <div class="contenu a2">
 
-      <!-- ── NAISSANCE ── -->
-      <div class="section-param cerf-param">
-        <div class="titre-param">Naissance</div>
+      <!-- NAISSANCES -->
+      <div class="carte carte-naissance">
+        <div class="titre-carte">Naissances</div>
 
-        <div class="param-ligne">
-          <div class="param-label">
-            Naissance de base
-            <small>Les nouveaux nées naissent en fonction des règles de la simulation (modifiable pas l'utilisateur).</small>
+        <div class="ligne">
+          <div class="ligne-num">01</div>
+          <div>
+            <div class="ligne-titre">Reproduction probabiliste par couples <span class="complexite">O(n)</span></div>
+            <div class="ligne-desc">
+              Les individus dont l'âge dépasse <code>maturite_sexuelle</code> sont filtrés puis regroupés
+              en <code>n // 2</code> couples. Chaque couple génère un nombre aléatoire de petits dans
+              la fourchette <code>[min, max]</code> définie dans <code>data.json</code>.
+              Chaque nouveau-né passe ensuite un test de survie juvénile indépendant.
+            </div>
+            <div class="formule-wrap">
+              <pre><span class="kw">pour</span> chaque couple <span class="kw">dans</span> adultes // 2 :
+    petits = randint(min_nee, max_nee)
+    <span class="kw">pour</span> chaque petit :
+        <span class="kw">si</span> random() &lt; <span class="nb">0.50</span> :    <span class="cm"># mortalité juvénile 50 %</span>
+            population.append(Individu(age=<span class="nb">0</span>))</pre>
+              <div class="formule-legende">
+                <span>Complexité : <b>O(n × max_nee)</b> — linéaire en fonction de la population</span>
+                <span><b>min_nee, max_nee</b> — fourchette de petits par couple, configurable dans data.json</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="param-ligne">
-          <div class="param-label">
-            Maturité sexuel
-            <small>Les nouveaux nées de moins de 2 ans ne se reproduise pas.</small>
+        <div class="ligne">
+          <div class="ligne-num">02</div>
+          <div>
+            <div class="ligne-titre">Herbe — équation logistique de Verhulst (1838) <span class="complexite">O(1)</span></div>
+            <div class="ligne-desc">
+              L'herbe ne se reproduit pas par couples. Sa croissance suit le modèle logistique :
+              rapide quand la population est faible, nulle quand elle atteint la capacité maximale K.
+              C'est une équation différentielle discrétisée sur des pas annuels.
+            </div>
+            <div class="formule-wrap">
+              <pre>N          = len(vegetaux)
+croissance = int( r × N × (<span class="nb">1</span> − N / K) )
+croissance = max(<span class="nb">0</span>, croissance)    <span class="cm"># évite les valeurs négatives</span></pre>
+              <div class="formule-legende">
+                <span><b>r</b> — taux de croissance intrinsèque (0.15 lent / 0.25 normal / 0.40 rapide)</span>
+                <span><b>N</b> — population actuelle de touffes d'herbe</span>
+                <span><b>K</b> — capacité de charge de l'environnement (plafond souple)</span>
+                <span>Quand N → K, le facteur <b>(1 − N/K)</b> → 0 : la croissance s'annule naturellement</span>
+              </div>
+            </div>
           </div>
         </div>
+
+        <div class="ligne">
+          <div class="ligne-num">03</div>
+          <div>
+            <div class="ligne-titre">Natalité des cerfs conditionnée à l'herbe disponible</div>
+            <div class="ligne-desc">
+              La reproduction des cerfs est modulée par la pression alimentaire instantanée.
+              Si l'herbe est abondante, chaque couple tente de se reproduire normalement.
+              En dessous du seuil de confort, le taux de natalité chute proportionnellement.
+            </div>
+            <div class="formule-wrap">
+              <pre>herbe_par_cerf = len(vegetaux) / max(<span class="nb">1</span>, nb_cerfs)
+facteur_herbe  = min(<span class="nb">1.0</span>, herbe_par_cerf / <span class="nb">5.0</span>)
+
+<span class="cm"># facteur = 1.0 → repro pleine  (≥ 5 touffes / cerf)</span>
+<span class="cm"># facteur = 0.4 → 40 % des couples se reproduisent</span>
+<span class="cm"># facteur = 0.0 → aucune naissance</span>
+
+<span class="kw">si</span> random() &gt; facteur_herbe :
+    <span class="kw">passer</span>    <span class="cm"># ce couple ne se reproduit pas</span></pre>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- ── MORT ── -->
-      <div class="section-param loup-param">
-        <div class="titre-param">Mort</div>
+      <!-- MORTS -->
+      <div class="carte carte-mort">
+        <div class="titre-carte">Morts — 4 mécanismes indépendants</div>
 
-        <div class="param-ligne">
-          <div class="param-label">
-            Mort tué
-            <small>Les cerfs et l'herbes peuvent se faire manger</small>
+        <div class="ligne">
+          <div class="ligne-num">01</div>
+          <div>
+            <div class="ligne-titre">Prédation — loups sur cerfs <span class="complexite">O(1)</span></div>
+            <div class="ligne-desc">
+              Chaque loup chasse <code>combien</code> cerfs par an (paramètre modifiable dans data.json).
+              Si les cerfs disponibles sont insuffisants pour nourrir toute la meute,
+              les loups en excès meurent de faim.
+            </div>
+            <div class="formule-wrap">
+              <pre>cerfs_tues    = nb_loups × combien
+cerfs_tues    = min(cerfs_tues, nb_cerfs)
+
+loups_nourris = cerfs_tues // combien
+loups_affames = nb_loups − loups_nourris
+<span class="cm"># les loups_affames sont retirés de la liste</span></pre>
+            </div>
           </div>
         </div>
 
-        <div class="param-ligne">
-          <div class="param-label">
-            Mort par vieillesse
-            <small>Les êtres ont un âge. Une fois l'âge de 15 ans atteint l'être meurt.</small>
+        <div class="ligne">
+          <div class="ligne-num">02</div>
+          <div>
+            <div class="ligne-titre">Broutage progressif — cerfs sur herbe <span class="complexite">O(1)</span></div>
+            <div class="ligne-desc">
+              Trois cas selon la disponibilité de l'herbe. La mortalité n'est pas binaire :
+              elle est proportionnelle au manque via un taux de satisfaction, ce qui évite
+              les extinctions brutales et rend la simulation plus réaliste.
+            </div>
+            <div class="formule-wrap">
+              <pre>touffes_requises = nb_cerfs × combien
+
+<span class="kw">si</span> herbe ≥ touffes_requises :
+    herbe -= touffes_requises     <span class="cm"># broutage normal</span>
+
+<span class="kw">sinon si</span> herbe &gt; <span class="nb">0</span> :
+    taux   = herbe / touffes_requises
+    survie = <span class="nb">0.30</span> + <span class="nb">0.70</span> × taux   <span class="cm"># mortalité proportionnelle</span>
+    cerfs  = [c <span class="kw">pour</span> c <span class="kw">si</span> random() &lt; survie]
+    herbe  = []
+
+<span class="kw">sinon</span> :                           <span class="cm"># plus d'herbe du tout</span>
+    cerfs  = [c <span class="kw">pour</span> c <span class="kw">si</span> random() &lt; <span class="nb">0.20</span>]  <span class="cm"># 80 % meurent</span></pre>
+            </div>
           </div>
         </div>
 
-        <div class="param-ligne">
-          <div class="param-label">
-            Mort par famine
-            <small>Les êtres meurt s'il n'arrive pas a se nourir.</small>
-            <small>Exemple : Il n'y a pas assez de cerfs pour les loups</small>
+        <div class="ligne">
+          <div class="ligne-num">03</div>
+          <div>
+            <div class="ligne-titre">Mortalité naturelle aléatoire <span class="complexite">O(n)</span></div>
+            <div class="ligne-desc">
+              Chaque individu tire sa survie annuelle indépendamment des autres.
+              Le taux dépend uniquement de l'âge. Implémenté via une liste en compréhension :
+              une seule passe sur la population, sans tri ni structure auxiliaire.
+            </div>
+            <div class="formule-wrap">
+              <pre>taux = <span class="nb">0.50</span> <span class="kw">si</span> age == <span class="nb">0</span> <span class="kw">sinon</span> <span class="nb">0.95</span>
+
+population = [ind <span class="kw">pour</span> ind <span class="kw">dans</span> population
+              <span class="kw">si</span> random() &lt; taux(ind.age)]
+
+<span class="cm"># Complexité : O(n) — une seule passe sur la liste</span></pre>
+            </div>
           </div>
         </div>
 
-        <div class="param-ligne">
-          <div class="param-label">
-            Mort naturelement
-            <small>Il y a un pourcentage de change qu'un être meurt de manière naturel</small>
-            <small>Les nouveaux nées ont plus de chance de mourir</small>
+        <div class="ligne">
+          <div class="ligne-num">04</div>
+          <div>
+            <div class="ligne-titre">Mort par vieillesse <span class="complexite">O(n)</span></div>
+            <div class="ligne-desc">
+              L'âge de chaque individu est incrémenté à chaque appel de <code>update()</code>.
+              Les individus dépassant l'âge maximal sont filtrés lors de la même passe
+              que la mortalité naturelle. Chaque individu est une instance de classe
+              avec un attribut <code>.age</code> propre.
+            </div>
+            <div class="formule-wrap">
+              <pre>loups = [k <span class="kw">pour</span> k <span class="kw">dans</span> loups <span class="kw">si</span> k.age &lt; <span class="nb">20</span>]
+cerfs = [c <span class="kw">pour</span> c <span class="kw">dans</span> cerfs <span class="kw">si</span> c.age &lt; <span class="nb">12</span>]
+
+<span class="cm"># k.age est incrémenté à chaque update() dans naissance()</span>
+<span class="cm"># Loups : âge max 20 ans — Cerfs : âge max 12 ans</span></pre>
+            </div>
           </div>
         </div>
+
       </div>
 
-      <!-- ── METEO ── -->
-      <div class="section-param herbe-param">
-        <div class="titre-param">Météo</div>
+      <!-- MÉTÉO -->
+      <div class="carte carte-meteo">
+        <div class="titre-carte">Événements météo</div>
 
-        <div class="param-ligne">
-          <div class="param-label">
-            Météos differents
-            <small>Il y a 5 évènement météo possible</small>
-            <small>Il est possible d'ajouter des évènements dans le meteo.json</small>
+        <div class="ligne">
+          <div class="ligne-num">01</div>
+          <div>
+            <div class="ligne-titre">Tirage séquentiel avec arrêt anticipé <span class="complexite">O(k)</span></div>
+            <div class="ligne-desc">
+              Les événements sont parcourus séquentiellement depuis <code>data/meteo.json</code>.
+              Pour chaque événement, un flottant aléatoire est comparé à sa probabilité.
+              Le premier événement déclenché stoppe la boucle. Le système est extensible :
+              ajouter un événement dans le JSON suffit, sans modifier le code Python.
+            </div>
+            <div class="formule-wrap">
+              <pre><span class="kw">pour</span> cle, ev <span class="kw">dans</span> meteo.items() :
+    <span class="kw">si</span> random() &lt; ev["chance"] :
+        appliquer_meteo(ev)
+        <span class="kw">break</span>    <span class="cm"># un seul événement par année</span>
+
+<span class="cm"># k = nombre d'événements dans meteo.json (actuellement 5)</span>
+<span class="cm"># Dans le pire cas : O(k) — dans le cas moyen : O(1) car peu probable</span></pre>
+            </div>
           </div>
         </div>
 
-        <div class="param-ligne">
-          <div class="param-label">
-            Effets
-            <small>Les effets des évènement diffère</small>
+        <div class="ligne">
+          <div class="ligne-num">02</div>
+          <div>
+            <div class="ligne-titre">Les 5 événements et leurs effets</div>
+            <table class="tableau-meteo">
+              <thead>
+                <tr>
+                  <th>Événement</th>
+                  <th>Proba</th>
+                  <th>Loups</th>
+                  <th>Cerfs</th>
+                  <th>Herbe</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>☀️ Sécheresse</td>
+                  <td class="ev-proba">2.5 %</td>
+                  <td class="neg">−5 %</td>
+                  <td class="neg">−15 %</td>
+                  <td class="neg">−50 %</td>
+                </tr>
+                <tr>
+                  <td>🌧️ Pluies</td>
+                  <td class="ev-proba">2.5 %</td>
+                  <td>—</td>
+                  <td class="pos">+10 %</td>
+                  <td class="pos">+100 %</td>
+                </tr>
+                <tr>
+                  <td>❄️ Hiver</td>
+                  <td class="ev-proba">2.0 %</td>
+                  <td class="neg">−20 %</td>
+                  <td class="neg">−25 %</td>
+                  <td class="neg">−30 %</td>
+                </tr>
+                <tr>
+                  <td>🌸 Printemps</td>
+                  <td class="ev-proba">2.0 %</td>
+                  <td class="pos">+15 %</td>
+                  <td class="pos">+25 %</td>
+                  <td class="pos">+60 %</td>
+                </tr>
+                <tr>
+                  <td>🔥 Incendie</td>
+                  <td class="ev-proba">1.0 %</td>
+                  <td class="neg">−15 %</td>
+                  <td class="neg">−35 %</td>
+                  <td class="neg">−70 %</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        
+      </div>
+
     </div>
+  </div>
 
 </body>
 </html>
