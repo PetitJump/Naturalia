@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecologic — Tutoriel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+
+        /* ── Navigation ─────────────────────────────────── */
+        .nav-retour {
+            position: fixed;
+            top: 28px;
+            left: 32px;
+            z-index: 600;
+            text-decoration: none;
+            color: var(--terre);
+            font-family: var(--font-corps);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-retour:hover { color: var(--foret); }
+
+        /* ── Page layout ────────────────────────────────── */
+        .tuto-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 80px 24px 60px;
+            position: relative;
+        }
+
+        /* ── En-tête ─────────────────────────────────────── */
+        .tuto-header {
+            text-align: center;
+            margin-bottom: 56px;
+            animation: fadeDown 0.6s ease both;
+        }
+
+        .tuto-header img {
+            width: 72px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tuto-header .label-petit {
+            font-family: var(--font-corps);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--terre);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .tuto-header h1 {
+            font-family: var(--font-titre);
+            font-size: clamp(28px, 5vw, 42px);
+            color: var(--foret);
+            font-weight: 700;
+            line-height: 1.15;
+        }
+
+        .tuto-header h1 em {
+            font-style: italic;
+            color: var(--terre);
+        }
+
+        /* ── Ligne déco ──────────────────────────────────── */
+        .ligne-deco {
+            width: 48px;
+            height: 2px;
+            background: var(--foret);
+            margin: 20px auto 0;
+            opacity: 0.4;
+        }
+
+        /* ── Intro box ───────────────────────────────────── */
+        .tuto-intro {
+            background: var(--papier);
+            border-left: 4px solid var(--foret);
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.08);
+            padding: 32px 36px;
+            max-width: 680px;
+            width: 100%;
+            margin-bottom: 40px;
+            animation: fadeUp 0.6s 0.15s ease both;
+        }
+
+        .tuto-intro p {
+            font-family: var(--font-corps);
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--encre);
+        }
+
+        /* ── Grille des 3 espèces ────────────────────────── */
+        .especes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            max-width: 680px;
+            width: 100%;
+            margin-bottom: 40px;
+            animation: fadeUp 0.6s 0.25s ease both;
+        }
+
+        .espece-card {
+            background: var(--papier);
+            border-top: 3px solid var(--foret);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.08);
+            padding: 20px 18px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .espece-card:hover { transform: translateY(-3px); }
+
+        .espece-card.cerfs { border-top-color: var(--terre); }
+        .espece-card.herbe { border-top-color: var(--mousse); }
+
+        .espece-emoji {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .espece-nom {
+            font-family: var(--font-titre);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--encre);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .espece-desc {
+            font-family: var(--font-corps);
+            font-size: 12px;
+            color: var(--terre);
+            line-height: 1.5;
+        }
+
+        /* ── Sections mécaniques ─────────────────────────── */
+        .tuto-section {
+            max-width: 680px;
+            width: 100%;
+            margin-bottom: 24px;
+            animation: fadeUp 0.6s 0.35s ease both;
+        }
+
+        .tuto-section:last-of-type { margin-bottom: 48px; }
+
+        .section-titre {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .section-titre .icone {
+            font-size: 18px;
+            width: 36px;
+            height: 36px;
+            background: var(--foret);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .section-titre h2 {
+            font-family: var(--font-titre);
+            font-size: 17px;
+            color: var(--foret);
+            font-weight: 700;
+        }
+
+        .section-corps {
+            background: var(--papier);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.06);
+            padding: 22px 26px;
+            border-bottom: 2px solid rgba(0,0,0,0.08);
+        }
+
+        .section-corps p {
+            font-family: var(--font-corps);
+            font-size: 14px;
+            line-height: 1.75;
+            color: var(--encre);
+            margin-bottom: 10px;
+        }
+        .section-corps p:last-child { margin-bottom: 0; }
+
+        .section-corps ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .section-corps ul li {
+            font-family: var(--font-corps);
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--encre);
+            padding: 6px 0 6px 22px;
+            position: relative;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .section-corps ul li:last-child { border-bottom: none; }
+
+        .section-corps ul li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--foret);
+            font-family: var(--font-data);
+            font-size: 12px;
+            top: 7px;
+        }
+
+        /* ── Chaîne alimentaire ──────────────────────────── */
+        .chaine {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: var(--papier);
+            padding: 20px;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+            max-width: 680px;
+            width: 100%;
+            animation: fadeUp 0.6s 0.3s ease both;
+        }
+
+        .chaine-item {
+            text-align: center;
+        }
+
+        .chaine-emoji { font-size: 26px; display: block; }
+        .chaine-label {
+            font-family: var(--font-corps);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--terre);
+            margin-top: 4px;
+            display: block;
+        }
+
+        .chaine-fleche {
+            font-family: var(--font-data);
+            font-size: 18px;
+            color: var(--foret);
+            opacity: 0.5;
+            padding: 0 4px;
+        }
+
+        /* ── Bouton CTA ──────────────────────────────────── */
+        .tuto-cta {
+            animation: fadeUp 0.6s 0.45s ease both;
+        }
+
+        .btn-primaire {
+            display: inline-block;
+            padding: 14px 40px;
+            background: var(--foret);
+            color: var(--creme);
+            font-family: var(--font-corps);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .btn-primaire:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+        }
+
+        .btn-primaire:active {
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+        }
+
+        /* ── Cadre décoratif ─────────────────────────────── */
+        .cadre {
+            position: fixed;
+            inset: 12px;
+            border: 1px solid rgba(45,74,45,0.15);
+            pointer-events: none;
+            z-index: 500;
+        }
+
+        /* ── Animations ──────────────────────────────────── */
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Responsive ──────────────────────────────────── */
+        @media (max-width: 580px) {
+            .especes-grid { grid-template-columns: 1fr; }
+            .tuto-intro, .section-corps { padding: 20px; }
+            .chaine { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cadre"></div>
+    <a href="/" class="nav-retour">← Accueil</a>
+
+    <div class="tuto-page">
+
+        <!-- En-tête -->
+        <div class="tuto-header">
+            <img src="{{ url_for('static', filename='Ecologic.png') }}" alt="Logo Ecologic">
+            <span class="label-petit">Guide du joueur</span>
+            <h1>Bienvenue dans<br><em>Ecologic</em></h1>
+            <div class="ligne-deco"></div>
+        </div>
+
+        <!-- Intro -->
+        <div class="tuto-intro">
+            <p>
+                Ecologic est une <strong>simulation d'écosystème</strong>. Vous gérez un environnement naturel composé de trois espèces interdépendantes. Chaque année qui passe, les loups chassent les cerfs, les cerfs broutent l'herbe, et l'herbe repousse naturellement.
+            </p>
+            <p>
+                Votre rôle : <strong>observer cet équilibre — et intervenir si nécessaire.</strong>
+            </p>
+        </div>
+
+        <!-- Chaîne alimentaire -->
+        <div class="chaine">
+            <div class="chaine-item">
+                <span class="chaine-emoji">🌿</span>
+                <span class="chaine-label">Herbe</span>
+            </div>
+            <span class="chaine-fleche">←</span>
+            <div class="chaine-item">
+                <span class="chaine-emoji">🦌</span>
+                <span class="chaine-label">Cerfs</span>
+            </div>
+            <span class="chaine-fleche">←</span>
+            <div class="chaine-item">
+                <span class="chaine-emoji">🐺</span>
+                <span class="chaine-label">Loups</span>
+            </div>
+        </div>
+
+        <!-- Les 3 espèces -->
+        <div class="especes-grid">
+            <div class="espece-card loups">
+                <span class="espece-emoji">🐺</span>
+                <span class="espece-nom">Les Loups</span>
+                <span class="espece-desc">Chassent les cerfs chaque année pour survivre. Trop de loups = famine.</span>
+            </div>
+            <div class="espece-card cerfs">
+                <span class="espece-emoji">🦌</span>
+                <span class="espece-nom">Les Cerfs</span>
+                <span class="espece-desc">Broutent l'herbe pour se nourrir. Trop de cerfs = prairie dévastée.</span>
+            </div>
+            <div class="espece-card herbe">
+                <span class="espece-emoji">🌿</span>
+                <span class="espece-nom">L'Herbe</span>
+                <span class="espece-desc">Repousse naturellement chaque année. La base de tout l'écosystème.</span>
+            </div>
+        </div>
+
+        <!-- Mécanique : l'équilibre -->
+        <div class="tuto-section">
+            <div class="section-titre">
+                <div class="icone">⚖️</div>
+                <h2>L'équilibre fragile</h2>
+            </div>
+            <div class="section-corps">
+                <p>La nature est cruelle, mais logique. Trois scénarios peuvent briser l'équilibre :</p>
+                <ul>
+                    <li><strong>Trop de loups</strong> — ils déciment les cerfs. Sans cerfs, ils meurent de faim.</li>
+                    <li><strong>Trop de cerfs</strong> — ils épuisent toute l'herbe et périssent à leur tour.</li>
+                    <li><strong>Plus assez d'herbe</strong> — toute la chaîne alimentaire s'effondre.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Mécanique : intervenir -->
+        <div class="tuto-section">
+            <div class="section-titre">
+                <div class="icone">🎛️</div>
+                <h2>Comment intervenir</h2>
+            </div>
+            <div class="section-corps">
+                <ul>
+                    <li><strong>Modifier les paramètres</strong> — ajustez la fréquence de reproduction, l'agressivité des loups, la vitesse de repousse de l'herbe.</li>
+                    <li><strong>Ajouter des individus</strong> — introduisez directement loups, cerfs ou herbe en cours de partie.</li>
+                    <li><strong>Avancer le temps</strong> — simulez plusieurs années d'un coup avec le mode accéléré.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Mécanique : météo -->
+        <div class="tuto-section">
+            <div class="section-titre">
+                <div class="icone">🌦️</div>
+                <h2>Les événements météo</h2>
+            </div>
+            <div class="section-corps">
+                <p>Des événements aléatoires viennent bousculer l'équilibre au fil des années. À vous de vous adapter.</p>
+                <ul>
+                    <li>☀️ <strong>Sécheresse</strong> — l'herbe se raréfie, les cerfs souffrent.</li>
+                    <li>❄️ <strong>Hiver rigoureux</strong> — toutes les espèces sont affectées.</li>
+                    <li>🔥 <strong>Incendie</strong> — l'herbe est dévastée brutalement.</li>
+                    <li>🌧️ <strong>Pluies abondantes</strong> — l'herbe explose, les cerfs prolifèrent.</li>
+                    <li>🌸 <strong>Printemps précoce</strong> — tout l'écosystème s'emballe.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Mécanique : objectif -->
+        <div class="tuto-section">
+            <div class="section-titre">
+                <div class="icone">🎯</div>
+                <h2>L'objectif</h2>
+            </div>
+            <div class="section-corps">
+                <p>La partie se termine quand <strong>une espèce disparaît complètement</strong>. Plus vous tenez longtemps, mieux c'est.</p>
+                <p>Et si vous vous sentez d'attaque, tentez de débloquer les <strong>9 succès cachés</strong>… Chacun récompense un exploit particulier dans l'écosystème.</p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
