@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -29,6 +29,55 @@
     .delta-plus  { color: #3a8a3a; }
     .delta-minus { color: #a03030; }
     .delta-zero  { color: var(--terre); opacity: .45; }
+
+    /* ── STRUCTURE : ALIGNEMENT ET TAILLE UNIQUE ── */
+    .grille-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 colonnes strictement identiques */
+      gap: 16px;
+      width: 100%;
+      max-width: 580px;
+      align-items: end; /* Aligne les bases des 3 blocs sur la même ligne */
+    }
+
+    .carte-stat {
+      width: 100%;
+      height: 110px; /* Hauteur fixe imposée pour les 3 cases */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; /* Espace le contenu (Titre / Nombre / Barre) */
+      padding: 14px;
+      background: white;
+      border: 1px solid rgba(0,0,0,.08);
+      box-sizing: border-box;
+      margin: 0 !important;
+    }
+
+    .meute-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meute-flottante {
+      display: inline-block;
+      font-family: var(--font-corps);
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--papier);
+      background: var(--foret);
+      padding: 3px 8px;
+      margin-bottom: -1px; /* Jointure parfaite avec la case loup */
+      border-radius: 2px 2px 0 0;
+      width: fit-content;
+      z-index: 2;
+    }
+
+    .stat-espece { font-family: var(--font-corps); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--terre); opacity: .7; }
+    .stat-nombre { font-family: var(--font-code); font-size: 28px; font-weight: 700; color: var(--encre); line-height: 1.2; }
+    .stat-barre-wrap { height: 4px; background: rgba(0,0,0,.05); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+    .stat-barre { height: 100%; transition: width 1s ease-out; }
 
     /* ── Donut ── */
     .donut-wrap { width:100%; max-width:580px; display:flex; align-items:center; gap:28px; padding:20px 24px; background:white; border:1px solid rgba(0,0,0,.08); }
@@ -106,7 +155,6 @@
     .modal-desc  { font-family:var(--font-titre); font-style:italic; font-size:15px; color:var(--terre); line-height:1.7; }
 
     /* ── Prévision ── */
-    /* ── Bannière prévision ── */
     .prevision-bandeau {
       position: sticky; top: 0; z-index: 50;
       width: 100%; max-width: 100%;
@@ -155,7 +203,6 @@
     }
     .btn-accel:hover { background:var(--encre); }
 
-    /* Badge années sautées */
     .badge-saut {
       display:inline-flex; align-items:center; gap:7px;
       padding:7px 16px; background:var(--terre); color:var(--papier);
@@ -167,7 +214,6 @@
 </head>
 <body>
 
-  <!-- Bannière prévision sticky -->
   {% if prevision %}
   <div class="prevision-bandeau {{ prevision.niveau }}">
     <span class="prev-ico">{{ prevision.emoji }}</span>
@@ -175,13 +221,10 @@
   </div>
   {% endif %}
 
-  <!-- Écran de chargement entre pages -->
   <div class="chargement" id="chargement"></div>
-
   <div class="cadre"></div>
   <a href="/" class="nav-retour">← Accueil</a>
 
-  <!-- Overlay météo -->
   {% if meteo %}
   <div id="meteo-overlay">
     <canvas id="meteo-canvas"></canvas>
@@ -194,7 +237,6 @@
   </div>
   {% endif %}
 
-  <!-- Toasts succès -->
   <div id="succes-toasts">
     {% for s in nouveaux_succes %}
     <div class="succes-toast" id="toast-{{s.id}}">
@@ -209,7 +251,6 @@
 
   <div class="page">
 
-    <!-- Badge année -->
     <div class="badge-annee a1" style="display:inline-flex;align-items:baseline;gap:0">
       <span class="libelle">Année</span>
       <span class="numero">{{annee}}</span>
@@ -218,20 +259,24 @@
       {% endif %}
     </div>
 
-    <!-- Stats + delta -->
     <div class="grille-stats a2">
 
-      <div class="carte-stat loup-stat" id="card-loup">
-        <div class="stat-espece">Loups
-          {% if delta_l is not none %}
-            {% if delta_l > 0 %}<span class="stat-delta delta-plus">▲ +{{delta_l}}</span>
-            {% elif delta_l < 0 %}<span class="stat-delta delta-minus">▼ {{delta_l}}</span>
-            {% else %}<span class="stat-delta delta-zero">→ stable</span>{% endif %}
-          {% endif %}
-        </div>
-        <div class="stat-nombre" id="val-loup">{{predateur}}</div>
-        <div class="stat-barre-wrap">
-          <div class="stat-barre" id="barre-loup" style="width:{{ [predateur/0.5,100]|min }}%"></div>
+      <div class="meute-wrapper">
+        {% set nb_meutes = (predateur // 10) + (1 if predateur % 10 != 0 else 0) if predateur > 0 else 0 %}
+        <span class="meute-flottante">🐾 {{nb_meutes}} Meute{% if nb_meutes > 1 %}s{% endif %}</span>
+        
+        <div class="carte-stat loup-stat" id="card-loup">
+          <div class="stat-espece">Loups
+            {% if delta_l is not none %}
+              {% if delta_l > 0 %}<span class="stat-delta delta-plus">▲ +{{delta_l}}</span>
+              {% elif delta_l < 0 %}<span class="stat-delta delta-minus">▼ {{delta_l}}</span>
+              {% else %}<span class="stat-delta delta-zero">→ stable</span>{% endif %}
+            {% endif %}
+          </div>
+          <div class="stat-nombre" id="val-loup">{{predateur}}</div>
+          <div class="stat-barre-wrap">
+            <div class="stat-barre" id="barre-loup" style="background:#8b2e2e; width:{{ [predateur/0.5,100]|min }}%"></div>
+          </div>
         </div>
       </div>
 
@@ -245,7 +290,7 @@
         </div>
         <div class="stat-nombre" id="val-cerf">{{proie}}</div>
         <div class="stat-barre-wrap">
-          <div class="stat-barre" id="barre-cerf" style="width:{{ [proie/5,100]|min }}%"></div>
+          <div class="stat-barre" id="barre-cerf" style="background:#3a5f8a; width:{{ [proie/5,100]|min }}%"></div>
         </div>
       </div>
 
@@ -259,13 +304,12 @@
         </div>
         <div class="stat-nombre" id="val-herbe">{{vegetal}}</div>
         <div class="stat-barre-wrap">
-          <div class="stat-barre" id="barre-herbe" style="width:{{ [vegetal/10,100]|min }}%"></div>
+          <div class="stat-barre" id="barre-herbe" style="background:#4a7c4a; width:{{ [vegetal/10,100]|min }}%"></div>
         </div>
       </div>
 
     </div>
 
-    <!-- Donut -->
     <div class="donut-wrap a3">
       <canvas id="donut-canvas" width="110" height="110"></canvas>
       <div class="donut-legende">
@@ -284,7 +328,6 @@
       </div>
     </div>
 
-    <!-- Actions -->
     <div class="actions-jeu a4">
       <form action="/game" method="POST" onsubmit="lancerChargement()">
         <input type="hidden" name="annee" value="{{annee}}">
@@ -302,7 +345,6 @@
       </form>
     </div>
 
-    <!-- Mode accéléré -->
     <div class="accel-wrap a4">
       <form action="/accelerer" method="POST" class="accel-form" onsubmit="lancerChargement()">
         <input type="hidden" name="annee" value="{{annee}}">
@@ -315,7 +357,6 @@
       </form>
     </div>
 
-    <!-- Graphique double axe -->
     <div class="graph-wrap a4">
       <p class="titre-section">Évolution des populations</p>
       <canvas id="graph-canvas" height="220"></canvas>
@@ -326,9 +367,6 @@
       </div>
     </div>
 
-    <!-- Prévision météo (bandeau sticky) -->
-
-    <!-- Journal -->
     <div class="journal-wrap a5">
       <p class="titre-section">Journal de bord</p>
       <div class="journal-liste">
@@ -346,7 +384,6 @@
       </div>
     </div>
 
-    <!-- Succès -->
     <div class="succes-bouton-wrap a5">
       <p class="titre-section">Succès
         <span style="font-family:var(--font-corps);font-size:11px;font-weight:400;opacity:.5;margin-left:8px;">
@@ -366,7 +403,6 @@
       </div>
     </div>
 
-    <!-- Modal succès -->
     <div id="succes-modal" onclick="if(event.target===this)fermerSucces()">
       <div class="modal-carte">
         <button class="modal-close" onclick="fermerSucces()">✕</button>
@@ -380,21 +416,20 @@
   </div>
 
   <script>
-  // ── Chargement entre pages ────────────────────────────
   function lancerChargement() {
     document.getElementById('chargement').classList.add('actif');
   }
 
-  // ── Flash cartes ──────────────────────────────────────
   ['loup','cerf','herbe'].forEach((id,i) => {
     setTimeout(() => {
       const c = document.getElementById('card-'+id);
-      c.classList.add('update');
-      setTimeout(() => c.classList.remove('update'), 700);
+      if(c){
+        c.classList.add('update');
+        setTimeout(() => c.classList.remove('update'), 700);
+      }
     }, 300 + i*80);
   });
 
-  // ── Toasts auto-disparition ───────────────────────────
   document.querySelectorAll('.succes-toast').forEach((el, i) => {
     setTimeout(() => {
       el.style.transition = 'opacity .5s, transform .5s';
@@ -403,7 +438,6 @@
     }, 3500 + i * 400);
   });
 
-  // ── Overlay météo ─────────────────────────────────────
   {% if meteo %}
   const METEO_CLE = "{{ meteo.cle }}";
   const overlay   = document.getElementById('meteo-overlay');
@@ -446,20 +480,18 @@
   function fermerMeteo() {}
   {% endif %}
 
-  // ── Donut loups / cerfs ───────────────────────────────
   (function() {
     const L = {{predateur}}, C = {{proie}};
     const total = L + C;
     const canvas = document.getElementById('donut-canvas');
+    if(!canvas) return;
     const ctx = canvas.getContext('2d');
     const cx = 55, cy = 55, R = 44, r = 26;
-
     if (total === 0) {
       ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2);
       ctx.strokeStyle='rgba(0,0,0,.1)'; ctx.lineWidth=R-r; ctx.stroke();
       return;
     }
-
     const vals = [L, C];
     const cols = ['#8b2e2e','#3a5f8a'];
     const ids  = ['pct-loup','pct-cerf'];
@@ -479,16 +511,15 @@
     ctx.globalAlpha = 1;
   })();
 
-  // ── Graphique double axe ──────────────────────────────
   const HIST = {{ historique | safe }};
   (function() {
     const canvas = document.getElementById('graph-canvas');
+    if(!canvas) return;
     canvas.width = canvas.parentElement.offsetWidth || 580;
     const W=canvas.width, H=220, ctx=canvas.getContext('2d');
     const hist=HIST, N=hist.loup.length;
     const PAD={top:38, right:56, bottom:36, left:56};
     const GW=W-PAD.left-PAD.right, GH=H-PAD.top-PAD.bottom;
-
     const maxLC = Math.max(...[...hist.loup,...hist.cerf].filter(v=>v>0),1)*1.15;
     const maxH  = Math.max(...hist.herbe.filter(v=>v>0),1)*1.15;
 
@@ -517,15 +548,12 @@
         const y=PAD.top+(GH/4)*i;
         ctx.beginPath();ctx.moveTo(PAD.left,y);ctx.lineTo(PAD.left+GW,y);
         ctx.strokeStyle='rgba(0,0,0,.07)';ctx.lineWidth=1;ctx.stroke();
-        // Axe gauche — Nombre de loups & cerfs
         ctx.font='10px "Lato",sans-serif';ctx.textBaseline='middle';
         ctx.fillStyle='rgba(100,40,40,.6)';ctx.textAlign='right';
         ctx.fillText(fmt(maxLC*(1-i/4)),PAD.left-6,y);
-        // Axe droit — Nombre d'herbe
         ctx.fillStyle='rgba(40,80,40,.6)';ctx.textAlign='left';
         ctx.fillText(fmt(maxH*(1-i/4)),PAD.left+GW+6,y);
       }
-      // Étiquettes d'axe — courtes et bien placées
       ctx.save();
       ctx.font='bold 9px "Lato",sans-serif';ctx.textBaseline='bottom';
       ctx.fillStyle='rgba(139,46,46,.75)';ctx.textAlign='right';
@@ -533,13 +561,11 @@
       ctx.fillStyle='rgba(40,80,40,.75)';ctx.textAlign='left';
       ctx.fillText("🌿 Herbe",PAD.left+GW+2,PAD.top-12);
       ctx.restore();
-      // Labels X
       ctx.textAlign='center';ctx.textBaseline='top';
       ctx.fillStyle='rgba(28,28,26,.35)';ctx.font='10px "Lato",sans-serif';
       const step=Math.max(1,Math.floor(N/7));
       for(let i=0;i<N;i+=step){ctx.fillText('A'+(i+1),PAD.left+(N>1?i/(N-1):0)*GW,PAD.top+GH+6);}
       if(N>1)ctx.fillText('A'+N,PAD.left+GW,PAD.top+GH+6);
-      // Séparateur axe droit
       ctx.save();ctx.setLineDash([3,4]);
       ctx.beginPath();ctx.moveTo(PAD.left+GW,PAD.top);ctx.lineTo(PAD.left+GW,PAD.top+GH);
       ctx.strokeStyle='rgba(74,124,74,.2)';ctx.lineWidth=1;ctx.stroke();
@@ -590,7 +616,6 @@
     requestAnimationFrame(render);
   })();
 
-  // ── Modal succès ──────────────────────────────────────
   document.querySelectorAll('.succes-item').forEach(el => {
     el.addEventListener('click', () => {
       document.getElementById('modal-emoji').textContent = el.dataset.emoji;
