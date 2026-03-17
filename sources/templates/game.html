@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -576,21 +576,25 @@
     function yOf(v,m){return PAD.top+GH-Math.min(v/m,1)*GH;}
 
     function drawCourbe(data,color,lw,maxAx,progress){
-      if(data.length<2)return;
-      const n=Math.max(2,Math.round(data.length*progress)),pts=data.slice(0,n);
+      const total=data.length;
+      if(total<1)return;
+      // n = nb de points animés, total = référence fixe pour les positions X
+      // Sans ça, quand on ajoute des êtres, xOf recalcule tout et le graphique se compresse
+      const n=Math.max(1,Math.round(total*progress)),pts=data.slice(0,n);
       ctx.save();ctx.beginPath();
-      pts.forEach((v,i)=>{const x=xOf(i,n),y=yOf(v,maxAx);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-      ctx.lineTo(xOf(n-1,n),PAD.top+GH);ctx.lineTo(PAD.left,PAD.top+GH);ctx.closePath();
+      pts.forEach((v,i)=>{const x=xOf(i,total),y=yOf(v,maxAx);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+      if(n>1){ctx.lineTo(xOf(n-1,total),PAD.top+GH);ctx.lineTo(PAD.left,PAD.top+GH);ctx.closePath();}
       ctx.globalAlpha=.08;ctx.fillStyle=color;ctx.fill();ctx.restore();
+      if(n<2)return;
       ctx.save();ctx.beginPath();
       pts.forEach((v,i)=>{
-        const x=xOf(i,n),y=yOf(v,maxAx);
+        const x=xOf(i,total),y=yOf(v,maxAx);
         if(!i){ctx.moveTo(x,y);return;}
-        const px=xOf(i-1,n),py=yOf(pts[i-1],maxAx);
+        const px=xOf(i-1,total),py=yOf(pts[i-1],maxAx);
         ctx.bezierCurveTo((px+x)/2,py,(px+x)/2,y,x,y);
       });
       ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.lineJoin='round';ctx.lineCap='round';ctx.globalAlpha=.88;ctx.stroke();ctx.restore();
-      const lx=xOf(n-1,n),ly=yOf(pts[n-1],maxAx),pulse=.3+Math.sin(Date.now()/350)*.25;
+      const lx=xOf(n-1,total),ly=yOf(pts[n-1],maxAx),pulse=.3+Math.sin(Date.now()/350)*.25;
       ctx.save();ctx.globalAlpha=pulse;ctx.beginPath();ctx.arc(lx,ly,8,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
       ctx.globalAlpha=1;ctx.beginPath();ctx.arc(lx,ly,3.5,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();ctx.restore();
     }

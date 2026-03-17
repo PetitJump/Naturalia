@@ -14,9 +14,31 @@ DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database.db
 # BASE_DIR : dossier contenant data/ (même dossier que app.py sur le serveur)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Variables globales de simulation (initialisées pour éviter NameError au démarrage)
-historique = {"loup": [], "cerf": [], "herbe": []}
-jeu = None
+# Stockage des parties en cours par session id
+# jeu : dict {session_id -> objet Jeu} — non sérialisable, reste en mémoire serveur
+# historique : stocké dans session Flask (listes de nombres, sérialisable)
+_jeux = {}  # {session_id: Jeu}
+
+def get_session_id():
+    """Retourne un identifiant unique par session utilisateur."""
+    if '_sid' not in session:
+        import uuid
+        session['_sid'] = str(uuid.uuid4())
+        session.modified = True
+    return session['_sid']
+
+def get_jeu():
+    return _jeux.get(get_session_id())
+
+def set_jeu(j):
+    _jeux[get_session_id()] = j
+
+def get_historique():
+    return session.get('historique', {"loup": [], "cerf": [], "herbe": []})
+
+def set_historique(h):
+    session['historique'] = h
+    session.modified = True
 
 SUCCES_DEF = [
     {"id": "premier_pas",  "emoji": "🌱", "nom": "Premier pas",
@@ -160,10 +182,10 @@ def verifier_succes(annee, predateur, proie, vegetal, meteo_cle, succes_courants
             nouveaux.append(defn)
     if annee >= 1:   debloquer("premier_pas")
     if annee >= 20:  debloquer("cycle")
-    if predateur == 100: debloquer("meute_royale")
-    if proie == 50:      debloquer("troupeau")
-    if vegetal == 200:   debloquer("foret_dense")
-    if annee >= 10 and predateur > 0 and proie > 0 and vegetal > 0:
+    if predateur >= 75: debloquer("meute_royale")
+    if proie >= 1200:      debloquer("troupeau")
+    if vegetal >= 7000:   debloquer("foret_dense")
+    if annee >= 40 and predateur > 0 and proie > 0 and vegetal > 0:
         debloquer("equilibre")
     if meteo_cle == "secheresse" and predateur > 0 and proie > 0 and vegetal > 0:
         debloquer("survie_seche")
@@ -176,7 +198,7 @@ def verifier_succes(annee, predateur, proie, vegetal, meteo_cle, succes_courants
 # ── Build render args ─────────────────────────────────────────────────────────
 
 def build_render_args(annee, predateur, proie, vegetal, meteo_event,
-                      nouveaux_succes, prev_l, prev_c, prev_v):
+                      nouveaux_succes, prev_l, prev_c, prev_v, historique):
     succes_courants = charger_succes_permanents()
     meteo_cle = meteo_event["cle"] if meteo_event else None
     nouveaux = verifier_succes(annee, predateur, proie, vegetal, meteo_cle, succes_courants)
@@ -405,8 +427,7 @@ init_db()
 
 @app.route("/")
 def index():
-    global historique
-    historique = {"loup": [], "cerf": [], "herbe": []}
+    set_historique({"loup": [], "cerf": [], "herbe": []})
     session["journal"] = []
     succes_courants = charger_succes_permanents()
     user_stats = get_stats(session.get('username'))
@@ -430,17 +451,19 @@ def complexite():
 
 @app.route("/game", methods=["GET", "POST"])
 def game():
-    global historique, jeu
     annee = int(request.form["annee"])
     if annee == 0:
-        jeu = Jeu(
+        j = Jeu(
             Meute([Predateur("loup", 0) for _ in range(int(request.form["loup"]))]),
             [Proie("cerf", 0) for _ in range(int(request.form["cerf"]))],
             [Vegetal("herbe") for _ in range(int(request.form["herbe"]))]
         )
-        historique = {"loup": [], "cerf": [], "herbe": []}
+        set_jeu(j)
+        set_historique({"loup": [], "cerf": [], "herbe": []})
         session["journal"] = []
 
+    jeu = get_jeu()
+    historique = get_historique()
     prev_l = historique["loup"][-1] if historique["loup"] else None
     prev_c = historique["cerf"][-1] if historique["cerf"] else None
     prev_v = historique["herbe"][-1] if historique["herbe"] else None
@@ -454,6 +477,7 @@ def game():
     historique["loup"].append(predateur)
     historique["cerf"].append(proie)
     historique["herbe"].append(vegetal)
+    set_historique(historique)
 
     if predateur == 0 or proie == 0 or vegetal == 0:
         espece_morte = "loups" if predateur == 0 else ("cerfs" if proie == 0 else "herbe")
@@ -468,15 +492,16 @@ def game():
             succes_list=SUCCES_DEF, succes_courants=sc,
             historique=json.dumps(historique))
 
-    args = build_render_args(annee, predateur, proie, vegetal, meteo_event, [], prev_l, prev_c, prev_v)
+    args = build_render_args(annee, predateur, proie, vegetal, meteo_event, [], prev_l, prev_c, prev_v, historique)
     return render_template("game.html", **args)
 
 @app.route("/accelerer", methods=["POST"])
 def accelerer():
     """Simule N années d'un coup."""
-    global historique, jeu
     nb_annees = max(1, min(50, int(request.form.get("nb_annees", 5))))
     annee = int(request.form["annee"])
+    jeu = get_jeu()
+    historique = get_historique()
 
     prev_l = historique["loup"][-1] if historique["loup"] else None
     prev_c = historique["cerf"][-1] if historique["cerf"] else None
@@ -508,14 +533,16 @@ def accelerer():
                 succes_list=SUCCES_DEF, succes_courants=sc,
                 historique=json.dumps(historique))
 
+    set_historique(historique)
     args = build_render_args(annee, predateur, proie, vegetal,
-                             dernier_meteo, [], prev_l, prev_c, prev_v)
+                             dernier_meteo, [], prev_l, prev_c, prev_v, historique)
     args["annees_sautees"] = nb_annees
     return render_template("game.html", **args)
 
 @app.route("/update_ajouter", methods=["GET", "POST"])
 def update_ajouter():
-    global jeu, historique
+    jeu = get_jeu()
+    historique = get_historique()
     annee = int(request.form["base_annee"])
     for _ in range(int(request.form["loup"])): jeu.meute.predateurs.append(Predateur("loup", 0))
     for _ in range(int(request.form["cerf"])): jeu.proies.append(Proie("cerf", 0))
@@ -534,6 +561,7 @@ def update_ajouter():
     historique["loup"].append(predateur)
     historique["cerf"].append(proie)
     historique["herbe"].append(vegetal)
+    set_historique(historique)
 
     if predateur == 0 or proie == 0 or vegetal == 0:
         espece_morte = "loups" if predateur == 0 else ("cerfs" if proie == 0 else "herbe")
@@ -548,12 +576,12 @@ def update_ajouter():
             succes_list=SUCCES_DEF, succes_courants=sc,
             historique=json.dumps(historique))
 
-    args = build_render_args(annee, predateur, proie, vegetal, meteo_event, [], prev_l, prev_c, prev_v)
+    args = build_render_args(annee, predateur, proie, vegetal, meteo_event, [], prev_l, prev_c, prev_v, historique)
     return render_template("game.html", **args)
 
 @app.route("/ajouter", methods=["GET", "POST"])
 def ajouter():
-    global jeu, historique
+    jeu = get_jeu()
     annee = int(request.form["annee"])
     return render_template("ajouter.html",
         annee=annee, predateur=len(jeu.meute.predateurs),
