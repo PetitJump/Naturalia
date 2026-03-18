@@ -47,19 +47,19 @@ SUCCES_DEF = [
     {"id": "premier_pas",  "emoji": "🌱", "nom": "Premier pas",
      "desc": "Lancer la simulation pour la première fois. Bienvenue dans l'écosystème !"},
     {"id": "equilibre",    "emoji": "⚖️",  "nom": "Pro de l'équilibre",
-     "desc": "Maintenir les trois espèces en vie pendant au moins 40 ans. La nature trouve son équilibre."},
+     "desc": "Maintenir les trois espèces en vie pendant au moins 60 ans. La nature trouve son équilibre."},
     {"id": "meute_royale", "emoji": "🐺", "nom": "Meute royale",
-     "desc": "Atteindre une population de 75 loups. La forêt leur appartient."},
+     "desc": "Atteindre une population de 200 loups. La forêt leur appartient."},
     {"id": "troupeau",     "emoji": "🦌", "nom": "Troupeau parfait",
-     "desc": "Atteindre une population de 1200 cerfs. Le troupeau est au complet."},
+     "desc": "Atteindre une population de 2000 cerfs. Le troupeau est au complet."},
     {"id": "foret_dense",  "emoji": "🌿", "nom": "Forêt dense",
-     "desc": "Atteindre une végétation de 7000 touffes d'herbe. La prairie est luxuriante."},
+     "desc": "Atteindre une végétation de 10 000 touffes d'herbe. La prairie est luxuriante."},
     {"id": "survie_seche", "emoji": "☀️",  "nom": "Résistance solaire",
      "desc": "Survivre à une sécheresse sans qu'aucune espèce ne disparaisse. La vie persiste malgré la chaleur."},
     {"id": "survie_hiver", "emoji": "❄️",  "nom": "Véritable hiver",
      "desc": "Survivre à un hiver rigoureux sans qu'aucune espèce ne disparaisse. La forêt résiste au gel."},
     {"id": "cycle",        "emoji": "🔄", "nom": "Le Grand Cycle",
-     "desc": "Atteindre l'année 20. Vingt ans de cycles naturels, de prédation et de renouveau."},
+     "desc": "Atteindre l'année 30. Trente ans de cycles naturels, de prédation et de renouveau."},
     {"id": "extinction",   "emoji": "💀", "nom": "Extinction",
      "desc": "Laisser disparaître une espèce de l'écosystème. L'équilibre s'est brisé."},
 ]
@@ -218,12 +218,12 @@ def verifier_succes(annee, predateur, proie, vegetal, meteo_cle, succes_courants
             succes_courants[sid] = True
             defn = next(s for s in SUCCES_DEF if s["id"] == sid)
             nouveaux.append(defn)
-    if annee >= 1:   debloquer("premier_pas")
-    if annee >= 20:  debloquer("cycle")
-    if predateur >= 75: debloquer("meute_royale")
-    if proie >= 1200:      debloquer("troupeau")
-    if vegetal >= 7000:   debloquer("foret_dense")
-    if annee >= 40 and predateur > 0 and proie > 0 and vegetal > 0:
+    if annee >= 1:    debloquer("premier_pas")
+    if annee >= 30:   debloquer("cycle")
+    if predateur >= 200:  debloquer("meute_royale")
+    if proie >= 2000:     debloquer("troupeau")
+    if vegetal >= 10000:  debloquer("foret_dense")
+    if annee >= 60 and predateur > 0 and proie > 0 and vegetal > 0:
         debloquer("equilibre")
     if meteo_cle == "secheresse" and predateur > 0 and proie > 0 and vegetal > 0:
         debloquer("survie_seche")
@@ -461,7 +461,7 @@ def get_leaderboards():
 # Initialiser la DB au démarrage (avec migration automatique si besoin)
 init_db()
 
-MAX_INTERVENTIONS = 5
+MAX_ESPECES_AJOUTEES = 200
 
 def generer_raison_fin(espece_morte, historique):
     """Génère une phrase explicative pour la fin de partie."""
@@ -532,7 +532,7 @@ def game():
         set_jeu(j)
         set_historique({"loup": [], "cerf": [], "herbe": []})
         session["journal"] = []
-        session["nb_interventions"] = 0
+        session["nb_especes_ajoutees"] = 0
 
     jeu = get_jeu()
     if jeu is None:
@@ -626,15 +626,22 @@ def update_ajouter():
         return redirect(url_for('init'))
     historique = get_historique()
     annee = int(request.form["base_annee"])
-    nb_interventions = session.get("nb_interventions", 0)
-    if nb_interventions < MAX_INTERVENTIONS:
+    nb_especes_ajoutees = session.get("nb_especes_ajoutees", 0)
+    remaining = MAX_ESPECES_AJOUTEES - nb_especes_ajoutees
+    if remaining > 0:
         nb_loup  = max(0, min(20, int(request.form.get("loup",  0))))
         nb_cerf  = max(0, min(20, int(request.form.get("cerf",  0))))
         nb_herbe = max(0, min(20, int(request.form.get("herbe", 0))))
+        # Cap so total added never exceeds the remaining budget
+        total = nb_loup + nb_cerf + nb_herbe
+        if total > remaining:
+            nb_loup  = min(nb_loup,  remaining); remaining -= nb_loup
+            nb_cerf  = min(nb_cerf,  remaining); remaining -= nb_cerf
+            nb_herbe = min(nb_herbe, remaining)
         for _ in range(nb_loup):  jeu.meute.predateurs.append(Predateur("loup", 0))
         for _ in range(nb_cerf):  jeu.proies.append(Proie("cerf", 0))
         for _ in range(nb_herbe): jeu.vegetaux.append(Vegetal("herbe"))
-        session["nb_interventions"] = nb_interventions + 1
+        session["nb_especes_ajoutees"] = nb_especes_ajoutees + nb_loup + nb_cerf + nb_herbe
         session.modified = True
         # Entrée journal
         parties = []
@@ -692,13 +699,13 @@ def ajouter():
     annee = int(request.form["annee"])
     session['annee_courante'] = annee
     session.modified = True
-    nb_interventions = session.get("nb_interventions", 0)
+    nb_especes_ajoutees = session.get("nb_especes_ajoutees", 0)
     return render_template("ajouter.html",
         annee=annee, predateur=len(jeu.meute.predateurs),
         proie=len(jeu.proies), vegetal=len(jeu.vegetaux),
-        nb_interventions=nb_interventions,
-        max_interventions=MAX_INTERVENTIONS,
-        limite_atteinte=(nb_interventions >= MAX_INTERVENTIONS))
+        nb_especes_ajoutees=nb_especes_ajoutees,
+        max_especes_ajoutees=MAX_ESPECES_AJOUTEES,
+        limite_atteinte=(nb_especes_ajoutees >= MAX_ESPECES_AJOUTEES))
 
 @app.route("/retour_jeu")
 def retour_jeu():
