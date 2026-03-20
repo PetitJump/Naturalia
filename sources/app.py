@@ -11,37 +11,41 @@ app = Flask(__name__)
 app.secret_key = "super_secret_key"
 
 DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database.db')
-# BASE_DIR : dossier contenant data/ (même dossier que app.py sur le serveur)
+#BASE_DIR est un dossier contenant data/ (même dossier que app.py sur le serveur)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Stockage des parties en cours par session id
-# jeu : dict {session_id -> objet Jeu} — non sérialisable, reste en mémoire serveur
-# historique : stocké dans session Flask (listes de nombres, sérialisable)
+#Stockage des parties en cours par session id
+#jeu : dict {session_id -> objet Jeu} — non sérialisable, reste en mémoire serveur
+#historique : stocké dans session Flask (listes de nombres, sérialisable)
 _jeux = {}  # {session_id: Jeu}
-_MAX_JEUX = 500  # Limite pour éviter la fuite mémoire sur le serveur
+_MAX_JEUX = 500  #Limite pour éviter la fuite mémoire sur le serveur
 
 def get_session_id():
-    """Retourne un identifiant unique par session utilisateur."""
+    """
+    Retourne un identifiant unique par session utilisateur.
+    """
     if '_sid' not in session:
         import uuid
-        session['_sid'] = str(uuid.uuid4())
+        session['_sid'] = str(uuid.uuid4()) #On vient importer un identifiant aléatoire unique pour l'utilisateur
         session.modified = True
-    return session['_sid']
+    return session['_sid'] #On renvoie la session de l'utilisateur
 
 def get_jeu():
-    return _jeux.get(get_session_id())
+    return _jeux.get(get_session_id()) #On récupère le jeux de l'identifiant récupéré grace à la fonction get_session_id
 
 def set_jeu(j):
     if len(_jeux) >= _MAX_JEUX:
-        del _jeux[next(iter(_jeux))]  # Supprime l'entrée la plus ancienne
+        del _jeux[next(iter(_jeux))] #On supprime l'entrée la plus ancienne
     _jeux[get_session_id()] = j
 
 def get_historique():
-    return session.get('historique', {"loup": [], "cerf": [], "herbe": []})
+    return session.get('historique', {"loup": [], "cerf": [], "herbe": []}) #On renvoie l'historique de toutes les espèces (leur nombres etc...)
 
 def set_historique(h):
     session['historique'] = h
     session.modified = True
+
+##Les succès des utilisateurs
 
 SUCCES_DEF = [
     {"id": "premier_pas",  "emoji": "🌱", "nom": "Premier pas",
@@ -64,10 +68,10 @@ SUCCES_DEF = [
      "desc": "Laisser disparaître une espèce de l'écosystème. L'équilibre s'est brisé."},
 ]
 
-# ── Succès ────────────────────────────────────────────────────────────────────
-
 def charger_succes_permanents():
-    """Charge les succes : depuis la DB si connecte, depuis la session si invite."""
+    """
+    Charge les succes depuis la DATABASE si connecté, depuis la session si invité.
+    """
     username = session.get('username') if session else None
     if username:
         conn = get_db_connection()
@@ -75,12 +79,12 @@ def charger_succes_permanents():
             rows = conn.execute(
                 "SELECT succes_id, obtenu FROM Succes WHERE user_id = (SELECT id FROM Compte WHERE username = ?)",
                 (username,)
-            ).fetchall()
+            ).fetchall() #On va récupérer tous les succès de l'utilisateur utilisant le jeu
         finally:
             conn.close()
         if rows:
             return {r['succes_id']: bool(r['obtenu']) for r in rows}
-        # Premiere connexion : initialiser la ligne pour chaque succes
+        #Premiere connexion : initialiser la ligne pour chaque succes
         conn = get_db_connection()
         try:
             uid = conn.execute("SELECT id FROM Compte WHERE username = ?", (username,)).fetchone()
@@ -88,17 +92,19 @@ def charger_succes_permanents():
                 for s in SUCCES_DEF:
                     conn.execute(
                         "INSERT OR IGNORE INTO Succes (user_id, succes_id, obtenu) VALUES (?,?,0)",
-                        (uid['id'], s['id'])
+                        (uid['id'], s['id']) #On dit que le succès a été réalisé par l'utilisateur
                     )
                 conn.commit()
         finally:
             conn.close()
         return {s['id']: False for s in SUCCES_DEF}
-    # Invite ou non connecte : utiliser la session
-    return session.get('succes_session', {s['id']: False for s in SUCCES_DEF})
+    #Si c'est un invité ou non connecté, on utilise la session
+    return session.get('succes_session', {s['id']: False for s in SUCCES_DEF}) #Dans ce cas là, les succès ne seront pas réalisés
 
 def sauvegarder_succes_permanents(succes):
-    """Sauvegarde les succes : dans la DB si connecte, dans la session si invite."""
+    """
+    Sauvegarde les succès dans la DATABASE si connecté, dans la session si invité.
+    """
     username = session.get('username') if session else None
     if username:
         conn = get_db_connection()
@@ -108,7 +114,7 @@ def sauvegarder_succes_permanents(succes):
                 for succes_id, obtenu in succes.items():
                     conn.execute(
                         "INSERT OR REPLACE INTO Succes (user_id, succes_id, obtenu) VALUES (?,?,?)",
-                        (uid['id'], succes_id, 1 if obtenu else 0)
+                        (uid['id'], succes_id, 1 if obtenu else 0) #On regarde si le succès est réalisé
                     )
                 conn.commit()
         finally:
@@ -117,9 +123,12 @@ def sauvegarder_succes_permanents(succes):
         session['succes_session'] = succes
         session.modified = True
 
-# ── Prévisions ────────────────────────────────────────────────────────────────
+##Les alertes et le prévisions
 
-def calculer_prevision(historique, dernier_meteo_cle):
+def calculer_prevision(historique, dernier_meteo_cle): 
+    """
+    Cette fonction va nous permettre de dire au joueur qu'il va y avoir un déséquilibre des espèces et qu'il y a un rique d'extinction
+    """
     loup  = historique["loup"]
     cerf  = historique["cerf"]
     herbe = historique["herbe"]
@@ -128,42 +137,40 @@ def calculer_prevision(historique, dernier_meteo_cle):
         return None
     alertes = []
 
-    if cerf[-1] > 0 and loup[-1] / cerf[-1] > 0.5 and cerf[-1] < cerf[-2]:
+    if cerf[-1] > 0 and loup[-1] / cerf[-1] > 0.5 and cerf[-1] < cerf[-2]: #On vient regarder si il y a assez de cerf pour les loups en vie
         alertes.append({"emoji": "🐺", "texte": "Les loups sont trop nombreux face aux cerfs — famine imminente.", "niveau": "danger"})
 
-    if n >= 4 and herbe[-1] < herbe[-2] < herbe[-3] and herbe[-1] < herbe[-3] * 0.6:
+    if n >= 4 and herbe[-1] < herbe[-2] < herbe[-3] and herbe[-1] < herbe[-3] * 0.6: #On regarde si l'herbe à chuté de plus de 40%. Si c'est le cas, une alerte est lancée
         alertes.append({"emoji": "🌿", "texte": "L'herbe s'effondre — les cerfs vont manquer de nourriture.", "niveau": "danger"})
 
-    if cerf[-1] < cerf[-2] * 0.55 and cerf[-1] < cerf[-3] * 0.55:
+    if cerf[-1] < cerf[-2] * 0.55 and cerf[-1] < cerf[-3] * 0.55: #On regarde comment le nombres de cerfs chute. Si c'est très rapide, on envoie l'alerte
         alertes.append({"emoji": "🦌", "texte": "Les cerfs disparaissent rapidement — les loups vont mourir de faim.", "niveau": "warning"})
 
-    if (herbe[-1] > herbe[-2] * 1.4 and herbe[-2] > herbe[-3] * 1.2
-            and cerf[-1] > cerf[-2] and cerf[-1] > 0):
+    if (herbe[-1] > herbe[-2] * 1.4 and herbe[-2] > herbe[-3] * 1.2 and cerf[-1] > cerf[-2] and cerf[-1] > 0): #On regarde comment l'herbe se multiplie, c'est une alerte positive
         alertes.append({"emoji": "🦌", "texte": "L'herbe abonde et les cerfs prolifèrent — la meute va croître.", "niveau": "info"})
 
     if not alertes:
-        def variation(lst): return max(abs(lst[-1]-lst[-2]), abs(lst[-2]-lst[-3]))
+        def variation(lst): return max(abs(lst[-1]-lst[-2]), abs(lst[-2]-lst[-3])) 
         if (loup[-1] > 0 and cerf[-1] > 0
                 and variation(loup) < loup[-1] * 0.12
                 and variation(cerf) < cerf[-1] * 0.12):
-            alertes.append({"emoji": "🌤️", "texte": "L'écosystème est stable pour l'instant.", "niveau": "ok"})
+            alertes.append({"emoji": "🌤️", "texte": "L'écosystème est stable pour l'instant.", "niveau": "ok"}) #S'il n'y a pas de grand écart de variations, alors l'écosystème est stable
 
     return alertes[0] if alertes else None
 
-# ── Journal ───────────────────────────────────────────────────────────────────
 
 def maj_journal(journal, annee, predateur, proie, vegetal, meteo_event, nouveaux_succes, prev_pred, prev_proie, prev_veg, historique=None):
     entrees = []
 
-    # Météo
+    #Pour la météo
     if meteo_event:
         entrees.append({"annee": annee, "emoji": meteo_event["emoji"], "texte": meteo_event["nom"], "type": "meteo"})
 
-    # Succès débloqués
+    #Pour les succès débloqués
     for s in nouveaux_succes:
         entrees.append({"annee": annee, "emoji": s["emoji"], "texte": f"Succès débloqué : {s['nom']}", "type": "succes"})
 
-    # Variations — Loups
+    #Variations — Loups
     if prev_pred and predateur > 0 and prev_pred > 0:
         ratio = predateur / prev_pred
         if ratio >= 1.5:
@@ -171,7 +178,7 @@ def maj_journal(journal, annee, predateur, proie, vegetal, meteo_event, nouveaux
         elif ratio <= 0.5:
             entrees.append({"annee": annee, "emoji": "📉", "texte": f"Chute des loups ({prev_pred} → {predateur})", "type": "pop"})
 
-    # Variations — Cerfs
+    #Variations — Cerfs
     if prev_proie and proie > 0 and prev_proie > 0:
         ratio = proie / prev_proie
         if ratio >= 2.0:
@@ -179,7 +186,7 @@ def maj_journal(journal, annee, predateur, proie, vegetal, meteo_event, nouveaux
         elif ratio <= 0.4:
             entrees.append({"annee": annee, "emoji": "📉", "texte": f"Effondrement des cerfs ({prev_proie} → {proie})", "type": "pop"})
 
-    # Variations — Herbe
+    #Variations — Herbe
     if prev_veg and vegetal > 0 and prev_veg > 0:
         ratio_v = vegetal / prev_veg
         if ratio_v >= 2.0:
@@ -187,7 +194,7 @@ def maj_journal(journal, annee, predateur, proie, vegetal, meteo_event, nouveaux
         elif ratio_v <= 0.35:
             entrees.append({"annee": annee, "emoji": "🍂", "texte": f"Effondrement de la végétation ({prev_veg} → {vegetal})", "type": "pop"})
 
-    # Ratio loups/cerfs critique — déclenché uniquement quand le seuil est franchi
+    # Les ratio loups/cerfs critique. Déclenché uniquement quand le seuil est franchi
     if proie > 0 and predateur > 0 and prev_proie and prev_proie > 0:
         prev_ratio = (prev_pred or 0) / prev_proie
         curr_ratio = predateur / proie
@@ -196,7 +203,7 @@ def maj_journal(journal, annee, predateur, proie, vegetal, meteo_event, nouveaux
                             "texte": f"Ratio critique : {predateur} loups pour {proie} cerfs — les proies s'épuisent.",
                             "type": "alerte"})
 
-    # Records de population (après l'année 2 pour éviter le spam initial)
+    #Records de population (après l'année 2 pour éviter le spam initial)
     if historique and annee > 2:
         hist_l = historique.get("loup", [])
         hist_c = historique.get("cerf", [])
