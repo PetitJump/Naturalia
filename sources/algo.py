@@ -26,8 +26,8 @@ class Vegetal:
         self.nom = nom
 
 class Jeu:
-    def __init__(self, meute: Meute, proies: list[Proie], vegetaux: list[Vegetal]):
-        self.meute = meute
+    def __init__(self, meutes: list[Meute], proies: list[Proie], vegetaux: list[Vegetal]):
+        self.meutes = meutes
         self.proies = proies
         self.vegetaux = vegetaux
 
@@ -40,22 +40,23 @@ class Jeu:
         import random as _rnd
         from random import randint
 
-        #Loups
-        for k in self.meute.predateurs:
-            k.age += 1 #On augmente l'age de chaque loups avant la reproduction
+        # Loups
+        for meute in self.meutes:  # On parcourt chaque meute
+            for k in meute.predateurs:
+                k.age += 1
 
-        freq_loup = randint(data["loup"]["reproduction"]["tout_les"][0],
-                            data["loup"]["reproduction"]["tout_les"][1])
-        if annee % freq_loup == 0: #Si c'est le moment de ce reproduire
-            age_min = data["loup"]["reproduction"]["maturiter_sexuel"] #L'age minimum pour pouvoir ce reproduire
-            majeurs = [k for k in self.meute.predateurs if k.age > age_min] #On ne prend que les loups majeurs
-            nb_couples = len(majeurs) // 2
-            for _ in range(nb_couples):
-                petits = randint(data["loup"]["reproduction"]["nombre_de_nv_nee"][0],
-                                 data["loup"]["reproduction"]["nombre_de_nv_nee"][1])
-                for _ in range(petits):
-                    if _rnd.random() < 0.35:  #Valeur entre 0.0 et 1.0 (On utilise cela pour le taux de survie)
-                        self.meute.predateurs.append(Predateur("loup", 0))
+            freq_loup = randint(data["loup"]["reproduction"]["tout_les"][0],
+                                data["loup"]["reproduction"]["tout_les"][1])
+            if annee % freq_loup == 0:
+                age_min = data["loup"]["reproduction"]["maturiter_sexuel"]
+                majeurs = [k for k in meute.predateurs if k.age > age_min]
+                reproducteurs = sorted(majeurs, key=lambda k: k.age, reverse=True)[:2]  # Les 2 plus vieux de CETTE meute
+                if len(reproducteurs) == 2:
+                    petits = randint(data["loup"]["reproduction"]["nombre_de_nv_nee"][0],
+                                    data["loup"]["reproduction"]["nombre_de_nv_nee"][1])
+                    for _ in range(petits):
+                        if _rnd.random() < 0.35:
+                            meute.predateurs.append(Predateur("loup", 0))  # Ajout dans CETTE meute
 
         #Cerfs
         for k in self.proies:
@@ -94,24 +95,26 @@ class Jeu:
 
     def mort(self, data: dict, annee: int):
         """Morts naturelles et prédation."""
-        self.meute.predateurs = [k for k in self.meute.predateurs if k.age < 15] #Les loups de 15 ans meurts
+        for meute in self.meutes:
+            meute.predateurs = [k for k in meute.predateurs if k.age < 15] #Les loups de 15 ans meurts
         self.proies = [k for k in self.proies if k.age < 12] #Les cerfs de 12 ans meurts
         self.taux_de_survie() #Les morts naturelle
 
         #Loups
-        if annee % data["loup"]["mange"]["tout_les"] == 0:
-            combien = data["loup"]["mange"]["combien"] #Combien de cerfs mange un loup
-            necessaires = len(self.meute.predateurs) * combien #Nombre de cerfs necessaires
-            if len(self.proies) >= necessaires: #Si il y a assez de cerfs pour les loups
-                for _ in range(necessaires):
-                    self.proies.pop() #On tue les cerfs les plus jeunes
-            else:
-                survivants: int = len(self.proies) // combien
-                self.proies = []
-                if survivants <= 0:
-                    self.meute.predateurs = [] #On tue tout les loups
+        for meute in self.meutes:
+            if annee % data["loup"]["mange"]["tout_les"] == 0:
+                combien = data["loup"]["mange"]["combien"]
+                necessaires = len(meute.predateurs) * combien
+                if len(self.proies) >= necessaires:
+                    for _ in range(necessaires):
+                        self.proies.pop()
                 else:
-                    self.meute.predateurs = self.meute.predateurs[:survivants] #On ne garde que les survivants (les plus jeunes meurt)
+                    survivants = len(self.proies) // combien
+                    self.proies = []
+                    if survivants <= 0:
+                        meute.predateurs = []
+                    else:
+                        meute.predateurs = meute.predateurs[:survivants]
 
         #Cerfs
         """Chaque cerf mange X touffes par an.
@@ -136,9 +139,10 @@ class Jeu:
 
     def taux_de_survie(self):
         """Mortalité naturelle aléatoire."""
-        self.meute.predateurs = [
-            k for k in self.meute.predateurs
-            if random.random() < (0.5 if k.age == 0 else 0.95)
+        for meute in self.meutes:
+            meute.predateurs = [
+                k for k in meute.predateurs
+                if random.random() < (0.5 if k.age == 0 else 0.95)
         ] #Gère le taux de mort en fonction de l'age du loup
         self.proies = [
             k for k in self.proies
@@ -174,15 +178,16 @@ class Jeu:
             retirer = min(abs(delta_cerf), nb_cerf)#on prend la valeur la plus spetite entre delta_cerfet le nombre de cerf
             self.proies = self.proies[retirer:]#on prend la fin de la liste apres lindice selectionner
 
-        #Loups
-        nb_loup = len(self.meute.predateurs)
-        delta_loup = int(nb_loup * effet["loup"])#on applique le taux assigner au loup
-        if delta_loup > 0:#Si c'est positif
-            for _ in range(delta_loup):
-                self.meute.predateurs.append(Predateur("loup", 1))#on ajoute une année au loup
-        elif delta_loup < 0:#Si il est négatif
-            retirer = min(abs(delta_loup), nb_loup)#on prend la valeur la plus spetite entre delta_loup et le nombre de loup
-            self.meute.predateurs = self.meute.predateurs[retirer:]#on prend la fin de la liste apres lindice selectionner
+        # Loups
+        for meute in self.meutes:
+            nb_loup = len(meute.predateurs)
+            delta_loup = int(nb_loup * effet["loup"])
+            if delta_loup > 0:
+                for _ in range(delta_loup):
+                    meute.predateurs.append(Predateur("loup", 1))
+            elif delta_loup < 0:
+                retirer = min(abs(delta_loup), nb_loup)
+                meute.predateurs = meute.predateurs[retirer:]
 
         return evenement
 
@@ -220,4 +225,4 @@ class Jeu:
                 self.appliquer_meteo(ev) #On va enfin finir par appeler la fonction qui permet d'appliquer l'evenement meteo dans la partie
                 break  # un seul événement par année
 
-        return self.meute.predateurs, self.proies, self.vegetaux, meteo_event
+        return self.meutes, self.proies, self.vegetaux, meteo_event
