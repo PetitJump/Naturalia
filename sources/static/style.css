@@ -118,7 +118,7 @@ h2 {
   text-align: center;
 }
 .entete img {
-  width: 64px;
+  width: 110px;
   filter: sepia(30%) saturate(120%) hue-rotate(60deg);
   animation: respirer 4s ease-in-out infinite;
 }

@@ -100,7 +100,7 @@
       pointer-events:none; z-index:10;
       opacity:0; transition:opacity .4s ease;
     }
-    .donut-wrap { position:relative; }
+    #viz-donut { position:relative; }
     #meteo-overlay {
       position:absolute; inset:0; z-index:11;
       display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -125,11 +125,26 @@
     }
 
     /* ── Graphique ── */
-    .graph-wrap { width:100%; max-width:580px; }
+    .graph-wrap { width:100%; }
     #graph-canvas { width:100%; display:block; border:1px solid rgba(0,0,0,.1); box-shadow:3px 3px 0 rgba(0,0,0,.06); }
-    .graph-legende { display:flex; gap:20px; margin-top:10px; justify-content:center; flex-wrap:wrap; }
+    .graph-legende { display:flex; gap:20px; margin-top:8px; justify-content:center; flex-wrap:wrap; }
     .graph-leg { display:flex; align-items:center; gap:7px; font-family:var(--font-corps); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; opacity:.6; }
     .graph-leg-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+    /* ── Onglets Visualisation ── */
+    .viz-wrap { width:100%; max-width:580px; }
+    .viz-onglets { display:flex; gap:0; margin-bottom:-1px; position:relative; z-index:1; }
+    .viz-onglet {
+      padding:5px 18px; font-family:var(--font-corps); font-size:10px; font-weight:700;
+      letter-spacing:.1em; text-transform:uppercase; background:var(--papier);
+      border:1px solid rgba(0,0,0,.1); border-bottom:none; cursor:pointer;
+      color:var(--terre); opacity:.55; transition:opacity .15s, background .15s;
+    }
+    .viz-onglet.actif { opacity:1; background:white; color:var(--foret); border-bottom-color:white; }
+    .viz-onglet:not(.actif):hover { opacity:.8; }
+    .viz-panneau { border:1px solid rgba(0,0,0,.1); }
+    #viz-donut { display:flex; align-items:center; gap:28px; padding:16px 20px; background:white; position:relative; }
+    #viz-graphique { padding:14px 14px 8px; background:white; }
 
     /* ── Succès toasts ── */
     #succes-toasts { position:fixed; bottom:28px; right:24px; z-index:300; display:flex; flex-direction:column; gap:10px; align-items:flex-end; }
@@ -200,6 +215,26 @@
     .journal-annee { font-family:var(--font-code); font-size:10px; color:var(--terre); opacity:.7; flex-shrink:0; min-width:34px; }
     .journal-texte { font-family:var(--font-corps); font-size:12px; color:var(--encre); opacity:.75; line-height:1.4; }
     .journal-vide  { font-family:var(--font-titre); font-style:italic; font-size:13px; color:var(--terre); opacity:.5; padding:10px 12px; }
+
+    /* ── Boutons popup ── */
+    .btn-popup-action {
+      flex:1; padding:11px 16px;
+      font-family:var(--font-corps); font-size:11px; font-weight:700;
+      letter-spacing:.1em; text-transform:uppercase;
+      background:white; color:var(--foret);
+      border:1px solid rgba(45,74,45,.2); cursor:pointer;
+      transition:background .15s, border-color .15s;
+    }
+    .btn-popup-action:hover { background:#f4f9f4; border-color:var(--foret); }
+
+    /* ── Modaux journal / succès liste ── */
+    #journal-modal, #succes-list-modal { position:fixed; inset:0; z-index:600; background:rgba(28,28,26,.6); backdrop-filter:blur(3px); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .25s; }
+    #journal-modal.visible, #succes-list-modal.visible { opacity:1; pointer-events:all; }
+    .journal-modal-carte { background:var(--papier); border-left:4px solid var(--mousse); padding:28px 32px; max-width:540px; width:90%; max-height:75vh; box-shadow:8px 8px 0 rgba(0,0,0,.15); position:relative; display:flex; flex-direction:column; overflow:hidden; animation:entrerModal .3s cubic-bezier(.22,1,.36,1) both; }
+    .journal-modal-carte .journal-liste { flex:1; overflow-y:auto; max-height:none; border:1px solid rgba(0,0,0,.07); }
+    .succes-list-modal-carte { background:var(--papier); border-left:4px solid var(--foret); padding:28px 32px; max-width:540px; width:90%; max-height:75vh; overflow-y:auto; box-shadow:8px 8px 0 rgba(0,0,0,.15); position:relative; animation:entrerModal .3s cubic-bezier(.22,1,.36,1) both; }
+    .panel-modal-close { position:absolute; top:12px; right:14px; background:none; border:none; cursor:pointer; font-size:17px; opacity:.4; transition:opacity .15s; }
+    .panel-modal-close:hover { opacity:1; }
 
     /* ── Mode accéléré ── */
     .accel-wrap { width:100%; max-width:580px; }
@@ -319,30 +354,48 @@
 
       {% if meteo %}<canvas id="meteo-canvas"></canvas>{% endif %}
 
-      <div class="donut-wrap a3">
-        {% if meteo %}
-        <div id="meteo-overlay">
-          <div class="meteo-carte">
-            <span class="meteo-emoji">{{ meteo.emoji }}</span>
-            <h2 class="meteo-nom">{{ meteo.nom }}</h2>
-            <p class="meteo-desc">{{ meteo.description }}</p>
-            <button class="meteo-continuer" onclick="fermerMeteo()">Continuer →</button>
+      <div class="viz-wrap a3">
+        <div class="viz-onglets">
+          <button class="viz-onglet" onclick="switchViz('donut', this)">Répartition</button>
+          <button class="viz-onglet actif" onclick="switchViz('graphique', this)">Évolution</button>
+        </div>
+
+        <div id="viz-donut" class="viz-panneau" style="display:none">
+          {% if meteo %}
+          <div id="meteo-overlay">
+            <div class="meteo-carte">
+              <span class="meteo-emoji">{{ meteo.emoji }}</span>
+              <h2 class="meteo-nom">{{ meteo.nom }}</h2>
+              <p class="meteo-desc">{{ meteo.description }}</p>
+              <button class="meteo-continuer" onclick="fermerMeteo()">Continuer →</button>
+            </div>
+          </div>
+          {% endif %}
+          <canvas id="donut-canvas" width="110" height="110"></canvas>
+          <div class="donut-legende">
+            <div class="donut-leg">
+              <span class="donut-leg-dot" style="background:#8b2e2e"></span>
+              <span class="donut-leg-label">Loups</span>
+              <span class="donut-leg-val">{{predateur}}</span>
+              <span class="donut-leg-pct" id="pct-loup"></span>
+            </div>
+            <div class="donut-leg">
+              <span class="donut-leg-dot" style="background:#3a5f8a"></span>
+              <span class="donut-leg-label">Cerfs</span>
+              <span class="donut-leg-val">{{proie}}</span>
+              <span class="donut-leg-pct" id="pct-cerf"></span>
+            </div>
           </div>
         </div>
-        {% endif %}
-        <canvas id="donut-canvas" width="110" height="110"></canvas>
-        <div class="donut-legende">
-          <div class="donut-leg">
-            <span class="donut-leg-dot" style="background:#8b2e2e"></span>
-            <span class="donut-leg-label">Loups</span>
-            <span class="donut-leg-val">{{predateur}}</span>
-            <span class="donut-leg-pct" id="pct-loup"></span>
-          </div>
-          <div class="donut-leg">
-            <span class="donut-leg-dot" style="background:#3a5f8a"></span>
-            <span class="donut-leg-label">Cerfs</span>
-            <span class="donut-leg-val">{{proie}}</span>
-            <span class="donut-leg-pct" id="pct-cerf"></span>
+
+        <div id="viz-graphique" class="viz-panneau">
+          <div class="graph-wrap">
+            <canvas id="graph-canvas" height="200"></canvas>
+            <div class="graph-legende">
+              <span class="graph-leg"><span class="graph-leg-dot" style="background:#8b2e2e"></span>Loups</span>
+              <span class="graph-leg"><span class="graph-leg-dot" style="background:#3a5f8a"></span>Cerfs</span>
+              <span class="graph-leg"><span class="graph-leg-dot" style="background:#4a7c4a"></span>Herbe</span>
+            </div>
           </div>
         </div>
       </div>
@@ -376,18 +429,25 @@
         </form>
       </div>
 
-      <div class="graph-wrap a4">
-        <p class="titre-section">Évolution des populations</p>
-        <canvas id="graph-canvas" height="220"></canvas>
-        <div class="graph-legende">
-          <span class="graph-leg"><span class="graph-leg-dot" style="background:#8b2e2e"></span>Loups</span>
-          <span class="graph-leg"><span class="graph-leg-dot" style="background:#3a5f8a"></span>Cerfs</span>
-          <span class="graph-leg"><span class="graph-leg-dot" style="background:#4a7c4a"></span>Herbe</span>
-        </div>
+
+      <div class="a5" style="width:100%;max-width:580px;display:flex;gap:10px">
+        <button class="btn-popup-action" onclick="ouvrirJournal()">📖 Journal de bord</button>
+        <button class="btn-popup-action" onclick="ouvrirSuccesList()">
+          🏆 Succès
+          <span style="font-weight:400;opacity:.55;margin-left:4px;font-size:10px">
+            {% set nb_obtenus = succes_courants.values()|list|select|list|length %}
+            {{nb_obtenus}}/{{succes_list|length}}
+          </span>
+        </button>
       </div>
 
-      <div class="journal-wrap a5">
-        <p class="titre-section">Journal de bord</p>
+    </div>
+
+    <!-- Journal modal -->
+    <div id="journal-modal" onclick="if(event.target===this)fermerJournal()">
+      <div class="journal-modal-carte">
+        <button class="panel-modal-close" onclick="fermerJournal()">✕</button>
+        <p class="titre-section" style="margin:0 0 12px">Journal de bord</p>
         <div class="journal-liste">
           {% if journal %}
             {% for e in journal %}
@@ -402,9 +462,13 @@
           {% endif %}
         </div>
       </div>
+    </div>
 
-      <div class="succes-bouton-wrap a5">
-        <p class="titre-section">Succès
+    <!-- Succès list modal -->
+    <div id="succes-list-modal" onclick="if(event.target===this)fermerSuccesList()">
+      <div class="succes-list-modal-carte">
+        <button class="panel-modal-close" onclick="fermerSuccesList()">✕</button>
+        <p class="titre-section" style="margin:0 0 14px">Succès
           <span style="font-family:var(--font-corps);font-size:11px;font-weight:400;opacity:.5;margin-left:8px;">
             {% set nb_obtenus = succes_courants.values()|list|select|list|length %}
             {{ nb_obtenus }} / {{ succes_list|length }}
@@ -413,6 +477,7 @@
         <div class="succes-grille">
           {% for s in succes_list %}
           <div class="succes-item {% if succes_courants[s.id] %}obtenu{% endif %}"
+               onclick="ouvrirSucces(this)"
                data-emoji="{{s.emoji}}" data-nom="{{s.nom|e}}"
                data-desc="{{s.desc|e}}" data-obtenu="{{succes_courants[s.id]|lower}}">
             <span class="succes-item-emoji">{{s.emoji}}</span>
@@ -421,7 +486,6 @@
           {% endfor %}
         </div>
       </div>
-
     </div>
 
     <!-- Données critiques pour JS -->
@@ -437,6 +501,26 @@
   </div>
 
   <script>
+  // ── Fonctions globales (toujours disponibles même après swap AJAX) ──
+  function ouvrirSucces(el) {
+    document.getElementById('modal-emoji').textContent = el.dataset.emoji;
+    document.getElementById('modal-titre').textContent = el.dataset.nom;
+    document.getElementById('modal-desc').textContent  = el.dataset.desc;
+    const obtenu = el.dataset.obtenu === 'true';
+    const statut = document.getElementById('modal-statut');
+    statut.textContent = obtenu ? '✓ Débloqué' : '🔒 Non obtenu';
+    statut.className   = 'modal-statut ' + (obtenu ? 'obtenu' : 'locked');
+    document.getElementById('succes-modal').classList.add('visible');
+  }
+  function fermerSucces() {
+    const modal = document.getElementById('succes-modal');
+    if(modal) modal.classList.remove('visible');
+  }
+  function ouvrirJournal() { document.getElementById('journal-modal').classList.add('visible'); }
+  function fermerJournal() { const m=document.getElementById('journal-modal'); if(m) m.classList.remove('visible'); }
+  function ouvrirSuccesList() { document.getElementById('succes-list-modal').classList.add('visible'); }
+  function fermerSuccesList() { const m=document.getElementById('succes-list-modal'); if(m) m.classList.remove('visible'); }
+
   // Variables globales pour le pré-chargement
   let nextYearHtml = null;
   let isPreloading = false;
@@ -558,8 +642,8 @@
     (function() {
       const canvas = document.getElementById('graph-canvas');
       if(!canvas) return;
-      canvas.width = canvas.parentElement.offsetWidth || 580;
-      const W=canvas.width, H=220, ctx=canvas.getContext('2d');
+      canvas.width = canvas.parentElement.offsetWidth || 552;
+      const W=canvas.width, H=200, ctx=canvas.getContext('2d');
       const hist=GDATA.historique, N=hist.loup.length;
       const PAD={top:38, right:56, bottom:36, left:56};
       const GW=W-PAD.left-PAD.right, GH=H-PAD.top-PAD.bottom;
@@ -655,25 +739,17 @@
       requestAnimationFrame(render);
     })();
 
-    // 6. Événements UI
-    document.querySelectorAll('.succes-item').forEach(el => {
-      el.addEventListener('click', () => {
-        document.getElementById('modal-emoji').textContent = el.dataset.emoji;
-        document.getElementById('modal-titre').textContent = el.dataset.nom;
-        document.getElementById('modal-desc').textContent  = el.dataset.desc;
-        const obtenu = el.dataset.obtenu === 'true';
-        const statut = document.getElementById('modal-statut');
-        statut.textContent = obtenu ? '✓ Débloqué' : '🔒 Non obtenu';
-        statut.className   = 'modal-statut ' + (obtenu ? 'obtenu' : 'locked');
-        document.getElementById('succes-modal').classList.add('visible');
-      });
-    });
-    window.fermerSucces = function() {
-      const modal = document.getElementById('succes-modal');
-      if(modal) modal.classList.remove('visible');
+    // 6. Événements UI (succes-item gérés via onclick global)
+
+    // 7. Onglets visualisation
+    window.switchViz = function(panneau, el) {
+      document.querySelectorAll('.viz-panneau').forEach(p => p.style.display = 'none');
+      document.querySelectorAll('.viz-onglet').forEach(o => o.classList.remove('actif'));
+      document.getElementById('viz-' + panneau).style.display = '';
+      el.classList.add('actif');
     };
-    
-    // 7. Pré-chargement de l'année suivante
+
+    // 8. Pré-chargement de l'année suivante
     prechargerSuivant();
   }
 
@@ -757,7 +833,7 @@
 
   // Initialisation au premier chargement
   document.addEventListener('DOMContentLoaded', initGame);
-  document.addEventListener('keydown', e => { if(e.key==='Escape'){ if(window.fermerSucces) fermerSucces(); if(window.fermerMeteo) fermerMeteo(); } });
+  document.addEventListener('keydown', e => { if(e.key==='Escape'){ if(window.fermerSucces) fermerSucces(); if(window.fermerMeteo) fermerMeteo(); fermerJournal(); fermerSuccesList(); } });
   </script>
 
   <script src="{{ url_for('static', filename='particules.js') }}"></script>
