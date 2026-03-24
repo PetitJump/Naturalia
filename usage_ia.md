@@ -2,25 +2,24 @@
 
 ## Degré de création originale
 
-Le projet Naturalia est entièrement original. L'idée, la conception du modèle biologique, l'architecture Flask, le système de succès et l'interface graphique ont été pensés et réalisés par l'équipe.
+Le projet Ecologic est un projet original. L'idée de simuler un écosystème proie-prédateur, la conception du modèle biologique, l'architecture Flask et le système de succès ont été conçus et réalisés par l'équipe.
 
-Les modèles mathématiques utilisés (croissance logistique, modèle prédateur-proie inspiré de Lotka-Volterra) sont des concepts académiques standards, librement documentés, que nous avons adaptés à notre simulation discrète par années.
+Les modèles mathématiques utilisés — croissance logistique de Verhulst (1838) et dynamique prédateur-proie inspirée de Lotka-Volterra — sont des concepts académiques classiques, librement documentés, que nous avons adaptés à une simulation discrète avançant année par année.
 
-## Sources externes citées
+Aucune bibliothèque externe de simulation ou de visualisation n'a été utilisée. Le graphique d'évolution et le diagramme en anneau sont codés entièrement en JavaScript avec l'API Canvas native.
 
-- **Flask** (framework web Python) — https://flask.palletsprojects.com/
-- **Modèle logistique** (croissance avec capacité de charge) — cours de mathématiques et ressources Wikipédia
-- **Polices Google Fonts** : Playfair Display, Lato — https://fonts.google.com/
-- Aucune bibliothèque externe de simulation ou de visualisation n'a été utilisée : le graphique canvas est codé en JavaScript pur.
+## Sources externes
+
+- **Flask** — framework web Python (https://flask.palletsprojects.com/)
+- **Press Start 2P** — police pixel art (Google Fonts)
+- **Modèle logistique** — cours de mathématiques / Wikipédia
 
 ## Utilisation de l'intelligence artificielle
 
-Nous avons utilisé Claude (Anthropic) comme assistant tout au long du développement, principalement pour :
+Nous avons utilisé **Claude (Anthropic)** comme assistant technique tout au long du développement. Son rôle a principalement porté sur :
 
-- **Débogage** : identifier et corriger des bugs (ex. la fonction `random_repro` qui écrasait les paramètres, le broutage des cerfs non implémenté)
-- **Calibrage de la simulation** : tester différentes valeurs de paramètres biologiques et analyser les résultats de simulations en boucle
-- **Aide à la rédaction HTML/CSS/JS** : mise en forme de l'interface, graphique canvas double axe, animations
+- **Débogage** : corriger des erreurs de logique dans les calculs biologiques (broutage, famine, reproduction conditionnelle) et des bugs d'affichage (z-index des modals, persistance des données lors des swaps AJAX)
+- **Interface graphique** : aide à la mise en forme CSS, refonte visuelle en pixel art, création du système de thèmes (Game Boy, Parchemin, Workbench, Naturalia)
+- **Structuration du code** : organisation des templates Jinja2, gestion des sessions Flask, requêtes SQL pour le classement
 
-L'IA a servi d'outil d'assistance technique. Tous les choix de conception (modèle biologique, architecture, fonctionnalités, paramètres) ont été décidés par l'équipe. Nous sommes en mesure d'expliquer et de justifier chaque partie du code.
-
-L'usage de l'IA a été limité aux aspects techniques et de débogage, jamais à la génération automatique de fonctionnalités complètes sans compréhension de notre part.
+Tous les choix de conception — modèle biologique, paramètres de simulation, fonctionnalités de jeu, architecture — ont été décidés par l'équipe. L'IA a été un outil d'exécution et de débogage, pas de conception. Nous sommes en mesure d'expliquer et de justifier chaque partie du code.
